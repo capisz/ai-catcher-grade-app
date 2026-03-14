@@ -1,0 +1,153 @@
+CREATE TABLE IF NOT EXISTS pitches_raw (
+    pitch_uid TEXT PRIMARY KEY,
+    game_pk BIGINT NOT NULL,
+    game_date DATE NOT NULL,
+    game_year INT NOT NULL,
+    at_bat_number INT NOT NULL,
+    pitch_number INT NOT NULL,
+    pitcher BIGINT NOT NULL,
+    batter BIGINT NOT NULL,
+    catcher_id BIGINT,
+    pitch_type TEXT,
+    pitch_name TEXT,
+    stand TEXT,
+    p_throws TEXT,
+    balls INT,
+    strikes INT,
+    outs_when_up INT,
+    on_1b BIGINT,
+    on_2b BIGINT,
+    on_3b BIGINT,
+    inning INT,
+    inning_topbot TEXT,
+    plate_x DOUBLE PRECISION,
+    plate_z DOUBLE PRECISION,
+    zone INT,
+    sz_top DOUBLE PRECISION,
+    sz_bot DOUBLE PRECISION,
+    release_speed DOUBLE PRECISION,
+    release_spin DOUBLE PRECISION,
+    pfx_x DOUBLE PRECISION,
+    pfx_z DOUBLE PRECISION,
+    effective_speed DOUBLE PRECISION,
+    description TEXT,
+    events TEXT,
+    estimated_woba_using_speedangle DOUBLE PRECISION,
+    delta_run_exp DOUBLE PRECISION,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_pitches_raw_game_date ON pitches_raw(game_date);
+CREATE INDEX IF NOT EXISTS idx_pitches_raw_catcher ON pitches_raw(catcher_id);
+CREATE INDEX IF NOT EXISTS idx_pitches_raw_pitcher ON pitches_raw(pitcher);
+CREATE INDEX IF NOT EXISTS idx_pitches_raw_batter ON pitches_raw(batter);
+CREATE INDEX IF NOT EXISTS idx_pitches_raw_context
+    ON pitches_raw(game_year, balls, strikes, stand, p_throws, pitch_type);
+
+CREATE TABLE IF NOT EXISTS pitch_features (
+    pitch_uid TEXT PRIMARY KEY REFERENCES pitches_raw(pitch_uid) ON DELETE CASCADE,
+    count_state TEXT,
+    count_bucket TEXT,
+    base_state TEXT,
+    outs_state TEXT,
+    platoon_flag TEXT,
+    zone_bucket_9 TEXT,
+    zone_bucket_25 TEXT,
+    edge_flag BOOLEAN,
+    chase_zone_flag BOOLEAN,
+    waste_zone_flag BOOLEAN,
+    prev_pitch_type_1 TEXT,
+    prev_pitch_type_2 TEXT,
+    same_as_prev_pitch BOOLEAN,
+    same_tunnel_family BOOLEAN,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS pitcher_candidate_pitch_sets (
+    pitcher BIGINT NOT NULL,
+    count_bucket TEXT NOT NULL,
+    base_state TEXT NOT NULL,
+    outs_state TEXT NOT NULL,
+    platoon_flag TEXT NOT NULL,
+    pitch_type TEXT NOT NULL,
+    pitch_name TEXT,
+    pitch_type_group TEXT NOT NULL,
+    zone_bucket_25 TEXT NOT NULL,
+    pitch_type_usage DOUBLE PRECISION NOT NULL,
+    location_usage DOUBLE PRECISION NOT NULL,
+    candidate_prob DOUBLE PRECISION NOT NULL,
+    pitch_count INT NOT NULL,
+    target_plate_x DOUBLE PRECISION,
+    target_plate_z DOUBLE PRECISION,
+    sz_top DOUBLE PRECISION,
+    sz_bot DOUBLE PRECISION,
+    release_speed DOUBLE PRECISION,
+    release_spin DOUBLE PRECISION,
+    pfx_x DOUBLE PRECISION,
+    pfx_z DOUBLE PRECISION,
+    effective_speed DOUBLE PRECISION,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (
+        pitcher, count_bucket, base_state, outs_state, platoon_flag, pitch_type, zone_bucket_25
+    )
+);
+
+CREATE INDEX IF NOT EXISTS idx_pitcher_candidate_pitch_sets_context
+    ON pitcher_candidate_pitch_sets(pitcher, count_bucket, base_state, outs_state, platoon_flag);
+
+CREATE TABLE IF NOT EXISTS catcher_pitch_scores (
+    pitch_uid TEXT PRIMARY KEY REFERENCES pitches_raw(pitch_uid) ON DELETE CASCADE,
+    catcher_id BIGINT,
+    pitcher BIGINT,
+    batter BIGINT,
+    game_pk BIGINT,
+    game_date DATE,
+    expected_rv_actual DOUBLE PRECISION,
+    expected_rv_baseline DOUBLE PRECISION,
+    dva DOUBLE PRECISION,
+    execution_gap DOUBLE PRECISION,
+    receiving_bonus DOUBLE PRECISION DEFAULT 0,
+    final_pitch_score DOUBLE PRECISION,
+    model_version TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_catcher_pitch_scores_catcher
+    ON catcher_pitch_scores(catcher_id);
+
+CREATE TABLE IF NOT EXISTS catcher_game_scores (
+    catcher_id BIGINT NOT NULL,
+    game_pk BIGINT NOT NULL,
+    game_date DATE NOT NULL,
+    pitches_scored INT NOT NULL,
+    total_dva DOUBLE PRECISION NOT NULL,
+    total_receiving_bonus DOUBLE PRECISION NOT NULL,
+    total_cdri DOUBLE PRECISION NOT NULL,
+    avg_execution_gap DOUBLE PRECISION,
+    PRIMARY KEY (catcher_id, game_pk)
+);
+
+CREATE TABLE IF NOT EXISTS batter_zone_profiles (
+    batter BIGINT NOT NULL,
+    season INT NOT NULL,
+    pitch_type_group TEXT NOT NULL,
+    pitcher_hand TEXT NOT NULL,
+    count_bucket TEXT NOT NULL,
+    zone_bucket_25 TEXT NOT NULL,
+    pitches_seen INT NOT NULL,
+    avg_delta_run_exp DOUBLE PRECISION,
+    avg_estimated_woba DOUBLE PRECISION,
+    PRIMARY KEY (
+        batter, season, pitch_type_group, pitcher_hand, count_bucket, zone_bucket_25
+    )
+);
+
+CREATE TABLE IF NOT EXISTS model_registry (
+    model_version TEXT PRIMARY KEY,
+    model_type TEXT NOT NULL,
+    trained_on_start DATE,
+    trained_on_end DATE,
+    feature_list JSONB,
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

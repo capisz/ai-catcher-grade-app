@@ -1,0 +1,209 @@
+@import "tailwindcss";
+
+:root {
+  --background: #efe5d6;
+  --surface: #f7efe3;
+  --surface-raised: #fffaf3;
+  --surface-strong: #143934;
+  --surface-deep: #0b2421;
+  --surface-olive: #264840;
+  --surface-quiet: #f0e6d7;
+  --ink: #122723;
+  --muted: #5f6f69;
+  --accent: #b76844;
+  --accent-soft: #ead7c4;
+  --accent-clay: #8d4f36;
+  --line: rgba(18, 39, 35, 0.11);
+  --line-strong: rgba(18, 39, 35, 0.2);
+  --gold: #c5a46e;
+  --success: #356f5b;
+  --success-soft: rgba(47, 107, 88, 0.14);
+  --warning: #9c6434;
+  --warning-soft: rgba(156, 100, 52, 0.14);
+  --danger: #9d4e3b;
+  --danger-soft: rgba(157, 78, 59, 0.14);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-strong: var(--surface-strong);
+  --color-surface-deep: var(--surface-deep);
+  --color-surface-olive: var(--surface-olive);
+  --color-surface-quiet: var(--surface-quiet);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-clay: var(--accent-clay);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-gold: var(--gold);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-display);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background:
+    radial-gradient(circle at top left, rgba(184, 95, 59, 0.09), transparent 24%),
+    radial-gradient(circle at top right, rgba(26, 67, 60, 0.1), transparent 26%),
+    linear-gradient(180deg, #fbf5ea 0%, #f3e8d8 42%, #ece0cd 100%);
+  color: var(--ink);
+}
+
+body {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    var(--background);
+  background-size: 96px 96px, 96px 96px, auto;
+  color: var(--ink);
+  font-family: var(--font-body), sans-serif;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(184, 95, 59, 0.24);
+}
+
+.card {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface-raised) 86%, white 14%) 0%,
+    color-mix(in srgb, var(--surface) 97%, white 3%) 100%
+  );
+  border: 1px solid var(--line);
+  box-shadow:
+    0 18px 44px rgba(8, 33, 29, 0.055),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.card-quiet {
+  background: color-mix(in srgb, var(--surface) 84%, white 16%);
+  border: 1px solid rgba(16, 35, 31, 0.09);
+  box-shadow:
+    0 14px 36px rgba(8, 33, 29, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38);
+}
+
+.panel-dark {
+  background:
+    radial-gradient(circle at top right, rgba(196, 163, 106, 0.12), transparent 32%),
+    linear-gradient(180deg, #173c36 0%, #0d2824 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 28px 60px rgba(8, 33, 29, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.field {
+  border: 1px solid rgba(16, 35, 31, 0.12);
+  background: rgba(255, 252, 247, 0.96);
+  color: var(--ink);
+  border-radius: 0.95rem;
+  min-height: 3.15rem;
+  padding: 0.75rem 0.95rem;
+  outline: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.44);
+}
+
+.field:focus {
+  border-color: rgba(184, 95, 59, 0.52);
+  box-shadow:
+    0 0 0 3px rgba(184, 95, 59, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.44);
+}
+
+.button-primary {
+  border-radius: 0.95rem;
+  background: linear-gradient(180deg, #19443d 0%, #0d302c 100%);
+  color: white;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  box-shadow: 0 16px 28px rgba(13, 48, 44, 0.22);
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    background-color 140ms ease;
+}
+
+.button-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 30px rgba(13, 48, 44, 0.28);
+}
+
+.button-secondary {
+  border-radius: 0.95rem;
+  border: 1px solid rgba(16, 35, 31, 0.12);
+  background: rgba(255, 250, 242, 0.76);
+  color: var(--ink);
+  font-weight: 600;
+  transition:
+    border-color 140ms ease,
+    transform 140ms ease,
+    color 140ms ease;
+}
+
+.button-secondary:hover {
+  border-color: rgba(184, 95, 59, 0.42);
+  color: var(--accent-clay);
+  transform: translateY(-1px);
+}
+
+.label-kicker {
+  color: var(--accent-clay);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.shell-panel {
+  background: rgba(255, 250, 242, 0.78);
+  border: 1px solid rgba(16, 35, 31, 0.08);
+  box-shadow:
+    0 14px 38px rgba(8, 33, 29, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38);
+}
+
+.numeric {
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.03em;
+}
+
+.scouting-seam {
+  position: relative;
+}
+
+.scouting-seam::before {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.65) 0 18%, transparent 20%) 0 0 / 18px 18px,
+    linear-gradient(90deg, transparent 0 10%, rgba(255, 255, 255, 0.42) 10% 90%, transparent 90%);
+  content: "";
+  display: block;
+  height: 2px;
+  opacity: 0.28;
+  width: 100%;
+}
+
+.scorebug {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.06) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}

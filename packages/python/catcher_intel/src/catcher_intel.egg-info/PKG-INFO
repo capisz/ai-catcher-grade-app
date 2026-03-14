@@ -1,0 +1,164 @@
+Metadata-Version: 2.4
+Name: catcher-intel
+Version: 0.1.0
+Summary: MVP for ranking MLB catchers by contextual pitch decision quality.
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi<1.0,>=0.116
+Requires-Dist: joblib<2.0,>=1.4
+Requires-Dist: numpy<3.0,>=1.26
+Requires-Dist: pandas<3.0,>=2.2
+Requires-Dist: psycopg[binary]<4.0,>=3.2
+Requires-Dist: pybaseball<3.0,>=2.2
+Requires-Dist: pydantic<3.0,>=2.9
+Requires-Dist: scikit-learn<2.0,>=1.6
+Requires-Dist: sqlalchemy<3.0,>=2.0
+Requires-Dist: uvicorn<1.0,>=0.35
+Requires-Dist: xgboost<3.0,>=2.1
+
+# catcher-intel
+
+`catcher-intel` is a monorepo MVP for ranking MLB catchers by contextual pitch decision quality with public Statcast data.
+
+## Repo layout
+
+- `apps/web`: Next.js frontend with Tailwind and Recharts
+- `apps/api`: FastAPI entrypoint
+- `services/ingestion`: pybaseball ingestion script
+- `services/modeling`: model training and demo seeding scripts
+- `packages/contracts`: frontend API schemas and TypeScript types
+- `packages/python/catcher_intel`: shared Python package for ingestion, features, modeling, and API logic
+- `sql/schema.sql`: Postgres-ready relational schema
+
+## What the MVP does
+
+1. Pulls Statcast pitch-level data with `pybaseball.statcast()`
+2. Normalizes pitch rows into `pitches_raw`
+3. Derives context and sequence features in `pitch_features`
+4. Builds pitcher-specific candidate pitch sets from historical usage
+5. Trains an XGBoost regressor on expected `delta_run_exp`
+6. Scores each pitch with:
+
+```text
+DVA = expected_rv_baseline - expected_rv_actual
+```
+
+`expected_rv_baseline` is a weighted average over realistic pitcher-specific candidate options in matching contexts.
+
+## Data model
+
+`sql/schema.sql` creates:
+
+- `pitches_raw`
+- `pitch_features`
+- `pitcher_candidate_pitch_sets`
+- `pitch_scores`
+- `batter_weakness_maps`
+
+The raw pitch table includes all requested Statcast fields:
+
+- `game_pk`, `game_date`, `game_year`, `at_bat_number`, `pitch_number`
+- `pitcher`, `batter`, `catcher_id`, `pitch_type`, `pitch_name`
+- `stand`, `p_throws`, `balls`, `strikes`, `outs_when_up`, `on_1b`, `on_2b`, `on_3b`
+- `inning`, `inning_topbot`, `plate_x`, `plate_z`, `zone`, `sz_top`, `sz_bot`
+- `release_speed`, `release_spin`, `pfx_x`, `pfx_z`, `effective_speed`
+- `description`, `events`, `estimated_woba_using_speedangle`, `delta_run_exp`
+
+Derived features include:
+
+- `count_bucket`, `base_state`, `leverage_bucket`
+- `zone_bucket_9`, `zone_bucket_25`
+- `chase_zone_flag`, `waste_zone_flag`
+- `prev_pitch_type_1`, `prev_pitch_type_2`
+- `platoon_flag`
+
+## Setup
+
+### 1. Python environment
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install --upgrade pip
+python3 -m pip install -e .
+```
+
+### 2. Frontend dependencies
+
+```bash
+pnpm install
+```
+
+### 3. Environment
+
+```bash
+cp .env.example .env
+```
+
+Defaults:
+
+- `DATABASE_URL=sqlite:///data/local.db`
+- `CATCHER_INTEL_MODEL_PATH=artifacts/run_value_model.joblib`
+- `NEXT_PUBLIC_API_URL=http://127.0.0.1:8000`
+
+SQLite is the default local workflow. Point `DATABASE_URL` at Postgres when you want the same schema on a proper database.
+
+## Sample local workflow
+
+### Seed demo data
+
+This writes a synthetic but model-friendly pitch corpus into the local database and trains a demo model artifact:
+
+```bash
+pnpm seed:demo
+```
+
+### Run the API
+
+```bash
+pnpm dev:api
+```
+
+### Run the frontend
+
+```bash
+pnpm dev:web
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+The frontend has typed contract validation and falls back to built-in demo responses if the API is not available yet.
+
+## Real Statcast workflow
+
+### Ingest a date range
+
+```bash
+pnpm ingest -- --start-date 2025-04-01 --end-date 2025-04-30
+```
+
+### Train and score
+
+```bash
+pnpm train:model
+```
+
+## API endpoints
+
+- `GET /catchers/leaderboard`
+- `GET /catchers/{id}`
+- `GET /atbat/recommendation`
+- `GET /batter/{id}/weakness-map`
+
+## Frontend pages
+
+- `/leaderboard`
+- `/catcher/[id]`
+- `/matchup-explorer`
+- `/game-review`
+
+## Notes and limitations
+
+- Receiving Bonus is intentionally a placeholder module and currently returns zero.
+- The leverage bucket is a base/out pressure proxy because score state is not in the requested raw field list.
+- Candidate pitch profiles use median movement, velocity, and target locations for each pitcher/context/pitch type slice.

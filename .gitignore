@@ -1,0 +1,12 @@
+node_modules
+.next
+.turbo
+.DS_Store
+.venv
+venv
+__pycache__
+*.pyc
+artifacts
+data
+.env
+

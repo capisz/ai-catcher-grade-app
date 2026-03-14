@@ -1,0 +1,20 @@
+{
+  "name": "catcher-intel",
+  "private": true,
+  "packageManager": "pnpm@10.0.0",
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "build:web": "pnpm --filter web build",
+    "lint:web": "pnpm --filter web lint",
+    "dev:api": "python3 -m uvicorn apps.api.main:app --reload --app-dir .",
+    "ingest": "python3 services/ingestion/fetch_statcast.py",
+    "load:chadwick": "python3 services/ingestion/load_chadwick_identity.py",
+    "refresh:players": "python3 services/modeling/refresh_player_metadata.py",
+    "refresh:catcher-metrics": "python3 services/modeling/refresh_catcher_metrics.py",
+    "score:dva": "python3 services/modeling/score_dva.py",
+    "rebuild:summaries": "python3 services/modeling/rebuild_catcher_summaries.py",
+    "validate:dashboard": "python3 services/modeling/validate_dashboard_metrics.py",
+    "train:model": "python3 services/modeling/train_model.py",
+    "seed:demo": "python3 services/modeling/seed_demo.py"
+  }
+}
