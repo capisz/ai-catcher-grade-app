@@ -4,10 +4,13 @@ from datetime import date
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from catcher_intel.api_models import (
     CatcherDetailResponse,
+    CatcherReportOptionsResponse,
+    CatcherReportRequest,
     CatchersResponse,
     CountsResponse,
     LeaderboardResponse,
@@ -76,6 +79,36 @@ def catcher_detail(
         )
     except LookupError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@app.get("/catchers/{catcher_id}/report/options", response_model=CatcherReportOptionsResponse)
+def catcher_report_options(
+    catcher_id: int,
+    season: Optional[int] = Query(default=None, ge=2008),
+) -> CatcherReportOptionsResponse:
+    try:
+        return service.get_catcher_report_options(catcher_id=catcher_id, season=season)
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@app.post("/catchers/{catcher_id}/report")
+def catcher_report(
+    catcher_id: int,
+    payload: CatcherReportRequest,
+) -> Response:
+    try:
+        report = service.generate_catcher_report(catcher_id=catcher_id, request=payload)
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    return Response(
+        content=report.content,
+        media_type=report.media_type,
+        headers={"Content-Disposition": f'attachment; filename="{report.filename}"'},
+    )
 
 
 @app.get("/catchers/{catcher_id}/pairings", response_model=PairingsResponse)

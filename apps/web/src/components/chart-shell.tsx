@@ -20,7 +20,7 @@ export function ChartShell({ heightClass, title, children }: ChartShellProps) {
       {mounted ? (
         children
       ) : (
-        <div className="flex h-full w-full items-center justify-center rounded-[1.2rem] border border-dashed border-line/60 bg-white/52">
+        <div className="flex h-full w-full items-center justify-center rounded-[1.2rem] border border-dashed border-line/60 bg-surface/70">
           <div className="text-center">
             <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
               {title}

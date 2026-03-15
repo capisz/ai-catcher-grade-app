@@ -12,9 +12,9 @@ export function SampleStabilityBadge({
   const value = label ?? "Low sample";
   const classes =
     value === "High stability"
-      ? "border-emerald-900/12 bg-emerald-900 text-white"
+      ? "border-brand-primary/24 bg-brand-primary text-white"
       : value === "Stable"
-        ? "border-surface-strong/12 bg-surface-strong text-white"
+        ? "border-brand-sage/30 bg-brand-sage/35 text-ink"
         : value === "Limited sample"
           ? "border-warning/18 bg-warning-soft text-warning"
           : "border-danger/18 bg-danger-soft text-danger";

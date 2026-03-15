@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from datetime import date
+from typing import Any, Dict, Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -25,6 +26,43 @@ class CatcherOption(BaseModel):
 class CatchersResponse(BaseModel):
     season: int
     catchers: list[CatcherOption]
+
+
+class ReportFormatOption(BaseModel):
+    key: str
+    label: str
+    description: str
+    available: bool = True
+
+
+class ReportSectionOption(BaseModel):
+    key: str
+    label: str
+    description: str
+    available: bool = True
+    default_selected: bool = False
+    row_count: Optional[int] = None
+
+
+class CatcherReportOptionsResponse(BaseModel):
+    catcher_id: int
+    catcher_name: str
+    selected_season: int
+    available_seasons: list[int]
+    formats: list[ReportFormatOption]
+    sections: list[ReportSectionOption]
+    supports_date_range: bool = False
+    supports_min_pitches: bool = True
+    default_min_pitches: int = 20
+
+
+class CatcherReportRequest(BaseModel):
+    season: int
+    format: Literal["json", "csv", "pdf"]
+    included_sections: list[str] = Field(default_factory=list)
+    date_from: Optional[date] = None
+    date_to: Optional[date] = None
+    min_pitches: int = Field(default=20, ge=1)
 
 
 class GradeValue(BaseModel):

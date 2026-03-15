@@ -5,18 +5,18 @@ const STRIKES = [0, 1, 2];
 
 function cellClasses(value: number) {
   if (value >= 0.008) {
-    return "bg-success text-white border-success/20";
+    return "bg-brand-primary text-white border-brand-primary/24";
   }
   if (value >= 0.002) {
-    return "bg-success-soft text-success border-success/18";
+    return "bg-brand-sage/35 text-ink border-brand-sage/40";
   }
   if (value <= -0.008) {
-    return "bg-danger text-white border-danger/18";
+    return "bg-accent-clay text-white border-accent-clay/24";
   }
   if (value <= -0.002) {
-    return "bg-danger-soft text-danger border-danger/18";
+    return "bg-brand-sand/28 text-accent-clay border-brand-sand/38";
   }
-  return "bg-white/72 text-ink border-line/70";
+  return "bg-surface-raised/84 text-ink border-line/70";
 }
 
 function keyFor(balls: number, strikes: number) {
@@ -33,14 +33,14 @@ export function CountStateMatrix({ rows }: { rows: CountSummary[] }) {
         {STRIKES.map((strike) => (
           <div
             key={strike}
-            className="rounded-[1rem] border border-line/70 bg-white/60 px-3 py-2 text-center text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-muted"
+            className="meta-pill rounded-[1rem] px-3 py-2 text-center text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-muted"
           >
             {strike} strike{strike === 1 ? "" : "s"}
           </div>
         ))}
         {BALLS.map((ball) => (
           <div key={ball} className="contents">
-            <div className="flex items-center justify-center rounded-[1rem] border border-line/70 bg-white/60 px-2 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-muted">
+            <div className="meta-pill flex items-center justify-center rounded-[1rem] px-2 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-muted">
               {ball} ball{ball === 1 ? "" : "s"}
             </div>
             {STRIKES.map((strike) => {
@@ -49,7 +49,7 @@ export function CountStateMatrix({ rows }: { rows: CountSummary[] }) {
                 return (
                   <div
                     key={`${ball}-${strike}`}
-                    className="rounded-[1.2rem] border border-dashed border-line/70 bg-white/40 p-4 text-center text-xs text-muted"
+                    className="rounded-[1.2rem] border border-dashed border-line/70 bg-surface/70 p-4 text-center text-xs text-muted"
                   >
                     No data
                   </div>
@@ -84,9 +84,9 @@ export function CountStateMatrix({ rows }: { rows: CountSummary[] }) {
         ))}
       </div>
       <div className="flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">
-        <span>Rust = worse than baseline</span>
-        <div className="h-2.5 w-28 rounded-full bg-gradient-to-r from-danger via-white to-success" />
-        <span>Green = better than baseline</span>
+        <span>Clay = worse than baseline</span>
+        <div className="h-2.5 w-28 rounded-full bg-gradient-to-r from-accent-clay via-brand-sand/40 to-brand-primary" />
+        <span>Slate = better than baseline</span>
       </div>
     </div>
   );

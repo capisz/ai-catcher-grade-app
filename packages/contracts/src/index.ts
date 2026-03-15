@@ -39,6 +39,34 @@ export const catchersResponseSchema = z.object({
   catchers: z.array(catcherOptionSchema),
 });
 
+export const reportFormatOptionSchema = z.object({
+  key: z.string(),
+  label: z.string(),
+  description: z.string(),
+  available: z.boolean().default(true),
+});
+
+export const reportSectionOptionSchema = z.object({
+  key: z.string(),
+  label: z.string(),
+  description: z.string(),
+  available: z.boolean().default(true),
+  default_selected: z.boolean().default(false),
+  row_count: z.number().nullable().optional(),
+});
+
+export const catcherReportOptionsResponseSchema = z.object({
+  catcher_id: z.number(),
+  catcher_name: z.string(),
+  selected_season: z.number(),
+  available_seasons: z.array(z.number()),
+  formats: z.array(reportFormatOptionSchema),
+  sections: z.array(reportSectionOptionSchema),
+  supports_date_range: z.boolean().default(false),
+  supports_min_pitches: z.boolean().default(true),
+  default_min_pitches: z.number().default(20),
+});
+
 export const gradeValueSchema = z.object({
   score: z.number().nullable().optional(),
   label: z.string().nullable().optional(),
@@ -247,10 +275,13 @@ export const recommendationResponseSchema = z.object({
 });
 
 export type CatcherOption = z.infer<typeof catcherOptionSchema>;
+export type ReportFormatOption = z.infer<typeof reportFormatOptionSchema>;
+export type ReportSectionOption = z.infer<typeof reportSectionOptionSchema>;
 export type HeatCell = z.infer<typeof heatCellSchema>;
 export type TrendPoint = z.infer<typeof trendPointSchema>;
 export type PitchMixPoint = z.infer<typeof pitchMixPointSchema>;
 export type CatchersResponse = z.infer<typeof catchersResponseSchema>;
+export type CatcherReportOptionsResponse = z.infer<typeof catcherReportOptionsResponseSchema>;
 export type GradeValue = z.infer<typeof gradeValueSchema>;
 export type CatcherGrades = z.infer<typeof catcherGradesSchema>;
 export type PublicCatcherMetrics = z.infer<typeof publicCatcherMetricsSchema>;

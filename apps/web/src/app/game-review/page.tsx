@@ -60,12 +60,12 @@ export default function GameReviewPage() {
         tone="quiet"
       >
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-[1.15rem] border border-line/60 bg-white/78 p-5 text-sm leading-8 text-muted">
+          <div className="surface-panel rounded-[1.15rem] p-5 text-sm leading-8 text-muted">
             The current app is already useful for season-level catcher evaluation and matchup
             planning because those surfaces are backed by real scored rows and real recommendation
             logic.
           </div>
-          <div className="rounded-[1.15rem] border border-line/60 bg-white/78 p-5 text-sm leading-8 text-muted">
+          <div className="surface-panel rounded-[1.15rem] p-5 text-sm leading-8 text-muted">
             Game review will land once the repo exposes clean per-game sequences, inning segments,
             and pitch review notes without inventing unavailable context.
           </div>

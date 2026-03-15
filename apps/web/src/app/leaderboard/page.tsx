@@ -1,17 +1,16 @@
 import type { LeaderboardResponse } from "@catcher-intel/contracts";
-import Link from "next/link";
-
 import { ApiDebugPanel } from "@/components/api-debug-panel";
 import { EmptyStatePanel } from "@/components/empty-state-panel";
 import { LeaderboardChart } from "@/components/leaderboard-chart";
 import { SampleStabilityBadge } from "@/components/sample-stability-badge";
 import { SectionCard } from "@/components/section-card";
+import { LoadingForm } from "@/components/ui/loading-form";
+import { LoadingLink } from "@/components/ui/loading-link";
 import {
   ApiRequestError,
-  getApiBaseUrl,
+  getApiTransport,
   getApiHealth,
   getLeaderboard,
-  getUpstreamApiBaseUrl,
 } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
@@ -47,6 +46,19 @@ function errorMessage(error: unknown) {
   return "Unknown data loading error.";
 }
 
+function debugErrorDetail(error: unknown) {
+  if (error instanceof ApiRequestError) {
+    return error.status == null
+      ? error.message
+      : `HTTP ${error.status} | ${error.message}`;
+  }
+  return errorMessage(error);
+}
+
+function toneByIndex(index: number) {
+  return ["card-tone-slate", "card-tone-sand", "card-tone-clay", "card-tone-sage"][index % 4];
+}
+
 export default async function LeaderboardPage({
   searchParams,
 }: {
@@ -58,9 +70,7 @@ export default async function LeaderboardPage({
   const season = readNumber(params.season, NaN);
   const dateFrom = readString(params.date_from, "");
   const dateTo = readString(params.date_to, "");
-  const apiBaseUrl = await getApiBaseUrl();
-  const upstreamApiBaseUrl = getUpstreamApiBaseUrl();
-  const apiTransportLabel = `${apiBaseUrl} -> ${upstreamApiBaseUrl}`;
+  const apiTransport = await getApiTransport();
 
   const healthStatus = await getApiHealth()
     .then(() => ({
@@ -71,7 +81,7 @@ export default async function LeaderboardPage({
     .catch((error) => ({
       label: "API health",
       status: "error" as const,
-      detail: errorMessage(error),
+      detail: debugErrorDetail(error),
     }));
 
   let response: LeaderboardResponse;
@@ -89,16 +99,16 @@ export default async function LeaderboardPage({
           eyebrow="Real Data Unavailable"
           title="Catcher leaderboard"
           description={errorMessage(error)}
-          detail="The leaderboard only renders real scored seasons. Restart the API or rebuild summaries before retrying."
+          detail={`Targeted backend: ${apiTransport.backendBaseUrl} (${apiTransport.configuredFrom}). Restart the API there or update API_BASE_URL before retrying.`}
           action={
             <ApiDebugPanel
-              apiBaseUrl={apiTransportLabel}
+              transport={apiTransport}
               items={[
                 healthStatus,
                 {
                   label: "Leaderboard",
                   status: "error",
-                  detail: errorMessage(error),
+                  detail: debugErrorDetail(error),
                 },
               ]}
               defaultOpen
@@ -126,7 +136,7 @@ export default async function LeaderboardPage({
   return (
     <div className="space-y-8">
       <section className="card relative overflow-hidden rounded-[1.6rem] px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top_right,rgba(196,163,106,0.14),transparent_42%),radial-gradient(circle_at_top_left,rgba(184,95,59,0.08),transparent_34%)]" />
+        <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
         <div className="relative grid gap-6 xl:grid-cols-[1.04fr_0.96fr]">
           <div>
             <div className="label-kicker">Scouting Board</div>
@@ -138,7 +148,12 @@ export default async function LeaderboardPage({
               move directly into the full scouting dashboard for a deeper read.
             </p>
 
-            <form action="/leaderboard" className="shell-panel mt-6 rounded-[1.2rem] p-3">
+            <LoadingForm
+              action="/leaderboard"
+              className="shell-panel mt-6 rounded-[1.2rem] p-3"
+              loadingMessage="Refreshing scouting board..."
+              loadingSubtitle="Updating the live leaderboard filters and qualifiers."
+            >
               <div className="grid gap-3 lg:grid-cols-[8rem_12rem_8.5rem_11rem_11rem_auto]">
                 <input
                   className="field"
@@ -164,11 +179,16 @@ export default async function LeaderboardPage({
                 <button className="button-primary px-5 py-3 text-sm">Refresh board</button>
               </div>
               <div className="mt-3 flex flex-wrap gap-3">
-                <Link href="/" className="button-secondary px-4 py-3 text-sm">
+                <LoadingLink
+                  href="/"
+                  className="button-secondary px-4 py-3 text-sm"
+                  loadingMessage="Opening catcher dashboard..."
+                  loadingSubtitle="Loading the main scouting view."
+                >
                   Open catcher dashboard
-                </Link>
+                </LoadingLink>
               </div>
-            </form>
+            </LoadingForm>
           </div>
 
           <aside className="panel-dark overflow-hidden rounded-[1.55rem] p-5 text-white sm:p-6">
@@ -182,7 +202,7 @@ export default async function LeaderboardPage({
                   {leaderboard.length} qualifying catchers on the current filter set
                 </div>
               </div>
-              <div className="rounded-[1.25rem] border border-white/10 bg-white/7 px-4 py-3">
+              <div className="scorebug rounded-[1.25rem] px-4 py-3">
                 <div className="text-[0.64rem] uppercase tracking-[0.18em] text-white/56">
                   Filter floor
                 </div>
@@ -229,10 +249,12 @@ export default async function LeaderboardPage({
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {leaderboard.slice(0, 4).map((entry, index) => (
-              <Link
+              <LoadingLink
                 key={entry.catcher_id}
                 href={`/?catcher_id=${entry.catcher_id}&season=${entry.season}`}
-                className="rounded-[1.25rem] border border-line/60 bg-white/78 p-4 transition hover:-translate-y-0.5 hover:border-accent/24"
+                loadingMessage="Loading catcher scouting view..."
+                loadingSubtitle={`Opening ${entry.catcher_name}.`}
+                className={[toneByIndex(index), "rounded-[1.25rem] p-4 transition hover:-translate-y-0.5 hover:border-accent/24"].join(" ")}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-[0.95rem] bg-surface-strong text-sm font-semibold text-white">
@@ -254,7 +276,7 @@ export default async function LeaderboardPage({
                 <div className="mt-2 text-sm leading-6 text-muted">
                   Avg DVA {formatSigned(entry.avg_dva, 5)} | {entry.grades.overall_game_calling.label ?? "Unscored"}
                 </div>
-              </Link>
+              </LoadingLink>
             ))}
           </div>
         </div>
@@ -267,7 +289,7 @@ export default async function LeaderboardPage({
         tone="quiet"
       >
         {leaderboard.length === 0 ? (
-          <div className="rounded-[1.6rem] border border-dashed border-line/70 bg-white/50 p-6 text-sm leading-7 text-muted">
+          <div className="rounded-[1.6rem] border border-dashed border-line/70 bg-surface/72 p-6 text-sm leading-7 text-muted">
             No real scored catchers matched the current filters for season {response.season}. Lower
             the minimum pitch threshold, widen the date range, or switch to a populated scored
             season.
@@ -275,10 +297,12 @@ export default async function LeaderboardPage({
         ) : (
           <div className="space-y-3">
             {leaderboard.map((entry, index) => (
-              <Link
+              <LoadingLink
                 key={entry.catcher_id}
                 href={`/?catcher_id=${entry.catcher_id}&season=${entry.season}`}
-                className="grid gap-4 rounded-[1.3rem] border border-line/60 bg-white/78 p-4 transition hover:-translate-y-0.5 hover:border-accent/24 md:grid-cols-[4rem_1.6fr_.95fr_.9fr_.9fr_1.1fr_1fr_1fr]"
+                loadingMessage="Loading catcher scouting view..."
+                loadingSubtitle={`Opening ${entry.catcher_name}.`}
+                className="surface-panel grid gap-4 rounded-[1.3rem] p-4 transition hover:-translate-y-0.5 hover:border-accent/24 md:grid-cols-[4rem_1.6fr_.95fr_.9fr_.9fr_1.1fr_1fr_1fr]"
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-[0.95rem] bg-surface-strong text-sm font-semibold text-white">
                   {index + 1}
@@ -347,13 +371,13 @@ export default async function LeaderboardPage({
                     Pop 2B {entry.public_metrics.pop_time_2b == null ? "N/A" : entry.public_metrics.pop_time_2b.toFixed(2)}
                   </div>
                 </div>
-              </Link>
+              </LoadingLink>
             ))}
           </div>
         )}
       </SectionCard>
 
-      <ApiDebugPanel apiBaseUrl={apiTransportLabel} items={[healthStatus, leaderboardStatus]} />
+      <ApiDebugPanel transport={apiTransport} items={[healthStatus, leaderboardStatus]} />
     </div>
   );
 }

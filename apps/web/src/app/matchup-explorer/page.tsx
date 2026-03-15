@@ -5,22 +5,21 @@ import type {
   RecommendationResponse,
 } from "@catcher-intel/contracts";
 import Image from "next/image";
-import Link from "next/link";
-
 import { ApiDebugPanel } from "@/components/api-debug-panel";
 import { EmptyStatePanel } from "@/components/empty-state-panel";
 import { RecommendationOptionBoard } from "@/components/recommendation-option-board";
 import { SampleStabilityBadge } from "@/components/sample-stability-badge";
 import { SectionCard } from "@/components/section-card";
+import { LoadingForm } from "@/components/ui/loading-form";
+import { LoadingLink } from "@/components/ui/loading-link";
 import {
   ApiRequestError,
-  getApiBaseUrl,
+  getApiTransport,
   getApiHealth,
   getAtbatRecommendation,
   getCatcherDetail,
   getCatcherPairings,
   getCatchers,
-  getUpstreamApiBaseUrl,
 } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
@@ -85,9 +84,7 @@ export default async function MatchupExplorerPage({
   const batterId = readNumber(params.batter_id);
   const prevPitchType1 = readString(params.prev_pitch_type_1, "");
   const prevPitchType2 = readString(params.prev_pitch_type_2, "");
-  const apiBaseUrl = await getApiBaseUrl();
-  const upstreamApiBaseUrl = getUpstreamApiBaseUrl();
-  const apiTransportLabel = `${apiBaseUrl} -> ${upstreamApiBaseUrl}`;
+  const apiTransport = await getApiTransport();
 
   const healthStatus = await getApiHealth()
     .then(() => ({
@@ -111,11 +108,11 @@ export default async function MatchupExplorerPage({
           eyebrow="Workbench Offline"
           title="Matchup explorer cannot reach the catcher data feed"
           description={errorMessage(error)}
-          detail="Start the API, confirm NEXT_PUBLIC_API_URL, and retry the recommendation workbench."
+          detail={`Targeted backend: ${apiTransport.backendBaseUrl} (${apiTransport.configuredFrom}). Start the API there or update API_BASE_URL / NEXT_PUBLIC_API_URL before retrying.`}
           tone="caution"
           action={
             <ApiDebugPanel
-              apiBaseUrl={apiTransportLabel}
+              transport={apiTransport}
               items={[
                 healthStatus,
                 {
@@ -149,7 +146,7 @@ export default async function MatchupExplorerPage({
           detail="Rebuild summaries for a populated season or select a different scored season."
           action={
             <ApiDebugPanel
-              apiBaseUrl={apiTransportLabel}
+              transport={apiTransport}
               items={[healthStatus, catchersStatus]}
               defaultOpen
             />
@@ -173,7 +170,7 @@ export default async function MatchupExplorerPage({
           tone="caution"
           action={
             <ApiDebugPanel
-              apiBaseUrl={apiTransportLabel}
+              transport={apiTransport}
               items={[
                 healthStatus,
                 catchersStatus,
@@ -207,7 +204,7 @@ export default async function MatchupExplorerPage({
           detail="The workbench needs real pairing rows to anchor the pitcher side of the recommendation view."
           action={
             <ApiDebugPanel
-              apiBaseUrl={apiTransportLabel}
+              transport={apiTransport}
               items={[
                 healthStatus,
                 catchersStatus,
@@ -238,7 +235,7 @@ export default async function MatchupExplorerPage({
           detail="Try another catcher or another populated scored season."
           action={
             <ApiDebugPanel
-              apiBaseUrl={apiTransportLabel}
+              transport={apiTransport}
               items={[
                 healthStatus,
                 catchersStatus,
@@ -335,7 +332,7 @@ export default async function MatchupExplorerPage({
   return (
     <div className="space-y-8">
       <section className="card relative overflow-hidden rounded-[1.6rem] px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top_right,rgba(196,163,106,0.14),transparent_42%),radial-gradient(circle_at_top_left,rgba(184,95,59,0.08),transparent_34%)]" />
+        <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
         <div className="relative grid gap-6 xl:grid-cols-[1.02fr_0.98fr]">
           <div className="space-y-6">
             <div>
@@ -351,18 +348,23 @@ export default async function MatchupExplorerPage({
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <span className="rounded-full border border-line/70 bg-white/76 px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-muted">
+              <span className="pill-sage rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.2em]">
                 Scored season {selectedSeason}
               </span>
-              <span className="rounded-full border border-line/70 bg-white/76 px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-muted">
+              <span className="pill-clay rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.2em]">
                 Model {catcherDetail.diagnostics.model_version ?? "dva_v1_contextual"}
               </span>
-              <span className="rounded-full border border-line/70 bg-white/76 px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-muted">
+              <span className="pill-sand rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.2em]">
                 Pitcher-specific candidates
               </span>
             </div>
 
-            <form action="/matchup-explorer" className="shell-panel rounded-[1.2rem] p-3">
+            <LoadingForm
+              action="/matchup-explorer"
+              className="shell-panel rounded-[1.2rem] p-3"
+              loadingMessage="Generating scouting view..."
+              loadingSubtitle="Scoring pitcher-specific pitch options for this matchup."
+            >
               <div className="grid gap-3 xl:grid-cols-2">
                 <select className="field" name="catcher_id" defaultValue={String(selectedCatcherId)}>
                   {catchers.catchers.map((catcher) => (
@@ -454,20 +456,24 @@ export default async function MatchupExplorerPage({
               </div>
 
               <div className="mt-3 flex flex-wrap gap-3">
-                <Link
+                <LoadingLink
                   href={`/?catcher_id=${selectedCatcherId}&season=${selectedSeason}`}
                   className="button-secondary px-4 py-3 text-sm"
+                  loadingMessage="Opening catcher dashboard..."
+                  loadingSubtitle={`Loading ${catcherDetail.identity.catcher_name}.`}
                 >
                   Open catcher dashboard
-                </Link>
-                <Link
+                </LoadingLink>
+                <LoadingLink
                   href={`/leaderboard?season=${selectedSeason}&min_pitches=50`}
                   className="button-secondary px-4 py-3 text-sm"
+                  loadingMessage="Opening scouting board..."
+                  loadingSubtitle="Loading the season leaderboard."
                 >
                   Open leaderboard
-                </Link>
+                </LoadingLink>
               </div>
-            </form>
+            </LoadingForm>
           </div>
 
           <aside className="panel-dark overflow-hidden rounded-[1.55rem] p-5 text-white sm:p-6">
@@ -482,7 +488,7 @@ export default async function MatchupExplorerPage({
                     className="h-24 w-24 rounded-[1.15rem] border border-white/12 object-cover"
                   />
                 ) : (
-                  <div className="flex h-24 w-24 items-center justify-center rounded-[1.15rem] border border-white/12 bg-white/8 text-3xl font-semibold">
+                  <div className="dark-pill flex h-24 w-24 items-center justify-center rounded-[1.15rem] text-3xl font-semibold">
                     {catcherDetail.identity.catcher_name[0]}
                   </div>
                 )}
@@ -494,13 +500,13 @@ export default async function MatchupExplorerPage({
                     {catcherDetail.identity.catcher_name}
                   </h2>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <span className="rounded-full border border-white/10 bg-white/8 px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
+                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
                       {catcherDetail.identity.team ?? "FA"}
                     </span>
-                    <span className="rounded-full border border-white/10 bg-white/8 px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
+                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
                       Pitcher {selectedPitcherId}
                     </span>
-                    <span className="rounded-full border border-white/10 bg-white/8 px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
+                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
                       {balls}-{strikes}, {outsWhenUp} outs
                     </span>
                   </div>
@@ -580,14 +586,16 @@ export default async function MatchupExplorerPage({
           {pairings.pairings.map((row) => {
             const active = row.pitcher_id === selectedPitcherId;
             return (
-              <Link
+              <LoadingLink
                 key={row.pitcher_id}
                 href={buildHref({ pitcher_id: row.pitcher_id })}
+                loadingMessage="Generating scouting view..."
+                loadingSubtitle={`Loading pairing context for ${row.pitcher_name}.`}
                 className={[
                   "rounded-[1.1rem] border p-4 transition",
                   active
-                    ? "border-surface-strong bg-surface-strong text-white shadow-[0_14px_24px_rgba(8,33,29,0.16)]"
-                    : "border-line/60 bg-white/78 hover:-translate-y-0.5 hover:border-accent/24",
+                    ? "border-accent/30 bg-surface-strong text-white shadow-[0_14px_24px_rgba(68,83,95,0.18)]"
+                    : "surface-panel hover:-translate-y-0.5 hover:border-accent/24",
                 ].join(" ")}
               >
                 <div className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] opacity-70">
@@ -602,7 +610,7 @@ export default async function MatchupExplorerPage({
                 <div className="numeric mt-3 text-xl font-semibold">
                   {formatSigned(row.total_dva, 3)}
                 </div>
-              </Link>
+              </LoadingLink>
             );
           })}
         </div>
@@ -628,25 +636,25 @@ export default async function MatchupExplorerPage({
         ) : recommendation ? (
           <div className="space-y-5">
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-              <div className="rounded-[1rem] border border-line/60 bg-white/78 px-4 py-3">
+              <div className="surface-panel rounded-[1rem] px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-muted">Count</div>
                 <div className="mt-2 text-lg font-semibold text-ink">{recommendation.count_state}</div>
               </div>
-              <div className="rounded-[1rem] border border-line/60 bg-white/78 px-4 py-3">
+              <div className="surface-panel rounded-[1rem] px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-muted">Count bucket</div>
                 <div className="mt-2 text-lg font-semibold text-ink">
                   {recommendation.count_bucket.replaceAll("_", " ")}
                 </div>
               </div>
-              <div className="rounded-[1rem] border border-line/60 bg-white/78 px-4 py-3">
+              <div className="surface-panel rounded-[1rem] px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-muted">Base state</div>
                 <div className="mt-2 text-lg font-semibold text-ink">{recommendation.base_state}</div>
               </div>
-              <div className="rounded-[1rem] border border-line/60 bg-white/78 px-4 py-3">
+              <div className="surface-panel rounded-[1rem] px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-muted">Outs</div>
                 <div className="mt-2 text-lg font-semibold text-ink">{recommendation.outs_state}</div>
               </div>
-              <div className="rounded-[1rem] border border-line/60 bg-white/78 px-4 py-3">
+              <div className="surface-panel rounded-[1rem] px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-muted">Platoon</div>
                 <div className="mt-2 text-lg font-semibold text-ink">
                   {recommendation.platoon_flag.replaceAll("_", " ")}
@@ -665,7 +673,7 @@ export default async function MatchupExplorerPage({
         tone="quiet"
       >
         <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-[1.2rem] border border-line/60 bg-white/76 p-5">
+          <div className="surface-panel rounded-[1.2rem] p-5">
             <div className="label-kicker">Public-data honesty</div>
             <p className="mt-4 text-sm leading-8 text-muted">
               The recommendation engine compares actual MLB pitch choices to realistic
@@ -673,7 +681,7 @@ export default async function MatchupExplorerPage({
               PitchCom knowledge, shake-off information, or internal scouting plan access.
             </p>
           </div>
-          <div className="rounded-[1.2rem] border border-line/60 bg-white/76 p-5">
+          <div className="surface-panel rounded-[1.2rem] p-5">
             <div className="label-kicker">Using the workbench</div>
             <p className="mt-4 text-sm leading-8 text-muted">
               Start from a real catcher-pitcher pairing, set the count and base/out situation, and
@@ -684,7 +692,7 @@ export default async function MatchupExplorerPage({
         </div>
       </SectionCard>
 
-      <ApiDebugPanel apiBaseUrl={apiTransportLabel} items={debugItems} />
+      <ApiDebugPanel transport={apiTransport} items={debugItems} />
     </div>
   );
 }

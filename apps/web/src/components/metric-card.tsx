@@ -11,8 +11,8 @@ export function MetricCard({ label, value, note, invert = false }: MetricCardPro
       className={[
         "min-h-[9.1rem] rounded-[1.05rem] border p-4",
         invert
-          ? "scorebug border-white/10 bg-white/7 text-white"
-          : "border-line/60 bg-white/80 text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.32)]",
+          ? "scorebug border-white/12 bg-white/8 text-white"
+          : "surface-panel text-ink",
       ].join(" ")}
     >
       <div

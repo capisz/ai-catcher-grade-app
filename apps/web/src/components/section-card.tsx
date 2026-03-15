@@ -28,7 +28,7 @@ export function SectionCard({
       <div className="flex flex-col gap-4 border-b border-line/60 pb-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="max-w-3xl">
           <div className="label-kicker">{eyebrow}</div>
-          <h2 className="mt-3 font-serif text-[1.85rem] leading-none text-ink sm:text-[2.05rem]">
+          <h2 className="mt-3 font-serif text-[1.85rem] leading-none text-ink-strong sm:text-[2.05rem]">
             {title}
           </h2>
           {subtitle ? (

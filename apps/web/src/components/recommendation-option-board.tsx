@@ -10,13 +10,13 @@ function formatSigned(value: number | null | undefined, digits = 4) {
 function familyTone(family: string | null | undefined) {
   switch (family) {
     case "fastball":
-      return "border-surface-strong/14 bg-surface-strong/8 text-surface-strong";
+      return "border-brand-primary/16 bg-brand-primary/8 text-brand-primary";
     case "breaker":
-      return "border-[#2b6d7b]/18 bg-[#2b6d7b]/10 text-[#1f5965]";
+      return "border-brand-secondary/24 bg-brand-secondary/14 text-accent-clay";
     case "offspeed":
-      return "border-accent/18 bg-accent/10 text-accent-clay";
+      return "border-accent/20 bg-accent/10 text-accent-clay";
     default:
-      return "border-line/70 bg-white/70 text-muted";
+      return "border-brand-sage/26 bg-brand-sage/20 text-muted-strong";
   }
 }
 
@@ -27,7 +27,7 @@ export function RecommendationOptionBoard({
 }) {
   if (options.length === 0) {
     return (
-      <div className="rounded-[1.25rem] border border-dashed border-line/70 bg-white/52 p-5 text-sm leading-7 text-muted">
+      <div className="rounded-[1.25rem] border border-dashed border-line/70 bg-surface/72 p-5 text-sm leading-7 text-muted">
         No recommendation candidates survived for this context.
       </div>
     );
@@ -38,7 +38,7 @@ export function RecommendationOptionBoard({
       {options.map((option, index) => (
         <div
           key={`${option.pitch_type}-${option.zone_bucket_25}-${index}`}
-          className="grid gap-4 rounded-[1.2rem] border border-line/60 bg-white/80 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.3)] lg:grid-cols-[4rem_1.25fr_0.95fr_0.95fr]"
+          className="surface-panel grid gap-4 rounded-[1.2rem] p-4 lg:grid-cols-[4rem_1.25fr_0.95fr_0.95fr]"
         >
           <div className="flex h-11 w-11 items-center justify-center rounded-[0.9rem] bg-surface-strong text-sm font-semibold text-white">
             {index + 1}

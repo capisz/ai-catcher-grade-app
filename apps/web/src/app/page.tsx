@@ -14,17 +14,21 @@ import { GradeCard } from "@/components/grade-card";
 import { MetricCard } from "@/components/metric-card";
 import { PairingIntelTable } from "@/components/pairing-intel-table";
 import { PitchTypePerformanceBoard } from "@/components/pitch-type-performance-board";
+import { ReportBuilder } from "@/components/report-builder";
 import { SampleStabilityBadge } from "@/components/sample-stability-badge";
 import { SectionCard } from "@/components/section-card";
 import { StrikeZoneCard } from "@/components/strike-zone-card";
+import { LoadingForm } from "@/components/ui/loading-form";
+import { LoadingLink } from "@/components/ui/loading-link";
 import {
   ApiRequestError,
-  getApiBaseUrl,
+  formatApiTransportLabel,
+  getApiTransport,
   getApiHealth,
   getCatcherDetail,
   getCatchers,
   getLeaderboard,
-  getUpstreamApiBaseUrl,
+  type ApiTransportInfo,
 } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
@@ -90,15 +94,15 @@ function debugErrorDetail(error: unknown) {
 function errorStateCopy(
   error: unknown,
   context: "api" | "catchers" | "detail",
-  transportLabel: string,
+  transport: ApiTransportInfo,
 ) {
-  if (error instanceof ApiRequestError && error.status == null) {
+  if (error instanceof ApiRequestError && (error.status == null || error.status === 503)) {
     return {
       eyebrow: "API Unreachable",
       title: "The catcher data service is offline",
       description: error.message,
       detail:
-        "Start the FastAPI server on the expected base URL or set NEXT_PUBLIC_API_URL to the live API.",
+        `Targeted backend: ${transport.backendBaseUrl} (${transport.configuredFrom}). Start the FastAPI server there or update API_BASE_URL / NEXT_PUBLIC_API_URL.`,
       tone: "caution" as const,
     };
   }
@@ -118,7 +122,7 @@ function errorStateCopy(
     eyebrow: context === "catchers" ? "Real Data Unavailable" : "API Request Failed",
     title: context === "catchers" ? "Catcher dashboard" : "Catcher detail",
     description: errorMessage(error),
-    detail: `API transport: ${transportLabel}`,
+    detail: `API transport: ${formatApiTransportLabel(transport)} | source: ${transport.configuredFrom}`,
     tone: "default" as const,
   };
 }
@@ -142,6 +146,10 @@ function headlineCount(rows: CountSummary[]) {
   return [...filtered].sort((left, right) => Math.abs(right.avg_dva) - Math.abs(left.avg_dva))[0];
 }
 
+function toneByIndex(index: number) {
+  return ["card-tone-slate", "card-tone-sand", "card-tone-clay", "card-tone-sage"][index % 4];
+}
+
 export default async function HomePage({
   searchParams,
 }: {
@@ -149,9 +157,7 @@ export default async function HomePage({
 }) {
   const params = await searchParams;
   const season = readNumber(params.season);
-  const apiBaseUrl = await getApiBaseUrl();
-  const upstreamApiBaseUrl = getUpstreamApiBaseUrl();
-  const apiTransportLabel = `${apiBaseUrl} -> ${upstreamApiBaseUrl}`;
+  const apiTransport = await getApiTransport();
 
   const healthStatus = await getApiHealth()
     .then(() => ({
@@ -189,7 +195,7 @@ export default async function HomePage({
       status: "error",
       detail: debugErrorDetail(error),
     };
-    const copy = errorStateCopy(error, "catchers", apiTransportLabel);
+    const copy = errorStateCopy(error, "catchers", apiTransport);
     return (
       <div className="space-y-8">
         <EmptyStatePanel
@@ -200,7 +206,7 @@ export default async function HomePage({
           tone={copy.tone}
           action={
             <ApiDebugPanel
-              apiBaseUrl={apiTransportLabel}
+              transport={apiTransport}
               items={[healthStatus, catcherStatus]}
               defaultOpen
             />
@@ -222,7 +228,7 @@ export default async function HomePage({
           detail="Rebuild catcher summaries for a populated season or switch back to the latest fully populated scored season."
           action={
             <ApiDebugPanel
-              apiBaseUrl={apiTransportLabel}
+              transport={apiTransport}
               items={[healthStatus, catcherStatus]}
               defaultOpen
             />
@@ -268,7 +274,7 @@ export default async function HomePage({
       status: "error",
       detail: debugErrorDetail(error),
     };
-    const copy = errorStateCopy(error, "detail", apiTransportLabel);
+    const copy = errorStateCopy(error, "detail", apiTransport);
     const leaderboardStatus = await leaderboardStatusPromise;
     return (
       <div className="space-y-8">
@@ -287,7 +293,7 @@ export default async function HomePage({
                 Open leaderboard
               </Link>
               <ApiDebugPanel
-                apiBaseUrl={apiTransportLabel}
+                transport={apiTransport}
                 items={[healthStatus, catcherStatus, leaderboardStatus, detailStatus]}
                 defaultOpen
               />
@@ -367,7 +373,7 @@ export default async function HomePage({
   return (
     <div className="space-y-8">
       <section className="card relative overflow-hidden rounded-[1.6rem] px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top_right,rgba(196,163,106,0.14),transparent_42%),radial-gradient(circle_at_top_left,rgba(184,95,59,0.08),transparent_34%)]" />
+        <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
         <div className="relative grid gap-6 xl:grid-cols-[1.04fr_0.96fr]">
           <div className="space-y-6">
             <div>
@@ -383,18 +389,23 @@ export default async function HomePage({
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <span className="rounded-full border border-line/70 bg-white/76 px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-muted">
+              <span className="pill-sage rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.2em]">
                 Latest scored season {catchers.season}
               </span>
-              <span className="rounded-full border border-line/70 bg-white/76 px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-muted">
+              <span className="pill-sand rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.2em]">
                 Public Statcast only
               </span>
-              <span className="rounded-full border border-line/70 bg-white/76 px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-muted">
+              <span className="pill-clay rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.2em]">
                 Model {detail.diagnostics.model_version ?? "dva_v1_contextual"}
               </span>
             </div>
 
-            <form action="/" className="shell-panel rounded-[1.2rem] p-3">
+            <LoadingForm
+              action="/"
+              className="shell-panel rounded-[1.2rem] p-3"
+              loadingMessage="Loading catcher scouting view..."
+              loadingSubtitle="Refreshing the dashboard with the selected catcher-season."
+            >
               <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_8.4rem_auto]">
                 <select
                   className="field"
@@ -418,29 +429,39 @@ export default async function HomePage({
                 <button className="button-primary px-5 py-3 text-sm">Load catcher</button>
               </div>
               <div className="mt-3 flex flex-wrap gap-3">
-                <Link
+                <LoadingLink
                   href={`/leaderboard?season=${catchers.season}&min_pitches=50`}
                   className="button-secondary px-4 py-3 text-sm"
+                  loadingMessage="Opening scouting board..."
+                  loadingSubtitle="Loading the season leaderboard."
                 >
                   Open leaderboard
-                </Link>
-                <Link
+                </LoadingLink>
+                <LoadingLink
                   href={`/matchup-explorer?season=${catchers.season}&catcher_id=${detail.identity.catcher_id}`}
                   className="button-secondary px-4 py-3 text-sm"
+                  loadingMessage="Opening matchup lab..."
+                  loadingSubtitle="Loading the public-data recommendation workbench."
                 >
                   Open matchup lab
-                </Link>
-                <Link href="#data-quality" className="button-secondary px-4 py-3 text-sm">
+                </LoadingLink>
+                <LoadingLink href="#data-quality" className="button-secondary px-4 py-3 text-sm" disableLoading>
                   Review methodology
-                </Link>
+                </LoadingLink>
+                <ReportBuilder
+                  catcherId={detail.identity.catcher_id}
+                  catcherName={detail.identity.catcher_name}
+                  team={detail.identity.team}
+                  season={catchers.season}
+                />
               </div>
-            </form>
+            </LoadingForm>
 
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              {scoutingNotes.map((note) => (
+              {scoutingNotes.map((note, index) => (
                 <div
                   key={note.label}
-                  className="rounded-[1rem] border border-line/60 bg-white/78 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.3)]"
+                  className={[toneByIndex(index), "rounded-[1rem] p-4"].join(" ")}
                 >
                   <div className="text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-muted">
                     {note.label}
@@ -466,7 +487,7 @@ export default async function HomePage({
                     className="h-24 w-24 rounded-[1.25rem] border border-white/12 object-cover"
                   />
                 ) : (
-                  <div className="flex h-24 w-24 items-center justify-center rounded-[1.25rem] border border-white/12 bg-white/8 text-4xl font-semibold">
+                  <div className="dark-pill flex h-24 w-24 items-center justify-center rounded-[1.25rem] text-4xl font-semibold">
                     {detail.identity.catcher_name[0]}
                   </div>
                 )}
@@ -478,16 +499,16 @@ export default async function HomePage({
                     {detail.identity.catcher_name}
                   </h2>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <span className="rounded-full border border-white/10 bg-white/8 px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
+                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
                       {detail.identity.team ?? "FA"}
                     </span>
-                    <span className="rounded-full border border-white/10 bg-white/8 px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
+                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
                       C
                     </span>
-                    <span className="rounded-full border border-white/10 bg-white/8 px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
+                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
                       {detail.identity.bats ?? "?"}/{detail.identity.throws ?? "?"}
                     </span>
-                    <span className="rounded-full border border-white/10 bg-white/8 px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
+                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
                       {detail.identity.season}
                     </span>
                   </div>
@@ -595,10 +616,10 @@ export default async function HomePage({
       </SectionCard>
 
       {sampleWarning ? (
-        <section className="rounded-[1.45rem] border border-amber-300/65 bg-[linear-gradient(180deg,rgba(255,248,236,0.98),rgba(250,239,219,0.92))] p-5 shadow-[0_16px_34px_rgba(156,100,52,0.06)]">
+        <section className="warning-panel rounded-[1.45rem] p-5">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
             <div>
-              <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-amber-800">
+              <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-warning">
                 Data Quality
               </div>
               <div className="mt-2 font-serif text-[1.9rem] leading-none text-ink">
@@ -641,7 +662,7 @@ export default async function HomePage({
             ))}
           </div>
           <div className="space-y-4">
-            <div className="rounded-[1.6rem] border border-line/70 bg-white/72 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.3)]">
+            <div className="surface-panel rounded-[1.6rem] p-5">
               <div className="label-kicker">Scouting Report</div>
               <div className="mt-4 space-y-4">
                 <div>
@@ -710,7 +731,7 @@ export default async function HomePage({
               {countBuckets.map((row) => (
                 <div
                   key={row.split_value}
-                  className="rounded-[1.45rem] border border-line/70 bg-white/72 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]"
+                  className="surface-panel rounded-[1.45rem] p-4"
                 >
                   <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
                     {row.split_value.replaceAll("_", " ")}
@@ -731,13 +752,13 @@ export default async function HomePage({
               ))}
             </div>
 
-            <div className="rounded-[1.6rem] border border-line/70 bg-white/72 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.3)]">
+            <div className="surface-panel rounded-[1.6rem] p-5">
               <div className="label-kicker">Featured Exact Counts</div>
               <div className="mt-4 grid gap-3">
                 {featuredCounts.map((row) => (
                   <div
                     key={row.split_value}
-                    className="grid gap-3 rounded-[1.2rem] border border-line/70 bg-surface-raised/70 p-4 sm:grid-cols-[5rem_1fr_auto]"
+                    className="surface-panel-quiet grid gap-3 rounded-[1.2rem] p-4 sm:grid-cols-[5rem_1fr_auto]"
                   >
                     <div className="font-serif text-2xl text-ink">{row.split_value}</div>
                     <div className="text-sm leading-7 text-muted">
@@ -765,7 +786,7 @@ export default async function HomePage({
           <div className="space-y-4">
             <StrikeZoneCard />
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-[1.45rem] border border-line/70 bg-white/72 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]">
+              <div className="surface-panel rounded-[1.45rem] p-4">
                 <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
                   Most Used Pitch
                 </div>
@@ -778,7 +799,7 @@ export default async function HomePage({
                     : "No pitch-type rows are available yet."}
                 </div>
               </div>
-              <div className="rounded-[1.45rem] border border-line/70 bg-white/72 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]">
+              <div className="surface-panel rounded-[1.45rem] p-4">
                 <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
                   Best Value Pitch
                 </div>
@@ -808,7 +829,7 @@ export default async function HomePage({
               topMatchups.map((row) => (
                 <div
                   key={row.matchup_label}
-                  className="rounded-[1.45rem] border border-line/70 bg-white/72 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]"
+                  className="surface-panel rounded-[1.45rem] p-4"
                 >
                   <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
                     {row.matchup_label}
@@ -825,7 +846,7 @@ export default async function HomePage({
                 </div>
               ))
             ) : (
-              <div className="rounded-[1.45rem] border border-dashed border-line/70 bg-white/50 p-5 text-sm leading-7 text-muted sm:col-span-2">
+              <div className="rounded-[1.45rem] border border-dashed border-line/70 bg-surface/72 p-5 text-sm leading-7 text-muted sm:col-span-2">
                 No handedness matchup summaries are available for this catcher-season yet.
               </div>
             )}
@@ -849,24 +870,24 @@ export default async function HomePage({
               />
             ))}
           </div>
-          <div className="rounded-[1.6rem] border border-line/70 bg-white/72 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.3)]">
+          <div className="surface-panel rounded-[1.6rem] p-5">
             <div className="label-kicker">Support Notes</div>
             <p className="mt-4 text-sm leading-8 text-muted">
               {detail.public_metrics.source_note ??
                 "Public framing, blocking, and arm metrics are not available for this catcher-season yet. The dashboard keeps the panel visible so missing support data is explicit rather than silently replaced."}
             </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-[1.2rem] border border-line/70 bg-surface-raised/70 px-4 py-3">
+              <div className="surface-panel-quiet rounded-[1.2rem] px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-muted">Team</div>
                 <div className="mt-2 text-lg font-semibold text-ink">{detail.identity.team ?? "FA"}</div>
               </div>
-              <div className="rounded-[1.2rem] border border-line/70 bg-surface-raised/70 px-4 py-3">
+              <div className="surface-panel-quiet rounded-[1.2rem] px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-muted">Hands</div>
                 <div className="mt-2 text-lg font-semibold text-ink">
                   {detail.identity.bats ?? "?"}/{detail.identity.throws ?? "?"}
                 </div>
               </div>
-              <div className="rounded-[1.2rem] border border-line/70 bg-surface-raised/70 px-4 py-3">
+              <div className="surface-panel-quiet rounded-[1.2rem] px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-muted">Season</div>
                 <div className="mt-2 text-lg font-semibold text-ink">{detail.identity.season}</div>
               </div>
@@ -918,7 +939,7 @@ export default async function HomePage({
             {Object.entries(detail.grade_formula_notes).map(([gradeName, note]) => (
               <div
                 key={gradeName}
-                className="rounded-[1.45rem] border border-line/70 bg-white/68 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.24)]"
+                className="surface-panel rounded-[1.45rem] p-4"
               >
                 <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
                   {gradeName.replaceAll("_", " ")}
@@ -938,7 +959,7 @@ export default async function HomePage({
         </div>
       </SectionCard>
 
-      <ApiDebugPanel apiBaseUrl={apiTransportLabel} items={debugItems} />
+      <ApiDebugPanel transport={apiTransport} items={debugItems} />
     </div>
   );
 }

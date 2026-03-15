@@ -153,8 +153,17 @@ pnpm install
 ```bash
 cp .env.example .env
 export DATABASE_URL=postgresql://postgres:postgres@localhost:5433/catcher_intel
-export NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
+export API_BASE_URL=http://127.0.0.1:8000
 ```
+
+Frontend transport precedence:
+
+- `INTERNAL_API_URL` for a server-only override
+- `API_BASE_URL` as the recommended single source of truth
+- `NEXT_PUBLIC_API_URL` as a supported fallback alias
+- default fallback: `http://127.0.0.1:8000`
+
+The Next.js app always fetches through `/api/backend`, and that proxy forwards to the configured backend target above. If you change the backend port in development, update `API_BASE_URL` to the same port so the target does not drift.
 
 ## Exact run order
 
@@ -241,16 +250,25 @@ The scorer prints:
 
 ```bash
 DATABASE_URL=postgresql://postgres:postgres@localhost:5433/catcher_intel \
-python3 -m uvicorn apps.api.main:app --reload --app-dir .
+python3 -m uvicorn apps.api.main:app --reload --app-dir . --host 127.0.0.1 --port 8000
 ```
 
 ### 10. Run the frontend
 
 ```bash
-NEXT_PUBLIC_API_URL=http://127.0.0.1:8000 pnpm --filter web dev
+API_BASE_URL=http://127.0.0.1:8000 pnpm --filter web dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+If you need a different backend port, change both commands together. Example:
+
+```bash
+DATABASE_URL=postgresql://postgres:postgres@localhost:5433/catcher_intel \
+python3 -m uvicorn apps.api.main:app --reload --app-dir . --host 127.0.0.1 --port 8010
+
+API_BASE_URL=http://127.0.0.1:8010 pnpm --filter web dev
+```
 
 The frontend no longer silently falls back to shared demo values. If the API or scored summaries are missing, the dashboard shows an explicit real-data error state instead of substituting fake catcher metrics.
 

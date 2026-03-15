@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from datetime import date
 from functools import lru_cache
 from pathlib import Path
@@ -15,6 +16,8 @@ from catcher_intel.api_models import (
     CatcherGrades,
     CatcherIdentity,
     CatcherOption,
+    CatcherReportOptionsResponse,
+    CatcherReportRequest,
     CatchersResponse,
     CountSummary,
     CountsResponse,
@@ -27,6 +30,8 @@ from catcher_intel.api_models import (
     PitchTypeSummary,
     PitchTypesResponse,
     PublicCatcherMetrics,
+    ReportFormatOption,
+    ReportSectionOption,
     RecommendationOption,
     RecommendationResponse,
 )
@@ -34,6 +39,16 @@ from catcher_intel.config import get_settings
 from catcher_intel.db import read_dataframe
 from catcher_intel.feature_engineering import count_bucket_from_values
 from catcher_intel.modeling import load_model_artifacts, recommendation_frame_for_context
+from catcher_intel.reporting import (
+    REPORT_FORMAT_DEFINITIONS,
+    REPORT_SECTION_DEFINITIONS,
+    REPORT_SECTIONS_ORDER,
+    GeneratedReport,
+    build_csv_report,
+    build_json_report,
+    build_report_filename_base,
+    normalize_report_sections,
+)
 
 LATEST_SCORED_SEASON_MIN_CATCHERS = 10
 LATEST_SCORED_SEASON_MIN_TOTAL_PITCHES = 25000
@@ -115,6 +130,59 @@ class IntelService:
                 for _, row in frame.iterrows()
             ],
         )
+
+    def get_catcher_report_options(
+        self,
+        catcher_id: int,
+        season: Optional[int] = None,
+    ) -> CatcherReportOptionsResponse:
+        detail = self.get_catcher_detail(catcher_id=catcher_id, season=season)
+        available_seasons = self._get_available_catcher_seasons(catcher_id)
+        available_sections = self._build_report_sections(detail)
+
+        return CatcherReportOptionsResponse(
+            catcher_id=detail.identity.catcher_id,
+            catcher_name=detail.identity.catcher_name,
+            selected_season=detail.identity.season,
+            available_seasons=available_seasons,
+            formats=[
+                ReportFormatOption(key=key, **definition)
+                for key, definition in REPORT_FORMAT_DEFINITIONS.items()
+            ],
+            sections=available_sections,
+            supports_date_range=False,
+            supports_min_pitches=True,
+            default_min_pitches=20,
+        )
+
+    def generate_catcher_report(
+        self,
+        catcher_id: int,
+        request: CatcherReportRequest,
+    ) -> GeneratedReport:
+        if request.format == "pdf":
+            raise ValueError("PDF report export is not implemented yet. Use CSV or JSON for now.")
+        if request.date_from or request.date_to:
+            raise ValueError(
+                "Date-range report filters are not implemented yet. Generate a full-season report instead."
+            )
+
+        detail = self.get_catcher_detail(catcher_id=catcher_id, season=request.season)
+        included_sections = normalize_report_sections(request.included_sections)
+        payload = self._build_catcher_report_payload(
+            detail=detail,
+            included_sections=included_sections,
+            min_pitches=request.min_pitches,
+            export_format=request.format,
+        )
+        filename_base = build_report_filename_base(
+            detail.identity.catcher_name,
+            detail.identity.season,
+        )
+
+        if request.format == "json":
+            return build_json_report(payload, filename_base)
+        return build_csv_report(payload, included_sections, filename_base)
 
     def get_leaderboard(
         self,
@@ -417,6 +485,133 @@ class IntelService:
             pitch_types=self._get_pitch_type_summaries(catcher_id, resolved_season),
         )
 
+    def _build_catcher_report_payload(
+        self,
+        detail: CatcherDetailResponse,
+        included_sections: list[str],
+        min_pitches: int,
+        export_format: str,
+    ) -> dict[str, object]:
+        full_pairings = self._get_pairings(
+            detail.identity.catcher_id,
+            detail.identity.season,
+            limit=500,
+        )
+        full_matchups = self._get_matchup_summaries(
+            detail.identity.catcher_id,
+            detail.identity.season,
+        )
+        grade_labels = {
+            "overall_game_calling": "Overall Game Calling",
+            "count_leverage": "Count Leverage",
+            "putaway_count": "Put-Away Counts",
+            "damage_avoidance": "Damage Avoidance",
+            "pitch_mix_synergy": "Pitch Mix Synergy",
+            "receiving_support": "Receiving Support",
+        }
+        grades_payload = {
+            key: {
+                **value,
+                "display_name": grade_labels.get(key, key.replace("_", " ").title()),
+                "formula_note": detail.grade_formula_notes.get(key),
+            }
+            for key, value in detail.grades.model_dump(mode="json").items()
+        }
+        report_meta = {
+            "catcher_id": detail.identity.catcher_id,
+            "catcher_name": detail.identity.catcher_name,
+            "team": detail.identity.team,
+            "season": detail.identity.season,
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "format": export_format,
+            "included_sections": included_sections,
+            "filters": {
+                "season": detail.identity.season,
+                "min_pitches": min_pitches,
+                "date_from": None,
+                "date_to": None,
+            },
+        }
+        sections: dict[str, object] = {}
+
+        if "identity" in included_sections:
+            sections["identity"] = detail.identity.model_dump(mode="json")
+        if "overview" in included_sections:
+            sections["overview"] = {
+                "pitch_count": detail.total_pitches,
+                "games_scored": detail.diagnostics.games_scored,
+                "total_dva": detail.total_dva,
+                "avg_dva": detail.avg_dva,
+                "avg_execution_gap": detail.avg_execution_gap,
+                "outperformed_baseline_rate": detail.diagnostics.outperform_rate,
+            }
+        if "grades" in included_sections:
+            sections["grades"] = grades_payload
+        if "summary_metrics" in included_sections:
+            sections["summary_metrics"] = {
+                "pitch_count": detail.total_pitches,
+                "games_scored": detail.diagnostics.games_scored,
+                "total_dva": detail.total_dva,
+                "avg_dva": detail.avg_dva,
+                "avg_execution_gap": detail.avg_execution_gap,
+                "avg_expected_rv_actual": detail.diagnostics.avg_expected_rv_actual,
+                "outperformed_baseline_rate": detail.diagnostics.outperform_rate,
+                "avg_surviving_candidate_count": detail.diagnostics.avg_surviving_candidate_count,
+                "single_candidate_pct": detail.diagnostics.single_candidate_pct,
+                "dropped_sparse_context_pct": detail.diagnostics.dropped_sparse_context_pct,
+                "fallback_context_pct": detail.diagnostics.fallback_context_pct,
+            }
+        if "count_state_breakdown" in included_sections:
+            sections["count_state_breakdown"] = [
+                row.model_dump(mode="json")
+                for row in detail.count_state_summaries
+                if row.pitches >= min_pitches
+            ]
+        if "count_bucket_breakdown" in included_sections:
+            sections["count_bucket_breakdown"] = [
+                row.model_dump(mode="json")
+                for row in detail.count_bucket_summaries
+                if row.pitches >= min_pitches
+            ]
+        if "pitch_type_breakdown" in included_sections:
+            sections["pitch_type_breakdown"] = [
+                row.model_dump(mode="json")
+                for row in detail.pitch_type_summaries
+                if row.pitches >= min_pitches
+            ]
+        if "pairing_breakdown" in included_sections:
+            sections["pairing_breakdown"] = [
+                row.model_dump(mode="json")
+                for row in full_pairings
+                if row.pitches >= min_pitches
+            ]
+        if "platoon_matchup_breakdown" in included_sections:
+            sections["platoon_matchup_breakdown"] = [
+                row.model_dump(mode="json")
+                for row in full_matchups
+                if row.pitches >= min_pitches
+            ]
+        if "diagnostics" in included_sections:
+            sections["diagnostics"] = detail.diagnostics.model_dump(mode="json")
+        if "public_metrics" in included_sections:
+            sections["public_metrics"] = detail.public_metrics.model_dump(mode="json")
+        if "metadata" in included_sections:
+            sections["metadata"] = {
+                "public_data_note": (
+                    "Observed public-data catcher report using Statcast decision quality, "
+                    "pitcher-specific alternatives, and public receiving metrics. "
+                    "It does not claim private PitchCom or hidden sign-call intent."
+                ),
+                "included_sections": included_sections,
+                "filters": report_meta["filters"],
+                "grade_formula_notes": detail.grade_formula_notes,
+            }
+
+        return {
+            "report_meta": report_meta,
+            "sections": sections,
+        }
+
     def get_atbat_recommendation(
         self,
         pitcher_id: int,
@@ -535,6 +730,61 @@ class IntelService:
         if frame.empty or pd.isna(frame.iloc[0]["season"]):
             return date.today().year
         return int(frame.iloc[0]["season"])
+
+    def _get_available_catcher_seasons(self, catcher_id: int) -> list[int]:
+        frame = read_dataframe(
+            """
+            SELECT season
+            FROM catcher_season_summary
+            WHERE catcher_id = :catcher_id
+            ORDER BY season DESC
+            """,
+            self.settings.database_url,
+            params={"catcher_id": catcher_id},
+        )
+        return [int(row["season"]) for _, row in frame.iterrows()]
+
+    def _build_report_sections(
+        self,
+        detail: CatcherDetailResponse,
+    ) -> list[ReportSectionOption]:
+        public_metrics_payload = detail.public_metrics.model_dump(mode="json")
+        section_row_counts = {
+            "identity": 1,
+            "overview": 1,
+            "grades": sum(
+                1 for grade in detail.grades.model_dump(mode="json").values() if grade.get("score") is not None
+            ),
+            "summary_metrics": 1,
+            "count_state_breakdown": len(detail.count_state_summaries),
+            "count_bucket_breakdown": len(detail.count_bucket_summaries),
+            "pitch_type_breakdown": len(detail.pitch_type_summaries),
+            "pairing_breakdown": len(self._get_pairings(detail.identity.catcher_id, detail.identity.season, limit=500)),
+            "platoon_matchup_breakdown": len(detail.matchup_summaries),
+            "diagnostics": 1,
+            "public_metrics": sum(
+                1
+                for key, value in public_metrics_payload.items()
+                if key != "source_note" and value is not None
+            ),
+            "metadata": 1,
+        }
+
+        options: list[ReportSectionOption] = []
+        for key in REPORT_SECTIONS_ORDER:
+            definition = REPORT_SECTION_DEFINITIONS[key]
+            row_count = section_row_counts.get(key, 0)
+            options.append(
+                ReportSectionOption(
+                    key=key,
+                    label=str(definition["label"]),
+                    description=str(definition["description"]),
+                    available=row_count > 0,
+                    default_selected=bool(definition["default_selected"]),
+                    row_count=row_count,
+                )
+            )
+        return options
 
     def _get_count_summaries(
         self,

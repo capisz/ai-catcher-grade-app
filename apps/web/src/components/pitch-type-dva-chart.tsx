@@ -17,9 +17,9 @@ export function PitchTypeDvaChart({ rows }: { rows: PitchTypeSummary[] }) {
     <ChartShell heightClass="h-[20rem]" title="Pitch type chart">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ left: -18, right: 8, top: 8, bottom: 8 }}>
-          <CartesianGrid stroke="rgba(18,33,29,0.08)" vertical={false} />
-          <XAxis dataKey="pitch_type" tick={{ fill: "#5d6d66", fontSize: 12 }} />
-          <YAxis tick={{ fill: "#5d6d66", fontSize: 12 }} />
+          <CartesianGrid stroke="var(--chart-grid)" vertical={false} />
+          <XAxis dataKey="pitch_type" tick={{ fill: "var(--muted)", fontSize: 12 }} />
+          <YAxis tick={{ fill: "var(--muted)", fontSize: 12 }} />
           <Tooltip
             formatter={(value: number, name: string) => [
               name === "total_dva" ? value.toFixed(3) : value.toFixed(5),
@@ -27,11 +27,11 @@ export function PitchTypeDvaChart({ rows }: { rows: PitchTypeSummary[] }) {
             ]}
             contentStyle={{
               borderRadius: "18px",
-              border: "1px solid rgba(18,33,29,0.12)",
-              background: "rgba(255,249,236,0.96)",
+              border: "1px solid var(--line)",
+              background: "var(--chart-tooltip-bg)",
             }}
           />
-          <Bar dataKey="total_dva" fill="#c5512f" radius={[12, 12, 0, 0]} />
+          <Bar dataKey="total_dva" fill="var(--chart-accent)" radius={[12, 12, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </ChartShell>

@@ -14,7 +14,7 @@ function signed(value: number | null | undefined, digits = 3) {
 export function PairingIntelTable({ rows }: PairingIntelTableProps) {
   if (rows.length === 0) {
     return (
-      <div className="rounded-[1.45rem] border border-dashed border-line/70 bg-white/50 p-5 text-sm leading-7 text-muted">
+      <div className="rounded-[1.45rem] border border-dashed border-line/70 bg-surface/70 p-5 text-sm leading-7 text-muted">
         No pitcher-catcher pairing rows are available for this catcher-season yet.
       </div>
     );
@@ -25,7 +25,7 @@ export function PairingIntelTable({ rows }: PairingIntelTableProps) {
       {rows.map((row, index) => (
         <div
           key={row.pitcher_id}
-          className="grid min-h-[7.9rem] gap-3 rounded-[1.15rem] border border-line/70 bg-white/72 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)] md:grid-cols-[3rem_1.4fr_.8fr_.8fr_.8fr]"
+          className="surface-panel grid min-h-[7.9rem] gap-3 rounded-[1.15rem] p-4 md:grid-cols-[3rem_1.4fr_.8fr_.8fr_.8fr]"
         >
           <div className="flex h-11 w-11 items-center justify-center rounded-[1rem] bg-surface-strong text-sm font-semibold text-white">
             {index + 1}
