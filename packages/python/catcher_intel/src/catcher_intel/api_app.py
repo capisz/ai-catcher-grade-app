@@ -8,12 +8,15 @@ from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from catcher_intel.api_models import (
+    AppMetadataResponse,
+    CatcherComparisonResponse,
     CatcherDetailResponse,
     CatcherReportOptionsResponse,
     CatcherReportRequest,
     CatchersResponse,
     CountsResponse,
     LeaderboardResponse,
+    LocationSummaryResponse,
     PairingsResponse,
     PitchTypesResponse,
     RecommendationResponse,
@@ -45,11 +48,19 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/app/metadata", response_model=AppMetadataResponse)
+def app_metadata(
+    season: Optional[int] = Query(default=None, ge=2008),
+) -> AppMetadataResponse:
+    return service.get_app_metadata(season=season)
+
+
 @app.get("/catchers", response_model=CatchersResponse)
 def catchers(
     season: Optional[int] = Query(default=None, ge=2008),
+    team: Optional[str] = Query(default=None),
 ) -> CatchersResponse:
-    return service.get_catchers(season=season)
+    return service.get_catchers(season=season, team=team)
 
 
 @app.get("/catchers/leaderboard", response_model=LeaderboardResponse)
@@ -58,13 +69,41 @@ def catchers_leaderboard(
     season: Optional[int] = Query(default=None, ge=2008),
     date_from: Optional[date] = None,
     date_to: Optional[date] = None,
+    team: Optional[str] = Query(default=None),
 ) -> LeaderboardResponse:
     return service.get_leaderboard(
         min_pitches=min_pitches,
         season=season,
         date_from=date_from,
         date_to=date_to,
+        team=team,
     )
+
+
+@app.get("/catchers/compare", response_model=CatcherComparisonResponse)
+def catcher_compare(
+    catcher_a: int = Query(..., ge=1),
+    catcher_b: int = Query(..., ge=1),
+    min_pitches: int = Query(default=50, ge=1),
+    season: Optional[int] = Query(default=None, ge=2008),
+    date_from: Optional[date] = None,
+    date_to: Optional[date] = None,
+    team: Optional[str] = Query(default=None),
+) -> CatcherComparisonResponse:
+    try:
+        return service.get_catcher_comparison(
+            catcher_a_id=catcher_a,
+            catcher_b_id=catcher_b,
+            season=season,
+            min_pitches=min_pitches,
+            date_from=date_from,
+            date_to=date_to,
+            team=team,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
 @app.get("/catchers/{catcher_id}", response_model=CatcherDetailResponse)
@@ -134,6 +173,14 @@ def catcher_pitch_types(
     season: Optional[int] = Query(default=None, ge=2008),
 ) -> PitchTypesResponse:
     return service.get_catcher_pitch_types(catcher_id=catcher_id, season=season)
+
+
+@app.get("/catchers/{catcher_id}/location-summary", response_model=LocationSummaryResponse)
+def catcher_location_summary(
+    catcher_id: int,
+    season: Optional[int] = Query(default=None, ge=2008),
+) -> LocationSummaryResponse:
+    return service.get_catcher_location_summary(catcher_id=catcher_id, season=season)
 
 
 @app.get("/atbat/recommendation", response_model=RecommendationResponse)

@@ -5,17 +5,23 @@ import type {
   RecommendationResponse,
 } from "@catcher-intel/contracts";
 import Image from "next/image";
+
 import { ApiDebugPanel } from "@/components/api-debug-panel";
+import { DataFreshnessPanel } from "@/components/data-freshness-panel";
 import { EmptyStatePanel } from "@/components/empty-state-panel";
+import { PairingDvaChart } from "@/components/pairing-dva-chart";
+import { ProductStatusStrip } from "@/components/product-status-strip";
 import { RecommendationOptionBoard } from "@/components/recommendation-option-board";
+import { RecommendationRvChart } from "@/components/recommendation-rv-chart";
 import { SampleStabilityBadge } from "@/components/sample-stability-badge";
 import { SectionCard } from "@/components/section-card";
 import { LoadingForm } from "@/components/ui/loading-form";
 import { LoadingLink } from "@/components/ui/loading-link";
 import {
   ApiRequestError,
-  getApiTransport,
   getApiHealth,
+  getApiTransport,
+  getAppMetadata,
   getAtbatRecommendation,
   getCatcherDetail,
   getCatcherPairings,
@@ -49,6 +55,13 @@ function formatSigned(value: number | null | undefined, digits = 4) {
   return `${value >= 0 ? "+" : ""}${value.toFixed(digits)}`;
 }
 
+function formatPct(value: number | null | undefined) {
+  if (value == null) {
+    return "--";
+  }
+  return `${(value * 100).toFixed(1)}%`;
+}
+
 function errorMessage(error: unknown) {
   if (error instanceof ApiRequestError) {
     return error.message;
@@ -68,6 +81,41 @@ function debugErrorDetail(error: unknown) {
   return errorMessage(error);
 }
 
+function buildHref(pathname: string, params: Record<string, string | number | undefined>) {
+  const search = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value != null && String(value).trim()) {
+      search.set(key, String(value));
+    }
+  });
+  return `${pathname}?${search.toString()}`;
+}
+
+function confidenceLabel(recommendation: RecommendationResponse | null) {
+  if (!recommendation) {
+    return "Unavailable";
+  }
+  if (recommendation.candidate_count >= 8) {
+    return "High confidence";
+  }
+  if (recommendation.candidate_count >= 4) {
+    return "Usable confidence";
+  }
+  if (recommendation.candidate_count >= 2) {
+    return "Thin confidence";
+  }
+  return "Very thin confidence";
+}
+
+function recommendationSummary(recommendation: RecommendationResponse | null) {
+  const top = recommendation?.options[0];
+  if (!recommendation || !top) {
+    return "No recommendation survived the current public-data context filters.";
+  }
+
+  return `${top.pitch_type} is preferred because it carries the best observed expected run value in this pitcher-specific context while still reflecting real historical usage (${formatPct(top.usage_share)}).`;
+}
+
 export default async function MatchupExplorerPage({
   searchParams,
 }: {
@@ -75,6 +123,7 @@ export default async function MatchupExplorerPage({
 }) {
   const params = await searchParams;
   const requestedSeason = readNumber(params.season);
+  const requestedTeam = readString(params.team, "").toUpperCase();
   const stand = readString(params.stand, "R").toUpperCase();
   const pThrows = readString(params.p_throws, "R").toUpperCase();
   const balls = readNumber(params.balls) ?? 0;
@@ -82,6 +131,7 @@ export default async function MatchupExplorerPage({
   const outsWhenUp = readNumber(params.outs_when_up) ?? 0;
   const baseState = readString(params.base_state, "000");
   const batterId = readNumber(params.batter_id);
+  const leverageBucket = readString(params.leverage_bucket, "standard");
   const prevPitchType1 = readString(params.prev_pitch_type_1, "");
   const prevPitchType2 = readString(params.prev_pitch_type_2, "");
   const apiTransport = await getApiTransport();
@@ -98,163 +148,146 @@ export default async function MatchupExplorerPage({
       detail: debugErrorDetail(error),
     }));
 
-  let catchers: CatchersResponse;
+  let metadata;
   try {
-    catchers = await getCatchers({ season: requestedSeason });
+    metadata = await getAppMetadata({ season: requestedSeason });
   } catch (error) {
     return (
-      <div className="space-y-8">
-        <EmptyStatePanel
-          eyebrow="Workbench Offline"
-          title="Matchup explorer cannot reach the catcher data feed"
-          description={errorMessage(error)}
-          detail={`Targeted backend: ${apiTransport.backendBaseUrl} (${apiTransport.configuredFrom}). Start the API there or update API_BASE_URL / NEXT_PUBLIC_API_URL before retrying.`}
-          tone="caution"
-          action={
-            <ApiDebugPanel
-              transport={apiTransport}
-              items={[
-                healthStatus,
-                {
-                  label: "Catchers",
-                  status: "error",
-                  detail: debugErrorDetail(error),
-                },
-              ]}
-              defaultOpen
-            />
-          }
-        />
-      </div>
+      <EmptyStatePanel
+        eyebrow="Game Mode Offline"
+        title="The matchup explorer cannot load metadata"
+        description={errorMessage(error)}
+        detail={`Targeted backend: ${apiTransport.backendBaseUrl} (${apiTransport.configuredFrom}). Start the API there or update API_BASE_URL / NEXT_PUBLIC_API_URL before retrying.`}
+        tone="caution"
+        action={
+          <ApiDebugPanel
+            transport={apiTransport}
+            items={[
+              healthStatus,
+              {
+                label: "App metadata",
+                status: "error",
+                detail: debugErrorDetail(error),
+              },
+            ]}
+            defaultOpen
+          />
+        }
+      />
     );
   }
 
-  const catchersStatus = {
-    label: "Catchers",
-    status: catchers.catchers.length > 0 ? ("ok" as const) : ("warning" as const),
-    detail: `${catchers.catchers.length} catcher options for ${catchers.season}`,
-  };
+  let catchers: CatchersResponse;
+  try {
+    catchers = await getCatchers({
+      season: metadata.selected_season,
+      team: requestedTeam || undefined,
+    });
+  } catch (error) {
+    return (
+      <EmptyStatePanel
+        eyebrow="Game Mode Offline"
+        title="Matchup explorer cannot reach the catcher list"
+        description={errorMessage(error)}
+        detail={`Targeted backend: ${apiTransport.backendBaseUrl} (${apiTransport.configuredFrom}). Start the API there or update API_BASE_URL / NEXT_PUBLIC_API_URL before retrying.`}
+        tone="caution"
+        action={
+          <ApiDebugPanel
+            transport={apiTransport}
+            items={[
+              healthStatus,
+              {
+                label: "Catchers",
+                status: "error",
+                detail: debugErrorDetail(error),
+              },
+            ]}
+            defaultOpen
+          />
+        }
+      />
+    );
+  }
 
-  const selectedCatcherId = readNumber(params.catcher_id) ?? catchers.catchers[0]?.catcher_id;
+  if (catchers.catchers.length === 0) {
+    return (
+      <EmptyStatePanel
+        eyebrow="No Catchers Available"
+        title="No catcher rows match this team-season filter"
+        description={`Season ${metadata.selected_season}${requestedTeam ? ` for team ${requestedTeam}` : ""} has no live catcher options for Game mode.`}
+        detail={metadata.season_coverage_note}
+        tone="caution"
+      />
+    );
+  }
+
+  const requestedCatcherId = readNumber(params.catcher_id);
+  const selectedCatcher =
+    catchers.catchers.find((catcher) => catcher.catcher_id === requestedCatcherId) ??
+    catchers.catchers[0];
+  const selectedCatcherId = selectedCatcher?.catcher_id;
+
   if (!selectedCatcherId) {
     return (
-      <div className="space-y-8">
-        <EmptyStatePanel
-          eyebrow="No Scored Data"
-          title="No catcher seasons are ready for recommendation work"
-          description={`Season ${catchers.season} does not currently have real scored catcher options for the matchup explorer.`}
-          detail="Rebuild summaries for a populated season or select a different scored season."
-          action={
-            <ApiDebugPanel
-              transport={apiTransport}
-              items={[healthStatus, catchersStatus]}
-              defaultOpen
-            />
-          }
-        />
-      </div>
+      <EmptyStatePanel
+        eyebrow="No Scored Data"
+        title="No catcher seasons are ready for game mode"
+        description={`Season ${metadata.selected_season} does not currently have real scored catcher options for the matchup explorer.`}
+        detail="Rebuild summaries for a populated season or select a different scored season."
+      />
     );
   }
 
   let catcherDetail: CatcherDetailResponse;
   try {
-    catcherDetail = await getCatcherDetail(selectedCatcherId, { season: catchers.season });
+    catcherDetail = await getCatcherDetail(selectedCatcherId, { season: metadata.selected_season });
   } catch (error) {
     return (
-      <div className="space-y-8">
-        <EmptyStatePanel
-          eyebrow="Catcher Not Found"
-          title="The selected catcher does not have a usable dashboard row"
-          description={errorMessage(error)}
-          detail="Choose a different catcher or switch to a season with real summary data."
-          tone="caution"
-          action={
-            <ApiDebugPanel
-              transport={apiTransport}
-              items={[
-                healthStatus,
-                catchersStatus,
-                {
-                  label: "Catcher detail",
-                  status: "error",
-                  detail: debugErrorDetail(error),
-                },
-              ]}
-              defaultOpen
-            />
-          }
-        />
-      </div>
+      <EmptyStatePanel
+        eyebrow="Catcher Not Found"
+        title="The selected catcher does not have a usable game-mode row"
+        description={errorMessage(error)}
+        detail="Choose a different catcher or switch to a season with real summary data."
+        tone="caution"
+      />
     );
   }
 
   let pairings: PairingsResponse;
   try {
     pairings = await getCatcherPairings(selectedCatcherId, {
-      season: catchers.season,
+      season: metadata.selected_season,
       limit: 8,
     });
   } catch (error) {
     return (
-      <div className="space-y-8">
-        <EmptyStatePanel
-          eyebrow="Pairings Unavailable"
-          title="Pitcher-catcher pairings could not be loaded"
-          description={errorMessage(error)}
-          detail="The workbench needs real pairing rows to anchor the pitcher side of the recommendation view."
-          action={
-            <ApiDebugPanel
-              transport={apiTransport}
-              items={[
-                healthStatus,
-                catchersStatus,
-                {
-                  label: "Pairings",
-                  status: "error",
-                  detail: debugErrorDetail(error),
-                },
-              ]}
-              defaultOpen
-            />
-          }
-        />
-      </div>
+      <EmptyStatePanel
+        eyebrow="Pairings Unavailable"
+        title="Pitcher-catcher pairings could not be loaded"
+        description={errorMessage(error)}
+        detail="Game mode uses real pairing rows to anchor the pitcher side of the recommendation view."
+        tone="caution"
+      />
     );
   }
 
   const selectedPitcherId = readNumber(params.pitcher_id) ?? pairings.pairings[0]?.pitcher_id;
-  const selectedPitcher = pairings.pairings.find((row) => row.pitcher_id === selectedPitcherId);
 
   if (!selectedPitcherId) {
     return (
-      <div className="space-y-8">
-        <EmptyStatePanel
-          eyebrow="Insufficient Real Data"
-          title="No paired pitchers are available for this catcher-season"
-          description="The recommendation workbench uses real pitcher-catcher context. This catcher-season does not have pairing rows yet."
-          detail="Try another catcher or another populated scored season."
-          action={
-            <ApiDebugPanel
-              transport={apiTransport}
-              items={[
-                healthStatus,
-                catchersStatus,
-                {
-                  label: "Pairings",
-                  status: "warning",
-                  detail: `0 pairing rows for catcher ${selectedCatcherId}`,
-                },
-              ]}
-              defaultOpen
-            />
-          }
-        />
-      </div>
+      <EmptyStatePanel
+        eyebrow="Insufficient Real Data"
+        title="No paired pitchers are available for this catcher-season"
+        description="The recommendation workbench uses real pitcher-catcher context. This catcher-season does not have pairing rows yet."
+        detail="Try another catcher or a more populated season."
+        tone="caution"
+      />
     );
   }
 
   let recommendationError: unknown;
   let recommendation: RecommendationResponse | null = null;
+
   try {
     recommendation = await getAtbatRecommendation({
       catcherId: selectedCatcherId,
@@ -275,7 +308,16 @@ export default async function MatchupExplorerPage({
 
   const debugItems = [
     healthStatus,
-    catchersStatus,
+    {
+      label: "App metadata",
+      status: "ok" as const,
+      detail: `${metadata.selected_season} | ${metadata.season_type_label}`,
+    },
+    {
+      label: "Catchers",
+      status: catchers.catchers.length > 0 ? ("ok" as const) : ("warning" as const),
+      detail: `${catchers.catchers.length} catcher options for ${catchers.season}`,
+    },
     {
       label: "Catcher detail",
       status: "ok" as const,
@@ -301,33 +343,28 @@ export default async function MatchupExplorerPage({
         },
   ];
 
-  const selectedSeason = catchers.season;
   const safeStand = stand === "L" || stand === "S" ? stand : "R";
   const safePThrows = pThrows === "L" ? "L" : "R";
   const safeBaseState = /^[01]{3}$/.test(baseState) ? baseState : "000";
+  const selectedSeason = metadata.selected_season;
 
-  const buildHref = (overrides: Record<string, string | number | undefined>) => {
-    const search = new URLSearchParams();
-    search.set("season", String(selectedSeason));
-    search.set("catcher_id", String(selectedCatcherId));
-    search.set("pitcher_id", String(overrides.pitcher_id ?? selectedPitcherId));
-    search.set("stand", String(overrides.stand ?? safeStand));
-    search.set("p_throws", String(overrides.p_throws ?? safePThrows));
-    search.set("balls", String(overrides.balls ?? balls));
-    search.set("strikes", String(overrides.strikes ?? strikes));
-    search.set("outs_when_up", String(overrides.outs_when_up ?? outsWhenUp));
-    search.set("base_state", String(overrides.base_state ?? safeBaseState));
-    if ((overrides.batter_id ?? batterId) != null) {
-      search.set("batter_id", String(overrides.batter_id ?? batterId));
-    }
-    if ((overrides.prev_pitch_type_1 ?? prevPitchType1) != null && String(overrides.prev_pitch_type_1 ?? prevPitchType1).trim()) {
-      search.set("prev_pitch_type_1", String(overrides.prev_pitch_type_1 ?? prevPitchType1));
-    }
-    if ((overrides.prev_pitch_type_2 ?? prevPitchType2) != null && String(overrides.prev_pitch_type_2 ?? prevPitchType2).trim()) {
-      search.set("prev_pitch_type_2", String(overrides.prev_pitch_type_2 ?? prevPitchType2));
-    }
-    return `/matchup-explorer?${search.toString()}`;
-  };
+  const buildQueryHref = (overrides: Record<string, string | number | undefined>) =>
+    buildHref("/matchup-explorer", {
+      season: selectedSeason,
+      team: requestedTeam || undefined,
+      catcher_id: selectedCatcherId,
+      pitcher_id: overrides.pitcher_id ?? selectedPitcherId,
+      batter_id: overrides.batter_id ?? batterId,
+      stand: overrides.stand ?? safeStand,
+      p_throws: overrides.p_throws ?? safePThrows,
+      balls: overrides.balls ?? balls,
+      strikes: overrides.strikes ?? strikes,
+      outs_when_up: overrides.outs_when_up ?? outsWhenUp,
+      base_state: overrides.base_state ?? safeBaseState,
+      leverage_bucket: overrides.leverage_bucket ?? leverageBucket,
+      prev_pitch_type_1: (overrides.prev_pitch_type_1 ?? prevPitchType1) || undefined,
+      prev_pitch_type_2: (overrides.prev_pitch_type_2 ?? prevPitchType2) || undefined,
+    });
 
   return (
     <div className="space-y-8">
@@ -336,76 +373,156 @@ export default async function MatchupExplorerPage({
         <div className="relative grid gap-6 xl:grid-cols-[1.02fr_0.98fr]">
           <div className="space-y-6">
             <div>
-              <div className="label-kicker">Matchup Explorer</div>
+              <div className="label-kicker">Game Mode</div>
               <h1 className="mt-4 max-w-3xl font-serif text-[2.45rem] leading-[0.98] text-ink sm:text-[3.05rem]">
-                Build a public-data pitch recommendation from real battery context.
+                Live-context recommendation support from real public baseball data.
               </h1>
               <p className="mt-4 max-w-3xl text-sm leading-8 text-muted">
-                This workbench uses the current contextual model, pitcher-specific alternatives,
-                and historical usage. It is decision support from observed MLB data, not a claim
-                about private PitchCom intent.
+                Game mode is for current matchup context, not season board-reading. It uses
+                pitcher-specific candidate options, public context filters, and observed expected
+                run value. It does not know private PitchCom or hidden sign intent.
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              <span className="pill-sage rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.2em]">
-                Scored season {selectedSeason}
-              </span>
-              <span className="pill-clay rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.2em]">
-                Model {catcherDetail.diagnostics.model_version ?? "dva_v1_contextual"}
-              </span>
-              <span className="pill-sand rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.2em]">
-                Pitcher-specific candidates
-              </span>
-            </div>
+            <ProductStatusStrip
+              metadata={metadata}
+              sampleLabel={catcherDetail.diagnostics.stability_label}
+              qualified={catcherDetail.diagnostics.qualified_for_grades}
+            />
 
             <LoadingForm
               action="/matchup-explorer"
-              className="shell-panel rounded-[1.2rem] p-3"
-              loadingMessage="Generating scouting view..."
-              loadingSubtitle="Scoring pitcher-specific pitch options for this matchup."
+              className="shell-panel rounded-[1.2rem] p-4"
+              loadingMessage="Loading game mode..."
+              loadingSubtitle="Refreshing catcher, season, and team context."
             >
+              <input type="hidden" name="pitcher_id" value={selectedPitcherId} />
+              <input type="hidden" name="batter_id" value={batterId ?? ""} />
+              <input type="hidden" name="stand" value={safeStand} />
+              <input type="hidden" name="p_throws" value={safePThrows} />
+              <input type="hidden" name="balls" value={balls} />
+              <input type="hidden" name="strikes" value={strikes} />
+              <input type="hidden" name="outs_when_up" value={outsWhenUp} />
+              <input type="hidden" name="base_state" value={safeBaseState} />
+              <input type="hidden" name="leverage_bucket" value={leverageBucket} />
+              <input type="hidden" name="prev_pitch_type_1" value={prevPitchType1} />
+              <input type="hidden" name="prev_pitch_type_2" value={prevPitchType2} />
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-[minmax(0,1.2fr)_11rem_11rem_auto]">
+                <label className="min-w-0 space-y-2">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                    Catcher
+                  </span>
+                  <select
+                    className="field"
+                    name="catcher_id"
+                    defaultValue={String(selectedCatcherId)}
+                    data-auto-submit="true"
+                  >
+                    {catchers.catchers.map((catcher) => (
+                      <option key={catcher.catcher_id} value={catcher.catcher_id}>
+                        {catcher.dropdown_label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="min-w-0 space-y-2">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                    Season
+                  </span>
+                  <select
+                    className="field"
+                    name="season"
+                    defaultValue={String(selectedSeason)}
+                    data-auto-submit="true"
+                  >
+                    {metadata.available_seasons.map((season) => (
+                      <option key={season} value={season}>
+                        {season}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="min-w-0 space-y-2">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                    Team filter
+                  </span>
+                  <select
+                    className="field"
+                    name="team"
+                    defaultValue={requestedTeam}
+                    data-auto-submit="true"
+                  >
+                    <option value="">All teams</option>
+                    {metadata.available_teams.map((team) => (
+                      <option key={team.value} value={team.value}>
+                        {team.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <div className="flex items-end md:col-span-2 xl:col-span-3 2xl:col-span-1">
+                  <button className="button-secondary w-full px-4 py-3 text-sm">
+                    Refresh context
+                  </button>
+                </div>
+              </div>
+            </LoadingForm>
+
+            <LoadingForm
+              action="/matchup-explorer"
+              className="shell-panel rounded-[1.2rem] p-4"
+              loadingMessage="Running matchup recommendation..."
+              loadingSubtitle="Scoring pitcher-specific options for the selected count and base/out context."
+            >
+              <input type="hidden" name="season" value={selectedSeason} />
+              <input type="hidden" name="team" value={requestedTeam} />
+              <input type="hidden" name="catcher_id" value={selectedCatcherId} />
               <div className="grid gap-3 xl:grid-cols-2">
-                <select className="field" name="catcher_id" defaultValue={String(selectedCatcherId)}>
-                  {catchers.catchers.map((catcher) => (
-                    <option key={catcher.catcher_id} value={catcher.catcher_id}>
-                      {catcher.dropdown_label}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  className="field"
-                  type="number"
-                  min="2008"
-                  max="2100"
-                  name="season"
-                  defaultValue={selectedSeason}
-                />
-                <input
-                  className="field"
-                  type="number"
-                  min="1"
-                  name="pitcher_id"
-                  defaultValue={selectedPitcherId}
-                  placeholder="Pitcher MLBAM ID"
-                />
-                <input
-                  className="field"
-                  type="number"
-                  min="1"
-                  name="batter_id"
-                  defaultValue={batterId}
-                  placeholder="Batter MLBAM ID (optional)"
-                />
-                <select className="field" name="stand" defaultValue={safeStand}>
-                  <option value="R">Batter bats R</option>
-                  <option value="L">Batter bats L</option>
-                  <option value="S">Batter switch</option>
-                </select>
-                <select className="field" name="p_throws" defaultValue={safePThrows}>
-                  <option value="R">Pitcher throws R</option>
-                  <option value="L">Pitcher throws L</option>
-                </select>
+                <label className="space-y-2">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                    Pitcher
+                  </span>
+                  <input
+                    className="field"
+                    type="number"
+                    min="1"
+                    name="pitcher_id"
+                    defaultValue={selectedPitcherId}
+                    placeholder="Pitcher MLBAM ID"
+                  />
+                </label>
+                <label className="space-y-2">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                    Batter
+                  </span>
+                  <input
+                    className="field"
+                    type="number"
+                    min="1"
+                    name="batter_id"
+                    defaultValue={batterId}
+                    placeholder="Batter MLBAM ID (optional)"
+                  />
+                </label>
+                <label className="space-y-2">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                    Batter side
+                  </span>
+                  <select className="field" name="stand" defaultValue={safeStand}>
+                    <option value="R">Bats right</option>
+                    <option value="L">Bats left</option>
+                    <option value="S">Switch</option>
+                  </select>
+                </label>
+                <label className="space-y-2">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                    Pitcher hand
+                  </span>
+                  <select className="field" name="p_throws" defaultValue={safePThrows}>
+                    <option value="R">Throws right</option>
+                    <option value="L">Throws left</option>
+                  </select>
+                </label>
               </div>
 
               <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
@@ -437,7 +554,11 @@ export default async function MatchupExplorerPage({
                     </option>
                   ))}
                 </select>
-                <button className="button-primary px-5 py-3 text-sm">Run recommendation</button>
+                <select className="field" name="leverage_bucket" defaultValue={leverageBucket}>
+                  <option value="standard">Standard leverage</option>
+                  <option value="medium">Medium leverage</option>
+                  <option value="high">High leverage</option>
+                </select>
               </div>
 
               <div className="mt-3 grid gap-3 md:grid-cols-2">
@@ -455,22 +576,23 @@ export default async function MatchupExplorerPage({
                 />
               </div>
 
-              <div className="mt-3 flex flex-wrap gap-3">
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                <button className="button-primary px-5 py-3 text-sm">Run recommendation</button>
                 <LoadingLink
-                  href={`/?catcher_id=${selectedCatcherId}&season=${selectedSeason}`}
+                  href={`/?catcher_id=${selectedCatcherId}&season=${selectedSeason}&team=${requestedTeam || ""}`}
                   className="button-secondary px-4 py-3 text-sm"
-                  loadingMessage="Opening catcher dashboard..."
+                  loadingMessage="Opening scouting mode..."
                   loadingSubtitle={`Loading ${catcherDetail.identity.catcher_name}.`}
                 >
-                  Open catcher dashboard
+                  Open scouting mode
                 </LoadingLink>
                 <LoadingLink
-                  href={`/leaderboard?season=${selectedSeason}&min_pitches=50`}
+                  href={`/research?season=${selectedSeason}&team=${requestedTeam || ""}&catcher_id=${selectedCatcherId}`}
                   className="button-secondary px-4 py-3 text-sm"
-                  loadingMessage="Opening scouting board..."
-                  loadingSubtitle="Loading the season leaderboard."
+                  loadingMessage="Opening research mode..."
+                  loadingSubtitle="Loading export and comparison tools."
                 >
-                  Open leaderboard
+                  Open research mode
                 </LoadingLink>
               </div>
             </LoadingForm>
@@ -494,7 +616,7 @@ export default async function MatchupExplorerPage({
                 )}
                 <div>
                   <div className="text-[0.64rem] font-semibold uppercase tracking-[0.22em] text-white/56">
-                    Active battery context
+                    Active game context
                   </div>
                   <h2 className="mt-3 font-serif text-[2rem] leading-none">
                     {catcherDetail.identity.catcher_name}
@@ -523,13 +645,11 @@ export default async function MatchupExplorerPage({
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               <div className="scorebug rounded-[1rem] border border-white/10 px-4 py-3">
                 <div className="text-[0.64rem] uppercase tracking-[0.2em] text-white/58">
-                  Selected pitcher
+                  Confidence
                 </div>
-                <div className="mt-2 text-lg font-semibold">
-                  {selectedPitcher?.pitcher_name ?? `Pitcher ${selectedPitcherId}`}
-                </div>
+                <div className="mt-2 text-lg font-semibold">{confidenceLabel(recommendation)}</div>
                 <div className="mt-2 text-sm text-white/72">
-                  {selectedPitcher ? `${selectedPitcher.pitches.toLocaleString()} historical paired pitches` : "Manual pitcher selection"}
+                  Candidate count drives how much weight to place on the output
                 </div>
               </div>
               <div className="scorebug rounded-[1rem] border border-white/10 px-4 py-3">
@@ -540,7 +660,7 @@ export default async function MatchupExplorerPage({
                   {formatSigned(recommendation?.weighted_expected_rv, 4)}
                 </div>
                 <div className="mt-2 text-sm text-white/72">
-                  Candidate baseline for this context
+                  Context baseline before picking the top option
                 </div>
               </div>
               <div className="scorebug rounded-[1rem] border border-white/10 px-4 py-3">
@@ -571,55 +691,66 @@ export default async function MatchupExplorerPage({
 
             <p className="mt-5 text-sm leading-7 text-white/74">
               {recommendation?.note ??
-                "Recommendation data is unavailable for this exact context. The workbench keeps the context visible so missing model support is explicit."}
+                "Recommendation data is unavailable for this exact context. The page keeps the live context visible so missing model support is explicit."}
             </p>
           </aside>
         </div>
       </section>
 
       <SectionCard
+        eyebrow="Live Readiness"
+        title="Freshness and scoring state"
+        subtitle="Game mode needs current context and honest freshness language. These cards show how recent the public-data pipeline really is."
+      >
+        <DataFreshnessPanel metadata={metadata} />
+      </SectionCard>
+
+      <SectionCard
         eyebrow="Pairing Shortlist"
         title="Quick-select pitcher partners"
-        subtitle="Use real pitcher-catcher pairings to anchor the recommendation context before adjusting count, base state, and hitter handedness."
+        subtitle="Anchor the recommendation context with real pitcher-catcher pairings before adjusting count, base state, and handedness."
       >
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {pairings.pairings.map((row) => {
-            const active = row.pitcher_id === selectedPitcherId;
-            return (
-              <LoadingLink
-                key={row.pitcher_id}
-                href={buildHref({ pitcher_id: row.pitcher_id })}
-                loadingMessage="Generating scouting view..."
-                loadingSubtitle={`Loading pairing context for ${row.pitcher_name}.`}
-                className={[
-                  "rounded-[1.1rem] border p-4 transition",
-                  active
-                    ? "border-accent/30 bg-surface-strong text-white shadow-[0_14px_24px_rgba(68,83,95,0.18)]"
-                    : "surface-panel hover:-translate-y-0.5 hover:border-accent/24",
-                ].join(" ")}
-              >
-                <div className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] opacity-70">
-                  Pitcher {row.pitcher_id}
-                </div>
-                <div className="mt-3 text-lg font-semibold">
-                  {row.pitcher_name}
-                </div>
-                <div className="mt-2 text-sm leading-6 opacity-80">
-                  {row.pitches.toLocaleString()} paired pitches
-                </div>
-                <div className="numeric mt-3 text-xl font-semibold">
-                  {formatSigned(row.total_dva, 3)}
-                </div>
-              </LoadingLink>
-            );
-          })}
+        <div className="grid gap-6 xl:grid-cols-[0.94fr_1.06fr]">
+          <div className="surface-panel rounded-[1.35rem] p-5">
+            <PairingDvaChart rows={pairings.pairings} title="Pairing DVA snapshot" />
+          </div>
+          <div className="grid gap-3 md:grid-cols-2">
+            {pairings.pairings.map((row) => {
+              const active = row.pitcher_id === selectedPitcherId;
+              return (
+                <LoadingLink
+                  key={row.pitcher_id}
+                  href={buildQueryHref({ pitcher_id: row.pitcher_id })}
+                  loadingMessage="Loading pairing context..."
+                  loadingSubtitle={`Opening ${row.pitcher_name}.`}
+                  className={[
+                    "rounded-[1.1rem] border p-4 transition",
+                    active
+                      ? "border-accent/30 bg-surface-strong text-white shadow-[0_14px_24px_rgba(68,83,95,0.18)]"
+                      : "surface-panel hover:-translate-y-0.5 hover:border-accent/24",
+                  ].join(" ")}
+                >
+                  <div className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] opacity-70">
+                    Pitcher {row.pitcher_id}
+                  </div>
+                  <div className="mt-3 text-lg font-semibold">{row.pitcher_name}</div>
+                  <div className="mt-2 text-sm leading-6 opacity-80">
+                    {row.pitches.toLocaleString()} paired pitches
+                  </div>
+                  <div className="numeric mt-3 text-xl font-semibold">
+                    {formatSigned(row.total_dva, 3)}
+                  </div>
+                </LoadingLink>
+              );
+            })}
+          </div>
         </div>
       </SectionCard>
 
       <SectionCard
         eyebrow="Recommendation Board"
         title="Recommended pitch options"
-        subtitle="Observed public-data options ranked by expected run value in the selected context."
+        subtitle="Observed public-data options ranked by expected run value in the selected live context."
       >
         {recommendationError ? (
           <EmptyStatePanel
@@ -630,12 +761,12 @@ export default async function MatchupExplorerPage({
             }
             title="This exact context is not currently scoreable"
             description={errorMessage(recommendationError)}
-            detail="Adjust the pitcher, count, or base/out state. The workbench only shows real candidates that survive the current public-data context filters."
+            detail="Adjust the pitcher, count, or base/out state. Game mode only shows real candidates that survive the current public-data context filters."
             tone="caution"
           />
         ) : recommendation ? (
           <div className="space-y-5">
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
               <div className="surface-panel rounded-[1rem] px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-muted">Count</div>
                 <div className="mt-2 text-lg font-semibold text-ink">{recommendation.count_state}</div>
@@ -660,33 +791,63 @@ export default async function MatchupExplorerPage({
                   {recommendation.platoon_flag.replaceAll("_", " ")}
                 </div>
               </div>
+              <div className="surface-panel rounded-[1rem] px-4 py-3">
+                <div className="text-[0.62rem] uppercase tracking-[0.2em] text-muted">Leverage</div>
+                <div className="mt-2 text-lg font-semibold text-ink">
+                  {leverageBucket.replaceAll("_", " ")}
+                </div>
+              </div>
             </div>
-            <RecommendationOptionBoard options={recommendation.options} />
+
+            <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
+              <div className="surface-panel rounded-[1.25rem] p-5">
+                <RecommendationRvChart options={recommendation.options} />
+              </div>
+              <div className="space-y-5">
+                <div className="surface-panel rounded-[1.25rem] p-5">
+                  <div className="label-kicker">Why this is preferred</div>
+                  <p className="mt-4 text-sm leading-8 text-muted">
+                    {recommendationSummary(recommendation)}
+                  </p>
+                  <p className="mt-3 text-sm leading-8 text-muted">
+                    Confidence depends on candidate count and context coverage. When the candidate pool
+                    gets thin, the UI keeps that visible rather than pretending precision.
+                  </p>
+                </div>
+
+                <RecommendationOptionBoard options={recommendation.options} />
+              </div>
+            </div>
           </div>
         ) : null}
       </SectionCard>
 
       <SectionCard
-        eyebrow="Methodology"
-        title="How to read this recommendation"
-        subtitle="Decision support grounded in public-data alternatives, not hidden call intent."
+        eyebrow="Reading The Output"
+        title="How to use Game mode honestly"
+        subtitle="This is live or near-live decision support grounded in public evidence, not a black-box AI claim."
         tone="quiet"
       >
-        <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="grid gap-4 lg:grid-cols-3">
           <div className="surface-panel rounded-[1.2rem] p-5">
-            <div className="label-kicker">Public-data honesty</div>
+            <div className="label-kicker">What it knows</div>
             <p className="mt-4 text-sm leading-8 text-muted">
-              The recommendation engine compares actual MLB pitch choices to realistic
-              pitcher-specific alternatives in similar public contexts. It does not claim private
-              PitchCom knowledge, shake-off information, or internal scouting plan access.
+              Pitcher-specific historical candidates, count/base/out context, platoon lane,
+              historical usage share, and expected run value by option.
             </p>
           </div>
           <div className="surface-panel rounded-[1.2rem] p-5">
-            <div className="label-kicker">Using the workbench</div>
+            <div className="label-kicker">What it does not know</div>
             <p className="mt-4 text-sm leading-8 text-muted">
-              Start from a real catcher-pitcher pairing, set the count and base/out situation, and
-              compare the returned pitch options by expected run value and historical usage share.
-              If no candidates survive, the UI will say so explicitly.
+              Private PitchCom plans, shake-offs, scouting meetings, injury restrictions, or hidden
+              catcher intent. Those limits stay explicit in the UI.
+            </p>
+          </div>
+          <div className="surface-panel rounded-[1.2rem] p-5">
+            <div className="label-kicker">Best workflow</div>
+            <p className="mt-4 text-sm leading-8 text-muted">
+              Start with a real pairing, set the count and base/out state, and compare top options
+              by expected RV, usage share, and confidence before making a baseball decision.
             </p>
           </div>
         </div>

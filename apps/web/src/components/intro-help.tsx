@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { BaseballLogo } from "@/components/icons/baseball-logo";
 import { useGlobalLoading } from "@/components/ui/loading-provider";
+import { ModalPortal } from "@/components/ui/modal-portal";
 
 const STORAGE_KEY = "catcher-intel-intro-dismissed";
 
@@ -21,6 +22,15 @@ export function IntroHelp() {
     }
   });
   const [open, setOpen] = useState(false);
+
+  const dismiss = () => {
+    setOpen(false);
+    try {
+      window.localStorage.setItem(STORAGE_KEY, "1");
+    } catch {
+      // Ignore localStorage failures and allow the overlay to behave as session-only.
+    }
+  };
 
   useEffect(() => {
     if (!shouldAutoOpen || isLoading) {
@@ -42,7 +52,7 @@ export function IntroHelp() {
 
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        setOpen(false);
+        dismiss();
       }
     }
 
@@ -50,14 +60,17 @@ export function IntroHelp() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
 
-  const dismiss = () => {
-    setOpen(false);
-    try {
-      window.localStorage.setItem(STORAGE_KEY, "1");
-    } catch {
-      // Ignore localStorage failures and allow the overlay to behave as session-only.
+  useEffect(() => {
+    if (!open) {
+      return;
     }
-  };
+
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [open]);
 
   return (
     <>
@@ -71,84 +84,96 @@ export function IntroHelp() {
       </button>
 
       {open ? (
-        <div className="fixed inset-0 z-[130] flex items-center justify-center px-4 py-8">
-          <button
-            type="button"
-            aria-label="Close dashboard guide"
-            className="absolute inset-0 bg-[rgba(68,83,95,0.42)] backdrop-blur-[10px]"
-            onClick={dismiss}
-          />
-          <section className="card relative z-10 w-full max-w-3xl overflow-hidden rounded-[1.85rem] p-6 sm:p-7">
-            <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-28 opacity-90" />
-            <div className="relative">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex items-start gap-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-[1.2rem] border border-line/70 bg-surface-elevated text-brand-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.46)]">
-                    <BaseballLogo className="h-9 w-9" />
+        <ModalPortal>
+          <div
+            className="app-modal z-[130]"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="intro-help-title"
+          >
+            <button
+              type="button"
+              aria-label="Close dashboard guide"
+              className="app-modal__backdrop"
+              onClick={dismiss}
+            />
+            <div className="app-modal__viewport">
+              <section className="app-modal__panel card z-10 max-w-3xl rounded-[1.85rem] p-6 shadow-[0_36px_110px_rgba(27,35,40,0.28)] sm:p-7">
+                <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-28 opacity-90" />
+                <div className="app-modal__body">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-[1.2rem] border border-line/70 bg-surface-elevated text-brand-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.46)]">
+                        <BaseballLogo className="h-9 w-9" />
+                      </div>
+                      <div>
+                        <div className="label-kicker">Dashboard Guide</div>
+                        <h2
+                          id="intro-help-title"
+                          className="mt-2 font-serif text-[2rem] leading-none text-ink sm:text-[2.3rem]"
+                        >
+                          What this app is showing you
+                        </h2>
+                        <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">
+                          Catcher Intel uses public Statcast data and public catcher-defense signals
+                          to summarize pitch-decision quality, pairing context, and season-level
+                          scouting indicators. It is a decision-support dashboard, not a claim about
+                          hidden intent.
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="button-secondary h-11 shrink-0 px-4 py-2 text-sm"
+                      onClick={dismiss}
+                    >
+                      Close
+                    </button>
                   </div>
-                  <div>
-                    <div className="label-kicker">Dashboard Guide</div>
-                    <h2 className="mt-2 font-serif text-[2rem] leading-none text-ink sm:text-[2.3rem]">
-                      What this app is showing you
-                    </h2>
-                    <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">
-                      Catcher Intel uses public Statcast data and public catcher-defense signals to
-                      summarize pitch-decision quality, pairing context, and season-level scouting
-                      indicators. It is a decision-support dashboard, not a claim about hidden
-                      intent.
-                    </p>
+
+                  <div className="mt-6 grid gap-4 lg:grid-cols-3">
+                    <article className="surface-panel rounded-[1.35rem] p-4">
+                      <div className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-accent-clay">
+                        What It Does
+                      </div>
+                      <p className="mt-3 text-sm leading-7 text-muted">
+                        Compares the pitch that was actually called to a realistic baseline of other
+                        pitch options in the same public game context, then rolls that up into
+                        catcher, count, pitch-type, and pitcher-pairing views.
+                      </p>
+                    </article>
+                    <article className="surface-panel rounded-[1.35rem] p-4">
+                      <div className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-accent-clay">
+                        How To Read It
+                      </div>
+                      <p className="mt-3 text-sm leading-7 text-muted">
+                        Positive DVA means the observed pitch choice outperformed the modeled
+                        baseline. Negative DVA means it trailed the baseline. Grades are relative
+                        season comps on a 20-80 style scouting scale, not absolute truth.
+                      </p>
+                    </article>
+                    <article className="surface-panel rounded-[1.35rem] p-4">
+                      <div className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-accent-clay">
+                        Interpretation Notes
+                      </div>
+                      <p className="mt-3 text-sm leading-7 text-muted">
+                        Sample size matters. Use pitch totals and stability badges before leaning too
+                        hard on small differences. Public framing, blocking, and throwing metrics are
+                        supporting context, not isolated proof of catcher game-calling skill.
+                      </p>
+                    </article>
+                  </div>
+
+                  <div className="mt-5 rounded-[1.25rem] border border-brand-secondary/20 bg-brand-secondary/10 px-4 py-3 text-sm leading-7 text-muted">
+                    Best use: treat this as a fast scouting lens for identifying interesting
+                    signals, then combine it with video, coaching context, pitcher tendencies, and
+                    sample-size judgment.
                   </div>
                 </div>
-                <button
-                  type="button"
-                  className="button-secondary h-11 px-4 py-2 text-sm"
-                  onClick={dismiss}
-                >
-                  Close
-                </button>
-              </div>
-
-              <div className="mt-6 grid gap-4 lg:grid-cols-3">
-                <article className="surface-panel rounded-[1.35rem] p-4">
-                  <div className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-accent-clay">
-                    What It Does
-                  </div>
-                  <p className="mt-3 text-sm leading-7 text-muted">
-                    Compares the pitch that was actually called to a realistic baseline of other
-                    pitch options in the same public game context, then rolls that up into catcher,
-                    count, pitch-type, and pitcher-pairing views.
-                  </p>
-                </article>
-                <article className="surface-panel rounded-[1.35rem] p-4">
-                  <div className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-accent-clay">
-                    How To Read It
-                  </div>
-                  <p className="mt-3 text-sm leading-7 text-muted">
-                    Positive DVA means the observed pitch choice outperformed the modeled baseline.
-                    Negative DVA means it trailed the baseline. Grades are relative season comps on
-                    a 20-80 style scouting scale, not absolute truth.
-                  </p>
-                </article>
-                <article className="surface-panel rounded-[1.35rem] p-4">
-                  <div className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-accent-clay">
-                    Interpretation Notes
-                  </div>
-                  <p className="mt-3 text-sm leading-7 text-muted">
-                    Sample size matters. Use pitch totals and stability badges before leaning too
-                    hard on small differences. Public framing, blocking, and throwing metrics are
-                    supporting context, not isolated proof of catcher game-calling skill.
-                  </p>
-                </article>
-              </div>
-
-              <div className="mt-5 rounded-[1.25rem] border border-brand-secondary/20 bg-brand-secondary/10 px-4 py-3 text-sm leading-7 text-muted">
-                Best use: treat this as a fast scouting lens for identifying interesting signals,
-                then combine it with video, coaching context, pitcher tendencies, and sample-size
-                judgment.
-              </div>
+              </section>
             </div>
-          </section>
-        </div>
+          </div>
+        </ModalPortal>
       ) : null}
     </>
   );

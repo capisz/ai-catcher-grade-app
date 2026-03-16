@@ -5,7 +5,7 @@ export default function Loading() {
     <LoadingOverlay
       open
       message="Loading catcher intelligence..."
-      subtitle="Pulling the live scouting dashboard and real battery context."
+      subtitle="Pulling scouting, game, and research context from the live public-data pipeline."
     />
   );
 }

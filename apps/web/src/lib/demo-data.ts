@@ -179,6 +179,48 @@ export const catcherDetailDemo: CatcherDetailResponse = {
         "40% public framing runs, 25% blocking runs, 20% arm overall, 15% lower-is-better pop time to second.",
     },
   },
+  summary_insights: [
+    {
+      key: "overall_profile",
+      label: "Strength",
+      headline: "Overall game calling is the clearest carrying tool.",
+      detail:
+        "Adley Rutschman carries a Plus overall game-calling grade with +24.400 total DVA, +0.00450 avg DVA, and 56.0% baseline outperformance.",
+      tone: "positive",
+    },
+    {
+      key: "situational_edge",
+      label: "Situational edge",
+      headline: "0-2 is the best value pocket.",
+      detail:
+        "The strongest exact-count edge is 0-2 at +0.0069 avg DVA across 420 pitches, with breaker as the best-performing family signal.",
+      tone: "positive",
+    },
+    {
+      key: "pitch_pairing_edge",
+      label: "Pitch + pairing edge",
+      headline: "Pitch mix and battery fit add most of the secondary value.",
+      detail:
+        "Slider is the best pitch-type result, and the strongest pairing is with the top starter group in the demo sample.",
+      tone: "positive",
+    },
+    {
+      key: "weakness",
+      label: "Weakness",
+      headline: "3-1 is the main pressure point.",
+      detail:
+        "The weakest exposed exact-count pocket in the demo sample is 3-1, where hitter-friendly leverage narrows the margin for error.",
+      tone: "caution",
+    },
+    {
+      key: "confidence",
+      label: "Data confidence",
+      headline: "The sample is trustworthy enough for season-level scouting.",
+      detail:
+        "High stability at 5,400 pitches across 98 games, with 12.0% sparse-context drops and +0.0012 avg execution gap in the demo payload.",
+      tone: "positive",
+    },
+  ],
   count_state_summaries: [
     {
       split_type: "count_state",
@@ -200,6 +242,8 @@ export const catcherDetailDemo: CatcherDetailResponse = {
       hitter_friendly_flag: false,
       pitcher_friendly_flag: false,
       putaway_flag: false,
+      sample_label: "Stable split",
+      low_sample: false,
     },
     {
       split_type: "count_state",
@@ -221,6 +265,8 @@ export const catcherDetailDemo: CatcherDetailResponse = {
       hitter_friendly_flag: false,
       pitcher_friendly_flag: true,
       putaway_flag: true,
+      sample_label: "Stable split",
+      low_sample: false,
     },
     {
       split_type: "count_state",
@@ -242,6 +288,8 @@ export const catcherDetailDemo: CatcherDetailResponse = {
       hitter_friendly_flag: true,
       pitcher_friendly_flag: false,
       putaway_flag: false,
+      sample_label: "Stable split",
+      low_sample: false,
     },
   ],
   count_bucket_summaries: [
@@ -265,6 +313,8 @@ export const catcherDetailDemo: CatcherDetailResponse = {
       hitter_friendly_flag: false,
       pitcher_friendly_flag: true,
       putaway_flag: false,
+      sample_label: "Stable split",
+      low_sample: false,
     },
     {
       split_type: "count_bucket",
@@ -286,6 +336,8 @@ export const catcherDetailDemo: CatcherDetailResponse = {
       hitter_friendly_flag: false,
       pitcher_friendly_flag: false,
       putaway_flag: false,
+      sample_label: "Stable split",
+      low_sample: false,
     },
     {
       split_type: "count_bucket",
@@ -307,6 +359,8 @@ export const catcherDetailDemo: CatcherDetailResponse = {
       hitter_friendly_flag: true,
       pitcher_friendly_flag: false,
       putaway_flag: false,
+      sample_label: "Stable split",
+      low_sample: false,
     },
   ],
   pitch_type_summaries: [

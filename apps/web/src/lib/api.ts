@@ -1,17 +1,23 @@
 import {
+  appMetadataResponseSchema,
+  catcherComparisonResponseSchema,
   catcherDetailResponseSchema,
   catcherReportOptionsResponseSchema,
   catchersResponseSchema,
   countsResponseSchema,
   leaderboardResponseSchema,
+  locationSummaryResponseSchema,
   pairingsResponseSchema,
   pitchTypesResponseSchema,
   recommendationResponseSchema,
+  type AppMetadataResponse,
+  type CatcherComparisonResponse,
   type CatcherDetailResponse,
   type CatcherReportOptionsResponse,
   type CatchersResponse,
   type CountsResponse,
   type LeaderboardResponse,
+  type LocationSummaryResponse,
   type PairingsResponse,
   type PitchTypesResponse,
   type RecommendationResponse,
@@ -153,6 +159,7 @@ async function fetchJson<T>(path: string, schema: { parse: (value: unknown) => T
 
 type CatcherQuery = {
   season?: number;
+  team?: string;
 };
 
 type LeaderboardQuery = {
@@ -160,6 +167,17 @@ type LeaderboardQuery = {
   season?: number;
   dateFrom?: string;
   dateTo?: string;
+  team?: string;
+};
+
+type CatcherComparisonQuery = {
+  catcherA: number;
+  catcherB: number;
+  minPitches?: number;
+  season?: number;
+  dateFrom?: string;
+  dateTo?: string;
+  team?: string;
 };
 
 type RecommendationQuery = {
@@ -196,10 +214,25 @@ export async function getCatchers(query: CatcherQuery = {}): Promise<CatchersRes
   if (query.season) {
     searchParams.set("season", String(query.season));
   }
+  if (query.team) {
+    searchParams.set("team", query.team);
+  }
 
   return fetchJson(
     `/catchers${searchParams.size ? `?${searchParams.toString()}` : ""}`,
     catchersResponseSchema,
+  );
+}
+
+export async function getAppMetadata(query: { season?: number } = {}): Promise<AppMetadataResponse> {
+  const searchParams = new URLSearchParams();
+  if (query.season) {
+    searchParams.set("season", String(query.season));
+  }
+
+  return fetchJson(
+    `/app/metadata${searchParams.size ? `?${searchParams.toString()}` : ""}`,
+    appMetadataResponseSchema,
   );
 }
 
@@ -234,6 +267,9 @@ export async function getLeaderboard(query: LeaderboardQuery = {}): Promise<Lead
   if (query.dateTo) {
     searchParams.set("date_to", query.dateTo);
   }
+  if (query.team) {
+    searchParams.set("team", query.team);
+  }
 
   return fetchJson(
     `/catchers/leaderboard?${searchParams.toString()}`,
@@ -253,6 +289,32 @@ export async function getCatcherDetail(
   return fetchJson(
     `/catchers/${catcherId}${searchParams.size ? `?${searchParams.toString()}` : ""}`,
     catcherDetailResponseSchema,
+  );
+}
+
+export async function getCatcherComparison(
+  query: CatcherComparisonQuery,
+): Promise<CatcherComparisonResponse> {
+  const searchParams = new URLSearchParams();
+  searchParams.set("catcher_a", String(query.catcherA));
+  searchParams.set("catcher_b", String(query.catcherB));
+  searchParams.set("min_pitches", String(query.minPitches ?? 50));
+  if (query.season) {
+    searchParams.set("season", String(query.season));
+  }
+  if (query.dateFrom) {
+    searchParams.set("date_from", query.dateFrom);
+  }
+  if (query.dateTo) {
+    searchParams.set("date_to", query.dateTo);
+  }
+  if (query.team) {
+    searchParams.set("team", query.team);
+  }
+
+  return fetchJson(
+    `/catchers/compare?${searchParams.toString()}`,
+    catcherComparisonResponseSchema,
   );
 }
 
@@ -301,6 +363,21 @@ export async function getCatcherPitchTypes(
   return fetchJson(
     `/catchers/${catcherId}/pitch-types${searchParams.size ? `?${searchParams.toString()}` : ""}`,
     pitchTypesResponseSchema,
+  );
+}
+
+export async function getCatcherLocationSummary(
+  catcherId: number,
+  query: CatcherQuery = {},
+): Promise<LocationSummaryResponse> {
+  const searchParams = new URLSearchParams();
+  if (query.season) {
+    searchParams.set("season", String(query.season));
+  }
+
+  return fetchJson(
+    `/catchers/${catcherId}/location-summary${searchParams.size ? `?${searchParams.toString()}` : ""}`,
+    locationSummaryResponseSchema,
   );
 }
 

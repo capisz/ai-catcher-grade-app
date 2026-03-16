@@ -11,9 +11,11 @@
     "load:chadwick": "python3 services/ingestion/load_chadwick_identity.py",
     "refresh:players": "python3 services/modeling/refresh_player_metadata.py",
     "refresh:catcher-metrics": "python3 services/modeling/refresh_catcher_metrics.py",
+    "refresh:latest-season": "python3 services/modeling/refresh_latest_scored_data.py",
     "score:dva": "python3 services/modeling/score_dva.py",
     "rebuild:summaries": "python3 services/modeling/rebuild_catcher_summaries.py",
     "validate:dashboard": "python3 services/modeling/validate_dashboard_metrics.py",
+    "validate:compare": "python3 services/modeling/validate_compare_mode.py",
     "train:model": "python3 services/modeling/train_model.py",
     "seed:demo": "python3 services/modeling/seed_demo.py"
   }

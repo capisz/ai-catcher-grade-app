@@ -62,10 +62,10 @@ export default function RootLayout({
                     <div className="flex flex-wrap items-center gap-2 lg:justify-end">
                       <div className="flex flex-wrap gap-2 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">
                         <span className="pill-sage rounded-full px-3 py-1.5">
-                          Scouting dashboard
+                          Scouting mode
                         </span>
                         <span className="pill-sand rounded-full px-3 py-1.5">
-                          Public Statcast
+                          Game + research ready
                         </span>
                       </div>
                       <IntroHelp />

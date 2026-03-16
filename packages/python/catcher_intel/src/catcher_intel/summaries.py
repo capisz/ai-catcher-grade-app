@@ -56,6 +56,11 @@ def load_scored_pitch_frame(database_url: str, season: int) -> pd.DataFrame:
             scores.catcher_id,
             COALESCE(scores.game_pk, raw.game_pk) AS game_pk,
             COALESCE(scores.pitcher_id, scores.pitcher, raw.pitcher) AS pitcher_id,
+            COALESCE(
+                pitcher_identity.full_name,
+                pitcher_meta.full_name,
+                'Pitcher ' || COALESCE(scores.pitcher_id, scores.pitcher, raw.pitcher)::text
+            ) AS pitcher_name,
             COALESCE(scores.batter_id, scores.batter, raw.batter) AS batter_id,
             COALESCE(scores.game_year, raw.game_year) AS season,
             scores.game_date,
@@ -78,6 +83,11 @@ def load_scored_pitch_frame(database_url: str, season: int) -> pd.DataFrame:
           ON raw.pitch_uid = scores.pitch_uid
         JOIN pitch_features features
           ON features.pitch_uid = scores.pitch_uid
+        LEFT JOIN player_metadata pitcher_meta
+          ON pitcher_meta.player_id = COALESCE(scores.pitcher_id, scores.pitcher, raw.pitcher)
+         AND pitcher_meta.season = COALESCE(scores.game_year, raw.game_year)
+        LEFT JOIN player_identity pitcher_identity
+          ON pitcher_identity.key_mlbam = COALESCE(scores.pitcher_id, scores.pitcher, raw.pitcher)
         WHERE COALESCE(scores.game_year, raw.game_year) = :season
           AND scores.catcher_id IS NOT NULL
         """,
@@ -186,7 +196,10 @@ def build_pairing_summaries(scored_frame: pd.DataFrame) -> pd.DataFrame:
     if scored_frame.empty:
         return pd.DataFrame()
 
-    summary = _aggregate_pitch_logic(scored_frame, ["catcher_id", "season", "pitcher_id"])
+    group_columns = ["catcher_id", "season", "pitcher_id"]
+    if "pitcher_name" in scored_frame.columns:
+        group_columns.append("pitcher_name")
+    summary = _aggregate_pitch_logic(scored_frame, group_columns)
     return summary.sort_values(["catcher_id", "season", "pitches"], ascending=[True, True, False])
 
 

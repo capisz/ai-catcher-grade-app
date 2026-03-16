@@ -39,6 +39,11 @@ export const catchersResponseSchema = z.object({
   catchers: z.array(catcherOptionSchema),
 });
 
+export const teamFilterOptionSchema = z.object({
+  value: z.string(),
+  label: z.string(),
+});
+
 export const reportFormatOptionSchema = z.object({
   key: z.string(),
   label: z.string(),
@@ -142,6 +147,8 @@ export const countSummarySchema = z.object({
   hitter_friendly_flag: z.boolean().default(false),
   pitcher_friendly_flag: z.boolean().default(false),
   putaway_flag: z.boolean().default(false),
+  sample_label: z.string().nullable().optional(),
+  low_sample: z.boolean().default(false),
 });
 
 export const pitchTypeSummarySchema = z.object({
@@ -208,6 +215,14 @@ export const catcherDiagnosticsSchema = z.object({
   model_version: z.string().nullable().optional(),
 });
 
+export const catcherSummaryInsightSchema = z.object({
+  key: z.string(),
+  label: z.string(),
+  headline: z.string(),
+  detail: z.string(),
+  tone: z.enum(["positive", "neutral", "caution"]).default("neutral"),
+});
+
 export const catcherDetailResponseSchema = z.object({
   identity: catcherIdentitySchema,
   total_pitches: z.number(),
@@ -218,11 +233,30 @@ export const catcherDetailResponseSchema = z.object({
   public_metrics: publicCatcherMetricsSchema,
   diagnostics: catcherDiagnosticsSchema,
   grade_formula_notes: z.record(z.string(), z.record(z.string(), z.any())),
+  summary_insights: z.array(catcherSummaryInsightSchema).default([]),
   count_state_summaries: z.array(countSummarySchema),
   count_bucket_summaries: z.array(countSummarySchema),
   pitch_type_summaries: z.array(pitchTypeSummarySchema),
   pairings: z.array(pairingSummarySchema),
   matchup_summaries: z.array(matchupSummarySchema),
+});
+
+export const catcherComparisonFiltersSchema = z.object({
+  season: z.number(),
+  min_pitches: z.number().default(0),
+  date_from: z.string().nullable().optional(),
+  date_to: z.string().nullable().optional(),
+  team: z.string().nullable().optional(),
+});
+
+export const catcherComparisonResponseSchema = z.object({
+  filters: catcherComparisonFiltersSchema,
+  population_size: z.number().default(0),
+  qualified_population_size: z.number().default(0),
+  updated_through: z.string().nullable().optional(),
+  model_version: z.string().nullable().optional(),
+  catcher_a: catcherDetailResponseSchema,
+  catcher_b: catcherDetailResponseSchema,
 });
 
 export const pairingsResponseSchema = z.object({
@@ -242,6 +276,52 @@ export const pitchTypesResponseSchema = z.object({
   catcher_id: z.number(),
   season: z.number(),
   pitch_types: z.array(pitchTypeSummarySchema),
+});
+
+export const locationSummaryCellSchema = z.object({
+  zone: z.string(),
+  value: z.number(),
+  label: z.string(),
+  pitches: z.number(),
+  outperform_rate: z.number().nullable().optional(),
+});
+
+export const locationSummaryResponseSchema = z.object({
+  catcher_id: z.number(),
+  season: z.number(),
+  available: z.boolean().default(false),
+  note: z.string().nullable().optional(),
+  avg_dva: z.number().nullable().optional(),
+  outperform_rate: z.number().nullable().optional(),
+  updated_through: z.string().nullable().optional(),
+  cells: z.array(locationSummaryCellSchema),
+});
+
+export const appMetadataResponseSchema = z.object({
+  default_season: z.number(),
+  selected_season: z.number(),
+  latest_available_season: z.number().nullable().optional(),
+  latest_scored_season: z.number().nullable().optional(),
+  available_seasons: z.array(z.number()),
+  available_teams: z.array(teamFilterOptionSchema),
+  season_pitch_count: z.number().default(0),
+  season_catcher_count: z.number().default(0),
+  sparse_season: z.boolean().default(false),
+  historical_mode: z.boolean().default(false),
+  live_context_ready: z.boolean().default(false),
+  season_type_label: z.string(),
+  season_coverage_note: z.string(),
+  updated_through: z.string().nullable().optional(),
+  latest_ingested_game_date: z.string().nullable().optional(),
+  latest_scored_game_date: z.string().nullable().optional(),
+  latest_refresh_timestamp: z.string().datetime().nullable().optional(),
+  latest_successful_scoring_timestamp: z.string().datetime().nullable().optional(),
+  latest_summary_update_timestamp: z.string().datetime().nullable().optional(),
+  model_version: z.string().nullable().optional(),
+  supports_date_range: z.boolean().default(true),
+  min_date: z.string().nullable().optional(),
+  max_date: z.string().nullable().optional(),
+  public_data_note: z.string(),
 });
 
 export const recommendationOptionSchema = z.object({
@@ -281,6 +361,7 @@ export type HeatCell = z.infer<typeof heatCellSchema>;
 export type TrendPoint = z.infer<typeof trendPointSchema>;
 export type PitchMixPoint = z.infer<typeof pitchMixPointSchema>;
 export type CatchersResponse = z.infer<typeof catchersResponseSchema>;
+export type TeamFilterOption = z.infer<typeof teamFilterOptionSchema>;
 export type CatcherReportOptionsResponse = z.infer<typeof catcherReportOptionsResponseSchema>;
 export type GradeValue = z.infer<typeof gradeValueSchema>;
 export type CatcherGrades = z.infer<typeof catcherGradesSchema>;
@@ -293,9 +374,15 @@ export type PairingSummary = z.infer<typeof pairingSummarySchema>;
 export type MatchupSummary = z.infer<typeof matchupSummarySchema>;
 export type CatcherIdentity = z.infer<typeof catcherIdentitySchema>;
 export type CatcherDiagnostics = z.infer<typeof catcherDiagnosticsSchema>;
+export type CatcherSummaryInsight = z.infer<typeof catcherSummaryInsightSchema>;
 export type CatcherDetailResponse = z.infer<typeof catcherDetailResponseSchema>;
+export type CatcherComparisonFilters = z.infer<typeof catcherComparisonFiltersSchema>;
+export type CatcherComparisonResponse = z.infer<typeof catcherComparisonResponseSchema>;
 export type PairingsResponse = z.infer<typeof pairingsResponseSchema>;
 export type CountsResponse = z.infer<typeof countsResponseSchema>;
 export type PitchTypesResponse = z.infer<typeof pitchTypesResponseSchema>;
+export type LocationSummaryCell = z.infer<typeof locationSummaryCellSchema>;
+export type LocationSummaryResponse = z.infer<typeof locationSummaryResponseSchema>;
+export type AppMetadataResponse = z.infer<typeof appMetadataResponseSchema>;
 export type RecommendationOption = z.infer<typeof recommendationOptionSchema>;
 export type RecommendationResponse = z.infer<typeof recommendationResponseSchema>;

@@ -219,6 +219,9 @@ a {
   background: color-mix(in srgb, var(--surface-elevated) 92%, white 8%);
   color: var(--ink);
   border-radius: 0.95rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 3.15rem;
   padding: 0.75rem 0.95rem;
   outline: none;
@@ -227,6 +230,26 @@ a {
     border-color 140ms ease,
     box-shadow 140ms ease,
     background-color 140ms ease;
+}
+
+select.field {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, rgba(68, 83, 95, 0.66) 50%),
+    linear-gradient(135deg, rgba(68, 83, 95, 0.66) 50%, transparent 50%);
+  background-position:
+    calc(100% - 1.15rem) calc(50% - 0.12rem),
+    calc(100% - 0.8rem) calc(50% - 0.12rem);
+  background-repeat: no-repeat;
+  background-size: 0.4rem 0.4rem, 0.4rem 0.4rem;
+  overflow: hidden;
+  padding-right: 2.7rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+select.field option {
+  color: var(--ink);
 }
 
 .field:hover {
@@ -458,6 +481,60 @@ a {
   background:
     radial-gradient(circle at top, rgba(200, 148, 106, 0.18), transparent 28%),
     linear-gradient(180deg, rgba(243, 240, 232, 0.82) 0%, rgba(236, 232, 221, 0.9) 100%);
+}
+
+.app-modal {
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+}
+
+.app-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  border: 0;
+  background:
+    radial-gradient(circle at top, rgba(200, 148, 106, 0.12), transparent 28%),
+    linear-gradient(180deg, rgba(31, 40, 46, 0.56) 0%, rgba(31, 40, 46, 0.68) 100%);
+  backdrop-filter: blur(12px);
+}
+
+.app-modal__viewport {
+  position: relative;
+  display: flex;
+  min-height: 100%;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.app-modal__panel {
+  position: relative;
+  width: 100%;
+  max-height: calc(100dvh - 2rem);
+  overflow: hidden;
+}
+
+.app-modal__body {
+  position: relative;
+  max-height: calc(100dvh - 9rem);
+  overflow-y: auto;
+  padding-right: 0.15rem;
+}
+
+@media (min-width: 640px) {
+  .app-modal__viewport {
+    align-items: center;
+    padding: 2rem 1.5rem;
+  }
+
+  .app-modal__panel {
+    max-height: calc(100dvh - 4rem);
+  }
+
+  .app-modal__body {
+    max-height: calc(100dvh - 11rem);
+  }
 }
 
 .loading-overlay__panel::after {

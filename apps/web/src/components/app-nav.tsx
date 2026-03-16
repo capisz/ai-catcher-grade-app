@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation";
 import { LoadingLink } from "@/components/ui/loading-link";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Dashboard" },
-  { href: "/leaderboard", label: "Leaderboard" },
-  { href: "/matchup-explorer", label: "Matchup Explorer" },
-  { href: "/game-review", label: "Game Review" },
+  { href: "/", label: "Scouting" },
+  { href: "/compare", label: "Compare" },
+  { href: "/matchup-explorer", label: "Game" },
+  { href: "/research", label: "Research" },
 ];
 
 export function AppNav() {

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 from typing import Any, Dict, Literal, Optional
 
 from pydantic import BaseModel, Field
@@ -26,6 +26,11 @@ class CatcherOption(BaseModel):
 class CatchersResponse(BaseModel):
     season: int
     catchers: list[CatcherOption]
+
+
+class TeamFilterOption(BaseModel):
+    value: str
+    label: str
 
 
 class ReportFormatOption(BaseModel):
@@ -140,6 +145,8 @@ class CountSummary(BaseModel):
     hitter_friendly_flag: bool = False
     pitcher_friendly_flag: bool = False
     putaway_flag: bool = False
+    sample_label: Optional[str] = None
+    low_sample: bool = False
 
 
 class PitchTypeSummary(BaseModel):
@@ -206,6 +213,14 @@ class CatcherDiagnostics(BaseModel):
     model_version: Optional[str] = None
 
 
+class CatcherSummaryInsight(BaseModel):
+    key: str
+    label: str
+    headline: str
+    detail: str
+    tone: Literal["positive", "neutral", "caution"] = "neutral"
+
+
 class CatcherDetailResponse(BaseModel):
     identity: CatcherIdentity
     total_pitches: int
@@ -216,11 +231,30 @@ class CatcherDetailResponse(BaseModel):
     public_metrics: PublicCatcherMetrics = Field(default_factory=PublicCatcherMetrics)
     diagnostics: CatcherDiagnostics = Field(default_factory=CatcherDiagnostics)
     grade_formula_notes: Dict[str, Dict[str, Any]] = Field(default_factory=dict)
+    summary_insights: list[CatcherSummaryInsight] = Field(default_factory=list)
     count_state_summaries: list[CountSummary]
     count_bucket_summaries: list[CountSummary]
     pitch_type_summaries: list[PitchTypeSummary]
     pairings: list[PairingSummary]
     matchup_summaries: list[MatchupSummary]
+
+
+class CatcherComparisonFilters(BaseModel):
+    season: int
+    min_pitches: int = 0
+    date_from: Optional[date] = None
+    date_to: Optional[date] = None
+    team: Optional[str] = None
+
+
+class CatcherComparisonResponse(BaseModel):
+    filters: CatcherComparisonFilters
+    population_size: int = 0
+    qualified_population_size: int = 0
+    updated_through: Optional[date] = None
+    model_version: Optional[str] = None
+    catcher_a: CatcherDetailResponse
+    catcher_b: CatcherDetailResponse
 
 
 class PairingsResponse(BaseModel):
@@ -240,6 +274,52 @@ class PitchTypesResponse(BaseModel):
     catcher_id: int
     season: int
     pitch_types: list[PitchTypeSummary]
+
+
+class LocationSummaryCell(BaseModel):
+    zone: str
+    value: float
+    label: str
+    pitches: int
+    outperform_rate: Optional[float] = None
+
+
+class LocationSummaryResponse(BaseModel):
+    catcher_id: int
+    season: int
+    available: bool = False
+    note: Optional[str] = None
+    avg_dva: Optional[float] = None
+    outperform_rate: Optional[float] = None
+    updated_through: Optional[date] = None
+    cells: list[LocationSummaryCell] = Field(default_factory=list)
+
+
+class AppMetadataResponse(BaseModel):
+    default_season: int
+    selected_season: int
+    latest_available_season: Optional[int] = None
+    latest_scored_season: Optional[int] = None
+    available_seasons: list[int] = Field(default_factory=list)
+    available_teams: list[TeamFilterOption] = Field(default_factory=list)
+    season_pitch_count: int = 0
+    season_catcher_count: int = 0
+    sparse_season: bool = False
+    historical_mode: bool = False
+    live_context_ready: bool = False
+    season_type_label: str
+    season_coverage_note: str
+    updated_through: Optional[date] = None
+    latest_ingested_game_date: Optional[date] = None
+    latest_scored_game_date: Optional[date] = None
+    latest_refresh_timestamp: Optional[datetime] = None
+    latest_successful_scoring_timestamp: Optional[datetime] = None
+    latest_summary_update_timestamp: Optional[datetime] = None
+    model_version: Optional[str] = None
+    supports_date_range: bool = True
+    min_date: Optional[date] = None
+    max_date: Optional[date] = None
+    public_data_note: str
 
 
 class RecommendationOption(BaseModel):

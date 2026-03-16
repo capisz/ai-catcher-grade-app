@@ -1,10 +1,19 @@
 # catcher-intel
 
-`catcher-intel` is a public-data catcher scouting and game-calling app. It scores observed MLB pitch decisions from Statcast, compares them to realistic pitcher-specific alternatives, and layers in public catcher defense signals such as framing, blocking, pop time, and arm strength.
+`catcher-intel` is a public-data baseball decision product for catcher evaluation and live matchup support. It scores observed MLB pitch decisions from Statcast, compares them to realistic pitcher-specific alternatives, and layers in public catcher defense signals such as framing, blocking, pop time, and arm strength.
+
+## Product modes
+
+- `Scouting mode`
+  - season-level catcher evaluation with grades, exact-count matrix, pitch-type performance, pairings, and support metrics
+- `Game mode`
+  - live or near-live matchup context with pitcher-specific recommendation options, confidence, and freshness signals
+- `Research mode`
+  - advanced board filters, side-by-side comparison, export links, sharable URL state, and report downloads
 
 ## Repo layout
 
-- `apps/web`: Next.js catcher dashboard and leaderboard
+- `apps/web`: Next.js Scouting, Game, and Research mode UI
 - `apps/api`: FastAPI entrypoint
 - `services/ingestion`: Statcast ingestion scripts
 - `services/modeling`: feature loading, DVA scoring, metadata refresh, public metric refresh, summary rebuild
@@ -81,6 +90,7 @@ Season summary tables now support:
 - recommended pitch family tendencies by count
 - outperformance rate versus weighted baseline
 - execution-gap separation from decision quality
+- 5x5 strike-zone location summaries from scored pitch rows
 
 ## Grade formulas
 
@@ -165,6 +175,20 @@ Frontend transport precedence:
 
 The Next.js app always fetches through `/api/backend`, and that proxy forwards to the configured backend target above. If you change the backend port in development, update `API_BASE_URL` to the same port so the target does not drift.
 
+## Live-data-ready API surfaces
+
+FastAPI now exposes:
+
+- `GET /app/metadata`
+  - selected/default season resolution, team filters, freshness timestamps, updated-through date, model version, and season coverage notes
+- `GET /catchers`
+  - season and optional `team` filtering
+- `GET /catchers/leaderboard`
+  - season, optional `team`, `min_pitches`, and optional date range filtering
+- `GET /catchers/{catcher_id}/location-summary`
+  - real 5x5 location heatmap cells from scored pitch rows
+- existing catcher detail, count, pitch-type, pairing, and recommendation endpoints remain in place
+
 ## Exact run order
 
 ### 1. Start Postgres
@@ -245,6 +269,21 @@ The scorer prints:
   --db-url postgresql://postgres:postgres@localhost:5433/catcher_intel \
   --season 2025
 ```
+
+### 8b. One-command latest-season refresh
+
+```bash
+.venv/bin/python services/modeling/refresh_latest_scored_data.py \
+  --db-url postgresql://postgres:postgres@localhost:5433/catcher_intel
+```
+
+Or through `pnpm`:
+
+```bash
+pnpm refresh:latest-season -- --db-url postgresql://postgres:postgres@localhost:5433/catcher_intel
+```
+
+This runs player metadata refresh, public catcher metrics refresh, DVA scoring, and summary rebuild for the latest season present in `pitches_raw`.
 
 ### 9. Run the API
 
