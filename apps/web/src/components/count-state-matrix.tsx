@@ -29,13 +29,13 @@ function keyFor(balls: number, strikes: number) {
 function cellClasses(row: CountSummary, selected: boolean) {
   const base =
     row.avg_dva >= 0.008
-      ? "bg-brand-primary text-white border-brand-primary/24"
+      ? "bg-positive text-white border-positive/30"
       : row.avg_dva >= 0.002
-        ? "bg-brand-sage/35 text-ink border-brand-sage/40"
+        ? "bg-positive-soft text-ink border-positive/25"
         : row.avg_dva <= -0.008
-          ? "bg-accent-clay text-white border-accent-clay/24"
+          ? "bg-negative text-white border-negative/30"
           : row.avg_dva <= -0.002
-            ? "bg-brand-sand/28 text-accent-clay border-brand-sand/38"
+            ? "bg-negative-soft text-negative border-negative/25"
             : "bg-surface-raised/84 text-ink border-line/70";
 
   return [
@@ -362,7 +362,7 @@ export function CountStateMatrix({
 
       <div className="flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-muted">
         <span>Clay = worse than baseline</span>
-        <div className="h-2.5 w-28 rounded-full bg-gradient-to-r from-accent-clay via-brand-sand/40 to-brand-primary" />
+        <div className="h-2.5 w-28 rounded-full bg-gradient-to-r from-negative via-surface-soft to-positive" />
         <span>Slate = better than baseline</span>
       </div>
     </div>

@@ -6,12 +6,12 @@ type CatcherSummaryInsightsProps = {
 
 function toneClasses(tone: CatcherSummaryInsight["tone"]) {
   if (tone === "positive") {
-    return "border-[#a7f3d0] bg-[linear-gradient(180deg,#ecfdf5,#ffffff)]";
+    return "border-line border-l-4 border-l-positive bg-surface";
   }
   if (tone === "caution") {
-    return "border-[#fde68a] bg-[linear-gradient(180deg,#fffbeb,#ffffff)]";
+    return "border-line border-l-4 border-l-negative bg-surface";
   }
-  return "border-line bg-[linear-gradient(180deg,#f8fafc,#ffffff)]";
+  return "border-line border-l-4 border-l-ink bg-surface";
 }
 
 export function CatcherSummaryInsights({ insights }: CatcherSummaryInsightsProps) {

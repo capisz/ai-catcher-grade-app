@@ -48,11 +48,11 @@ function cellClasses(row: StealAgainstCountSummary) {
     row.throw_out_rate_delta != null && row.throw_out_rate_delta >= 0.08
       ? "card-tone-sage"
       : row.throw_out_rate_delta != null && row.throw_out_rate_delta > 0
-        ? "bg-brand-sage/28"
+        ? "bg-positive-soft"
         : row.throw_out_rate_delta != null && row.throw_out_rate_delta <= -0.08
           ? "card-tone-clay"
           : row.throw_out_rate_delta != null && row.throw_out_rate_delta < 0
-            ? "bg-brand-sand/34"
+            ? "bg-negative-soft"
             : "surface-panel";
   const volume =
     row.attempt_share != null && row.attempt_share >= 0.2

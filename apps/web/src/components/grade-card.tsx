@@ -8,15 +8,15 @@ type GradeCardProps = {
 
 function tone(score: number | null | undefined) {
   if (score == null) {
-    return "surface-panel border-line";
+    return "border border-line bg-surface";
   }
   if (score >= 65) {
-    return "border-[#a7f3d0] bg-[linear-gradient(180deg,#ecfdf5,#ffffff)]";
+    return "border-2 border-ink bg-surface";
   }
   if (score >= 55) {
-    return "border-[#bfdbfe] bg-[linear-gradient(180deg,#eff6ff,#ffffff)]";
+    return "border border-ink bg-surface";
   }
-  return "border-line bg-[linear-gradient(180deg,#f8fafc,#ffffff)]";
+  return "border border-line-strong/40 bg-surface";
 }
 
 function pillTone(score: number | null | undefined) {
@@ -24,10 +24,10 @@ function pillTone(score: number | null | undefined) {
     return "meta-pill text-muted";
   }
   if (score >= 65) {
-    return "border border-[#a7f3d0] bg-[#ecfdf5] text-[#047857]";
+    return "border-[1.5px] border-ink bg-surface-strong text-white";
   }
   if (score >= 55) {
-    return "border border-[#bfdbfe] bg-[#eff6ff] text-[#1d4ed8]";
+    return "border-[1.5px] border-ink bg-surface text-ink";
   }
   return "meta-pill text-muted-strong";
 }
@@ -36,7 +36,7 @@ export function GradeCard({ label, grade, description }: GradeCardProps) {
   return (
     <div
       className={[
-        "rounded-xl border p-4",
+        "rounded-xl p-4",
         tone(grade.score),
       ].join(" ")}
     >

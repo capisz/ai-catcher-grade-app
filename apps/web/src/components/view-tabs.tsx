@@ -29,9 +29,9 @@ export function ViewTabs({ items, active }: ViewTabsProps) {
               loadingMessage={`Loading ${item.label.toLowerCase()}...`}
               loadingSubtitle="Switching section view."
               className={[
-                "rounded-md px-3 py-1.5 text-sm font-medium transition",
+                "rounded-md px-3 py-1.5 text-sm font-semibold transition",
                 isActive
-                  ? "bg-surface text-ink shadow-[0_1px_2px_rgba(24,24,27,0.08)]"
+                  ? "bg-surface-strong text-white"
                   : "text-muted hover:text-ink",
               ].join(" ")}
             >

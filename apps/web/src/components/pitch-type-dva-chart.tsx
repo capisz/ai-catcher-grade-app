@@ -73,7 +73,7 @@ export function PitchTypeDvaChart({
             {data.map((row) => (
               <Cell
                 key={row.pitch_type}
-                fill={row.total_dva >= 0 ? "var(--chart-primary)" : "var(--chart-accent)"}
+                fill={row.total_dva >= 0 ? "var(--chart-positive)" : "var(--chart-negative)"}
               />
             ))}
           </Bar>

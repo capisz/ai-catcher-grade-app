@@ -11,7 +11,7 @@ export function DemoDataBadge() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 rounded-full border border-warning/30 bg-warning-soft px-4 py-2 text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-warning shadow-lg">
+    <div className="fixed bottom-4 right-4 z-50 rounded-full border-2 border-ink bg-surface-strong px-4 py-2 text-[0.62rem] font-bold uppercase tracking-[0.08em] text-white shadow-lg">
       Demo data
     </div>
   );

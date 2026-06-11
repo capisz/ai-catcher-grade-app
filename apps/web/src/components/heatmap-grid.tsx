@@ -13,16 +13,16 @@ function buildCellLookup(cells: HeatCell[]) {
 
 function cellColor(value: number, compact: boolean) {
   if (value >= 0.008) {
-    return compact ? "bg-brand-primary text-white" : "bg-brand-primary text-white";
+    return compact ? "bg-positive text-white" : "bg-positive text-white";
   }
   if (value >= 0.003) {
-    return compact ? "bg-brand-sage text-ink" : "bg-brand-sage text-ink";
+    return compact ? "bg-positive-soft text-ink" : "bg-positive-soft text-ink";
   }
   if (value <= -0.008) {
     return compact ? "bg-accent text-white" : "bg-accent text-white";
   }
   if (value <= -0.003) {
-    return compact ? "bg-brand-sand text-accent-clay" : "bg-brand-sand text-accent-clay";
+    return compact ? "bg-negative-soft text-negative" : "bg-negative-soft text-negative";
   }
   return "bg-surface-raised/72 text-ink";
 }
@@ -59,7 +59,7 @@ export function HeatmapGrid({
       </div>
       <div className="mt-4 flex items-center gap-3 text-xs uppercase tracking-[0.06em] text-muted">
         <span>{negativeLabel}</span>
-        <div className="h-2 w-24 rounded-full bg-gradient-to-r from-accent via-brand-sand to-brand-primary" />
+        <div className="h-2 w-24 rounded-full bg-gradient-to-r from-negative via-surface-soft to-positive" />
         <span>{positiveLabel}</span>
       </div>
     </div>

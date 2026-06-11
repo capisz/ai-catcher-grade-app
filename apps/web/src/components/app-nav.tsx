@@ -28,9 +28,9 @@ export function AppNav() {
               loadingMessage="Loading catcher intelligence..."
               loadingSubtitle={`Opening ${item.label.toLowerCase()}.`}
               className={[
-                "rounded-md px-3 py-1.5 text-sm font-medium transition",
+                "rounded-md px-3 py-1.5 text-sm font-semibold transition",
                 active
-                  ? "bg-surface text-ink shadow-[0_1px_2px_rgba(24,24,27,0.08)]"
+                  ? "bg-surface-strong text-white"
                   : "text-muted hover:text-ink",
               ].join(" ")}
             >

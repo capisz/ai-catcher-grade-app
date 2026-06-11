@@ -81,7 +81,7 @@ export function PairingDvaChart({
             {data.map((row) => (
               <Cell
                 key={row.pitcher_id}
-                fill={row.total_dva >= 0 ? "var(--chart-primary)" : "var(--chart-accent)"}
+                fill={row.total_dva >= 0 ? "var(--chart-positive)" : "var(--chart-negative)"}
               />
             ))}
           </Bar>

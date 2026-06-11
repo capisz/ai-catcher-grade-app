@@ -59,7 +59,7 @@ export function LeaderboardChart({ entries }: { entries: LeaderboardEntry[] }) {
             {data.map((entry) => (
               <Cell
                 key={entry.catcher_id}
-                fill={entry.total_dva >= 0 ? "var(--chart-primary)" : "var(--chart-accent)"}
+                fill={entry.total_dva >= 0 ? "var(--chart-positive)" : "var(--chart-negative)"}
               />
             ))}
           </Bar>
