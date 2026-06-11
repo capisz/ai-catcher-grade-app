@@ -18,9 +18,9 @@
   --text-secondary: #d6d6d6;
   --text-muted: #9a9a9a;
   --brand-primary: #f5f5f5;
-  --brand-secondary: #f5f5f5;
-  --accent: #f5f5f5;
-  --highlight: #2e2e2e;
+  --brand-secondary: #3b82f6;
+  --accent: #3b82f6;
+  --highlight: rgba(59, 130, 246, 0.22);
   --positive: #2fbf63;
   --positive-soft: rgba(47, 191, 99, 0.14);
   --negative: #f0473e;
@@ -28,16 +28,16 @@
   --warning: #f5f5f5;
   --warning-soft: #1f1f1f;
   --nav-background: rgba(9, 9, 9, 0.92);
-  --active-tab: #f5f5f5;
-  --active-tab-text: #090909;
+  --active-tab: #3b82f6;
+  --active-tab-text: #ffffff;
   --inactive-tab: transparent;
   --inactive-tab-hover: #222222;
-  --button-primary: #f5f5f5;
+  --button-primary: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
   --button-secondary: #141414;
   --badge-neutral: #1f1f1f;
   --badge-emphasis: #f5f5f5;
   --badge-accent: #f5f5f5;
-  --chart-primary: #f5f5f5;
+  --chart-primary: #60a5fa;
   --chart-secondary: #a3a3a3;
   --chart-tertiary: #6b6b6b;
   --chart-muted: #3a3a3a;
@@ -60,9 +60,9 @@
   --ink-strong: #ffffff;
   --muted: var(--text-muted);
   --muted-strong: #c2c2c2;
-  --accent-soft: #222222;
-  --accent-clay: var(--accent);
-  --accent-clay-soft: #2e2e2e;
+  --accent-soft: rgba(59, 130, 246, 0.16);
+  --accent-clay: #60a5fa;
+  --accent-clay-soft: rgba(59, 130, 246, 0.24);
   --sage-soft: #1f1f1f;
   --line: var(--border);
   --line-strong: var(--border-strong);
@@ -161,8 +161,8 @@ a {
 }
 
 ::selection {
-  background: #f5f5f5;
-  color: #090909;
+  background: #3b82f6;
+  color: #ffffff;
 }
 
 .card {
@@ -190,9 +190,13 @@ a {
 }
 
 .panel-dark {
-  background: #000000;
-  border: 2px solid #f5f5f5;
-  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.8);
+  background:
+    radial-gradient(42rem 22rem at 112% -24%, rgba(59, 130, 246, 0.16), transparent 60%),
+    #000000;
+  border: 2px solid #3b82f6;
+  box-shadow:
+    0 0 24px -6px rgba(59, 130, 246, 0.35),
+    0 16px 40px -12px rgba(0, 0, 0, 0.8);
 }
 
 .field {
@@ -238,33 +242,37 @@ select.field option {
 
 .field:focus,
 .field:focus-visible {
-  border-color: #f5f5f5;
-  box-shadow: 0 0 0 3px rgba(245, 245, 245, 0.14);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
 }
 
 .button-primary {
   border-radius: 0.5rem;
-  border: 2px solid #f5f5f5;
-  background: #f5f5f5;
-  color: #090909;
+  border: 1px solid rgba(96, 165, 250, 0.6);
+  background: var(--button-primary);
+  color: #ffffff;
   font-weight: 700;
   letter-spacing: 0.01em;
-  box-shadow: 0 4px 16px -4px rgba(245, 245, 245, 0.25);
+  box-shadow:
+    0 4px 18px -4px rgba(59, 130, 246, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
   transition:
-    background-color 120ms ease,
+    filter 120ms ease,
     transform 120ms ease,
     box-shadow 120ms ease;
 }
 
 .button-primary:hover {
-  background: #ffffff;
+  filter: brightness(1.1);
   transform: translateY(-1px);
-  box-shadow: 0 8px 20px -4px rgba(245, 245, 245, 0.3);
+  box-shadow:
+    0 8px 24px -4px rgba(59, 130, 246, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .button-primary:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(245, 245, 245, 0.3);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
 }
 
 .button-secondary {
@@ -292,7 +300,7 @@ select.field option {
 }
 
 .label-kicker {
-  color: #f5f5f5;
+  color: #60a5fa;
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -323,9 +331,9 @@ select.field option {
 }
 
 .pill-sand {
-  background: #f5f5f5;
-  border: 1.5px solid #f5f5f5;
-  color: #090909;
+  background: rgba(59, 130, 246, 0.18);
+  border: 1.5px solid rgba(96, 165, 250, 0.55);
+  color: #93c5fd;
 }
 
 .pill-clay {
@@ -352,7 +360,7 @@ select.field option {
 .card-tone-sage {
   background: #1c1c1c;
   border: 1px solid #383838;
-  border-top: 4px solid #f5f5f5;
+  border-top: 4px solid #3b82f6;
   box-shadow: none;
 }
 

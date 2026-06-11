@@ -41,7 +41,7 @@ export default function RootLayout({
                   loadingMessage="Loading catcher intelligence..."
                   loadingSubtitle="Opening the main scouting dashboard."
                 >
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-strong text-black">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-white">
                     <BaseballLogo className="h-5 w-5" />
                   </span>
                   <span className="font-serif text-[1.05rem] font-semibold tracking-tight text-ink">
