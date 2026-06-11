@@ -504,7 +504,7 @@ export default async function ResearchPage({
                 </div>
                 <div className="mt-5 flex flex-wrap gap-3">
                   <LoadingLink
-                    href={`/?catcher_id=${detail!.identity.catcher_id}&season=${metadata.selected_season}&team=${requestedTeam || ""}`}
+                    href={`/scouting?catcher_id=${detail!.identity.catcher_id}&season=${metadata.selected_season}&team=${requestedTeam || ""}`}
                     className="button-secondary px-4 py-2.5 text-sm"
                     loadingMessage="Opening scouting mode..."
                     loadingSubtitle={`Loading ${detail!.identity.catcher_name}.`}
@@ -591,7 +591,7 @@ export default async function ResearchPage({
             {orderedLeaderboard.slice(0, 4).map((entry, index) => (
               <LoadingLink
                 key={entry.catcher_id}
-                href={`/?catcher_id=${entry.catcher_id}&season=${entry.season}&team=${requestedTeam || ""}`}
+                href={`/scouting?catcher_id=${entry.catcher_id}&season=${entry.season}&team=${requestedTeam || ""}`}
                 loadingMessage="Loading scouting mode..."
                 loadingSubtitle={`Opening ${entry.catcher_name}.`}
                 className={[

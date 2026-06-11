@@ -76,6 +76,62 @@ def test_game_catchers_filters_to_catchers_only(monkeypatch):
     assert out["away"] == []
 
 
+def test_parse_hot_zones_extracts_batting_average_zones():
+    payload = {
+        "stats": [
+            {
+                "splits": [
+                    {"stat": {"name": "onBasePercentage", "zones": [
+                        {"zone": "01", "value": ".900"}]}},
+                    {"stat": {"name": "battingAverage", "zones": [
+                        {"zone": "01", "value": ".150"},
+                        {"zone": "02", "value": ".450"},
+                        {"zone": "05", "value": ".300"},
+                        {"zone": "09", "value": "-"},
+                        {"zone": "12", "value": ".400"},
+                    ]}},
+                ]
+            }
+        ]
+    }
+    parsed = live_data._parse_hot_zones(payload)
+    assert set(parsed["values"]) == {1, 2, 5}  # "-" and out-of-zone 12 skipped
+    assert parsed["hotness"][1] == 0.0  # coldest
+    assert parsed["hotness"][2] == 1.0  # hottest
+    assert 2 in parsed["top"]
+
+
+def test_score_side_rewards_avoiding_hot_zones():
+    zones_by_batter = {
+        10: live_data._parse_hot_zones({
+            "stats": [{"splits": [{"stat": {"name": "battingAverage", "zones": [
+                {"zone": "01", "value": ".100"},
+                {"zone": "02", "value": ".250"},
+                {"zone": "03", "value": ".500"},
+            ]}}]}]
+        })
+    }
+    cold_calls = [{"zone": 1, "batter_id": 10}] * 5
+    hot_calls = [{"zone": 3, "batter_id": 10}] * 5
+
+    cold_report = live_data._score_side(cold_calls, zones_by_batter)
+    hot_report = live_data._score_side(hot_calls, zones_by_batter)
+
+    assert 20 <= hot_report["grade"] <= cold_report["grade"] <= 80
+    assert cold_report["grade"] == 80  # all pitches in the coldest zone
+    assert hot_report["grade"] == 20  # all pitches in the hottest zone
+    assert cold_report["pitches_located"] == 5
+    assert cold_report["zones"][0]["pitch_share"] == 1.0
+    assert cold_report["zones"][0]["avg_batter_value"] == 0.1
+
+
+def test_score_side_handles_no_locatable_pitches():
+    report = live_data._score_side([{"zone": None, "batter_id": 1}], {})
+    assert report["grade"] is None
+    assert report["pitches_located"] == 0
+    assert len(report["zones"]) == 9
+
+
 def test_game_pitches_extracts_pitch_events(monkeypatch):
     fixture = {
         "gameData": {"status": {"abstractGameState": "Live", "detailedState": "In Progress"}},

@@ -16,5 +16,5 @@ export default async function CatcherDetailRedirectPage({ params, searchParams }
   const { id } = await params;
   const search = await searchParams;
   const season = readString(search.season);
-  redirect(`/?catcher_id=${id}${season ? `&season=${season}` : ""}`);
+  redirect(`/scouting?catcher_id=${id}${season ? `&season=${season}` : ""}`);
 }

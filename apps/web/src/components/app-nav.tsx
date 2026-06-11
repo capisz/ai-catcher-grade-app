@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { LoadingLink } from "@/components/ui/loading-link";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Scouting" },
+  { href: "/", label: "Live" },
+  { href: "/scouting", label: "Scouting" },
   { href: "/compare", label: "Compare" },
   { href: "/matchup-explorer", label: "Game" },
   { href: "/research", label: "Research" },
@@ -20,7 +21,7 @@ export function AppNav() {
         {NAV_ITEMS.map((item) => {
           const active =
             pathname === item.href ||
-            (item.href === "/" && pathname.startsWith("/catcher/"));
+            (item.href === "/scouting" && pathname.startsWith("/catcher/"));
           return (
             <LoadingLink
               key={item.href}

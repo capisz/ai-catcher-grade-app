@@ -177,6 +177,7 @@ def live_game_pitches(game_pk: int, limit: int = Query(default=200, le=1000)) ->
                     "half": about.get("halfInning"),
                     "at_bat_index": about.get("atBatIndex"),
                     "batter": (matchup.get("batter") or {}).get("fullName"),
+                    "batter_id": (matchup.get("batter") or {}).get("id"),
                     "pitcher": (matchup.get("pitcher") or {}).get("fullName"),
                     "pitcher_id": (matchup.get("pitcher") or {}).get("id"),
                     "count": event.get("count"),
@@ -198,6 +199,172 @@ def live_game_pitches(game_pk: int, limit: int = Query(default=200, le=1000)) ->
         "detailed_state": status.get("detailedState"),
         "pitch_count": len(pitches),
         "pitches": list(reversed(pitches))[:limit],
+    }
+
+
+def _parse_hot_zones(payload: Any) -> dict:
+    """Extract batting-average zone values from a hotColdZones stats payload.
+
+    Returns {"values": {zone_int: float}, "hotness": {zone_int: 0..1},
+    "top": set(top-3 zone ints)} over strike zones 1-9, or an empty dict when
+    the batter has no usable zone data.
+    """
+    zone_values: dict = {}
+    for stat_block in payload.get("stats", []) or []:
+        for split in stat_block.get("splits", []) or []:
+            stat = split.get("stat", {}) or {}
+            if stat.get("name") != "battingAverage":
+                continue
+            for zone in stat.get("zones", []) or []:
+                try:
+                    zone_number = int(zone.get("zone"))
+                except (TypeError, ValueError):
+                    continue
+                if not 1 <= zone_number <= 9:
+                    continue
+                raw_value = zone.get("value")
+                try:
+                    zone_values[zone_number] = float(raw_value)
+                except (TypeError, ValueError):
+                    continue
+
+    # Hotness needs at least two zones to rank against each other.
+    if len(zone_values) < 2:
+        return {}
+
+    ordered = sorted(zone_values.items(), key=lambda item: item[1])
+    span = len(ordered) - 1
+    hotness = {zone: rank / span for rank, (zone, _) in enumerate(ordered)}
+    top = {zone for zone, _ in ordered[-3:]}
+    return {"values": zone_values, "hotness": hotness, "top": top}
+
+
+def _score_side(side_pitches: list, zones_by_batter: dict) -> dict:
+    """Aggregate one fielding side's called pitches against batter hot zones."""
+    cells = {
+        zone: {"pitches": 0, "hot_sum": 0.0, "value_sum": 0.0, "value_count": 0}
+        for zone in range(1, 10)
+    }
+    located = 0
+    hotness_total = 0.0
+    top_zone_hits = 0
+
+    for pitch in side_pitches:
+        zone = pitch.get("zone")
+        batter_zones = zones_by_batter.get(pitch.get("batter_id"))
+        if not batter_zones or not isinstance(zone, int) or not 1 <= zone <= 9:
+            continue
+        hotness = batter_zones["hotness"].get(zone)
+        if hotness is None:
+            continue
+        located += 1
+        hotness_total += hotness
+        cells[zone]["pitches"] += 1
+        cells[zone]["hot_sum"] += hotness
+        value = batter_zones["values"].get(zone)
+        if value is not None:
+            cells[zone]["value_sum"] += value
+            cells[zone]["value_count"] += 1
+        if zone in batter_zones["top"]:
+            top_zone_hits += 1
+
+    if located == 0:
+        return {
+            "grade": None,
+            "score": None,
+            "pitches_located": 0,
+            "hot_zone_pitch_pct": None,
+            "zones": [
+                {"zone": zone, "pitches": 0, "pitch_share": None,
+                 "avg_batter_hotness": None, "avg_batter_value": None}
+                for zone in range(1, 10)
+            ],
+        }
+
+    score = 1.0 - (hotness_total / located)
+    grade = max(20, min(80, round(20 + 60 * score)))
+    return {
+        "grade": grade,
+        "score": round(score, 4),
+        "pitches_located": located,
+        "hot_zone_pitch_pct": round(top_zone_hits / located, 4),
+        "zones": [
+            {
+                "zone": zone,
+                "pitches": cell["pitches"],
+                "pitch_share": round(cell["pitches"] / located, 4),
+                "avg_batter_hotness": (
+                    round(cell["hot_sum"] / cell["pitches"], 4) if cell["pitches"] else None
+                ),
+                "avg_batter_value": (
+                    round(cell["value_sum"] / cell["value_count"], 4)
+                    if cell["value_count"]
+                    else None
+                ),
+            }
+            for zone, cell in sorted(cells.items())
+        ],
+    }
+
+
+@router.get("/games/{game_pk}/zone-report")
+def live_game_zone_report(game_pk: int) -> dict:
+    """Per-catcher game-calling zone report for a live or finished game.
+
+    Scores how often each side's called pitches avoid the current batters'
+    hottest strike zones (season hot/cold zone batting averages).
+    """
+    payload = _fetch_json(f"/v1.1/game/{game_pk}/feed/live", ttl=TTL_LIVE_SECONDS)
+    game_data = payload.get("gameData", {}) or {}
+    season = (game_data.get("game") or {}).get("season") or date_cls.today().year
+
+    side_pitches: dict = {"home": [], "away": []}
+    batter_ids: dict = {"home": set(), "away": set()}
+    all_plays = ((payload.get("liveData") or {}).get("plays") or {}).get("allPlays", []) or []
+    for play in all_plays:
+        about = play.get("about", {}) or {}
+        matchup = play.get("matchup", {}) or {}
+        batter_id = (matchup.get("batter") or {}).get("id")
+        # Top half: home team fields, so the home catcher is calling pitches.
+        side = "home" if about.get("halfInning") == "top" else "away"
+        for event in play.get("playEvents", []) or []:
+            if not event.get("isPitch"):
+                continue
+            zone = (event.get("pitchData") or {}).get("zone")
+            side_pitches[side].append({"zone": zone, "batter_id": batter_id})
+            if batter_id is not None:
+                batter_ids[side].add(batter_id)
+
+    zones_by_batter: dict = {}
+    for batter_id in batter_ids["home"] | batter_ids["away"]:
+        try:
+            stats_payload = _fetch_json(
+                f"/v1/people/{batter_id}/stats",
+                {"stats": "hotColdZones", "group": "hitting", "season": season, "sportId": 1},
+                ttl=TTL_SLOW_SECONDS,
+            )
+        except HTTPException:
+            continue
+        parsed = _parse_hot_zones(stats_payload)
+        if parsed:
+            zones_by_batter[batter_id] = parsed
+
+    catchers = live_game_catchers(game_pk)
+    status = game_data.get("status", {}) or {}
+    sides = {}
+    for side in ("home", "away"):
+        report = _score_side(side_pitches[side], zones_by_batter)
+        report["catcher"] = (catchers.get(side) or [{}])[0] or None
+        report["catchers"] = catchers.get(side) or []
+        sides[side] = report
+
+    return {
+        "game_pk": game_pk,
+        "state": status.get("abstractGameState"),
+        "detailed_state": status.get("detailedState"),
+        "season": season,
+        "batters_with_zone_data": len(zones_by_batter),
+        "sides": sides,
     }
 
 

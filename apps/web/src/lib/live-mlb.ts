@@ -158,6 +158,7 @@ async function liveGamePitches(gamePk: string, limit: number) {
         half: about.halfInning ?? null,
         at_bat_index: about.atBatIndex ?? null,
         batter: rec(matchup.batter).fullName ?? null,
+        batter_id: rec(matchup.batter).id ?? null,
         pitcher: rec(matchup.pitcher).fullName ?? null,
         pitcher_id: rec(matchup.pitcher).id ?? null,
         count: event.count ?? null,
@@ -180,6 +181,181 @@ async function liveGamePitches(gamePk: string, limit: number) {
     detailed_state: status.detailedState ?? null,
     pitch_count: pitches.length,
     pitches: pitches.reverse().slice(0, limit),
+  };
+}
+
+type BatterZones = {
+  values: Map<number, number>;
+  hotness: Map<number, number>;
+  top: Set<number>;
+};
+
+function parseHotZones(payload: JsonRecord): BatterZones | null {
+  const values = new Map<number, number>();
+  for (const block of arr(payload.stats)) {
+    for (const split of arr(rec(block).splits)) {
+      const stat = rec(rec(split).stat);
+      if (stat.name !== "battingAverage") {
+        continue;
+      }
+      for (const zoneValue of arr(stat.zones)) {
+        const zone = rec(zoneValue);
+        const zoneNumber = Number(zone.zone);
+        const value = Number(zone.value);
+        if (Number.isInteger(zoneNumber) && zoneNumber >= 1 && zoneNumber <= 9 && Number.isFinite(value)) {
+          values.set(zoneNumber, value);
+        }
+      }
+    }
+  }
+  if (values.size < 2) {
+    return null;
+  }
+  const ordered = [...values.entries()].sort((a, b) => a[1] - b[1]);
+  const span = ordered.length - 1;
+  const hotness = new Map(ordered.map(([zone], rank) => [zone, rank / span]));
+  const top = new Set(ordered.slice(-3).map(([zone]) => zone));
+  return { values, hotness, top };
+}
+
+function scoreSide(
+  sidePitches: { zone: unknown; batterId: unknown }[],
+  zonesByBatter: Map<number, BatterZones>,
+) {
+  const cells = new Map(
+    Array.from({ length: 9 }, (_, i) => [
+      i + 1,
+      { pitches: 0, hotSum: 0, valueSum: 0, valueCount: 0 },
+    ]),
+  );
+  let located = 0;
+  let hotnessTotal = 0;
+  let topZoneHits = 0;
+
+  for (const pitch of sidePitches) {
+    const zone = pitch.zone;
+    const batter = zonesByBatter.get(Number(pitch.batterId));
+    if (!batter || typeof zone !== "number" || zone < 1 || zone > 9) {
+      continue;
+    }
+    const hotness = batter.hotness.get(zone);
+    if (hotness === undefined) {
+      continue;
+    }
+    located += 1;
+    hotnessTotal += hotness;
+    const cell = cells.get(zone)!;
+    cell.pitches += 1;
+    cell.hotSum += hotness;
+    const value = batter.values.get(zone);
+    if (value !== undefined) {
+      cell.valueSum += value;
+      cell.valueCount += 1;
+    }
+    if (batter.top.has(zone)) {
+      topZoneHits += 1;
+    }
+  }
+
+  const round4 = (value: number) => Math.round(value * 10000) / 10000;
+  if (located === 0) {
+    return {
+      grade: null,
+      score: null,
+      pitches_located: 0,
+      hot_zone_pitch_pct: null,
+      zones: [...cells.keys()].map((zone) => ({
+        zone,
+        pitches: 0,
+        pitch_share: null,
+        avg_batter_hotness: null,
+        avg_batter_value: null,
+      })),
+    };
+  }
+
+  const score = 1 - hotnessTotal / located;
+  const grade = Math.max(20, Math.min(80, Math.round(20 + 60 * score)));
+  return {
+    grade,
+    score: round4(score),
+    pitches_located: located,
+    hot_zone_pitch_pct: round4(topZoneHits / located),
+    zones: [...cells.entries()].map(([zone, cell]) => ({
+      zone,
+      pitches: cell.pitches,
+      pitch_share: round4(cell.pitches / located),
+      avg_batter_hotness: cell.pitches ? round4(cell.hotSum / cell.pitches) : null,
+      avg_batter_value: cell.valueCount ? round4(cell.valueSum / cell.valueCount) : null,
+    })),
+  };
+}
+
+async function liveGameZoneReport(gamePk: string) {
+  const payload = await fetchJson(`/v1.1/game/${gamePk}/feed/live`, {}, TTL_LIVE_MS);
+  const gameData = rec(payload.gameData);
+  const season = String(rec(gameData.game).season ?? new Date().getFullYear());
+
+  const sidePitches: Record<"home" | "away", { zone: unknown; batterId: unknown }[]> = {
+    home: [],
+    away: [],
+  };
+  const batterIds = new Set<number>();
+  const allPlays = arr(rec(rec(payload.liveData).plays).allPlays);
+  for (const playValue of allPlays) {
+    const play = rec(playValue);
+    const about = rec(play.about);
+    const batterId = rec(rec(play.matchup).batter).id;
+    // Top half: home team fields, so the home catcher is calling pitches.
+    const side = about.halfInning === "top" ? "home" : "away";
+    for (const eventValue of arr(play.playEvents)) {
+      const event = rec(eventValue);
+      if (!event.isPitch) {
+        continue;
+      }
+      sidePitches[side].push({ zone: rec(event.pitchData).zone, batterId });
+      if (typeof batterId === "number") {
+        batterIds.add(batterId);
+      }
+    }
+  }
+
+  const zonesByBatter = new Map<number, BatterZones>();
+  await Promise.all(
+    [...batterIds].map(async (batterId) => {
+      try {
+        const stats = await fetchJson(
+          `/v1/people/${batterId}/stats`,
+          { stats: "hotColdZones", group: "hitting", season, sportId: "1" },
+          TTL_SLOW_MS,
+        );
+        const parsed = parseHotZones(stats);
+        if (parsed) {
+          zonesByBatter.set(batterId, parsed);
+        }
+      } catch {
+        // Batters without zone data are simply excluded from scoring.
+      }
+    }),
+  );
+
+  const catchers = await liveGameCatchers(gamePk);
+  const status = rec(gameData.status);
+  const sides: JsonRecord = {};
+  for (const side of ["home", "away"] as const) {
+    const report: JsonRecord = scoreSide(sidePitches[side], zonesByBatter);
+    report.catcher = catchers[side][0] ?? null;
+    report.catchers = catchers[side];
+    sides[side] = report;
+  }
+
+  return {
+    game_pk: Number(gamePk),
+    state: status.abstractGameState ?? null,
+    detailed_state: status.detailedState ?? null,
+    season,
+    batters_with_zone_data: zonesByBatter.size,
+    sides,
   };
 }
 
@@ -230,6 +406,9 @@ export async function handleLiveFallback(request: NextRequest, path: string[]) {
     }
     if (path.length === 4 && path[1] === "games" && path[3] === "catchers") {
       return NextResponse.json(await liveGameCatchers(path[2]));
+    }
+    if (path.length === 4 && path[1] === "games" && path[3] === "zone-report") {
+      return NextResponse.json(await liveGameZoneReport(path[2]));
     }
     if (path.length === 4 && path[1] === "games" && path[3] === "pitches") {
       const limit = Math.min(Number(params.get("limit") ?? 200) || 200, 1000);

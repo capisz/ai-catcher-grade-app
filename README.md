@@ -10,7 +10,7 @@
 | --- | --- | --- |
 | ![Scouting dashboard](docs/screenshots/scouting-dashboard.png) | ![Game mode](docs/screenshots/game-mode.png) | ![Compare mode](docs/screenshots/compare-mode.png) |
 
-Game mode also has a Live tab that streams pitch-by-pitch data for today's MLB games from the public MLB Stats API:
+The home page is a live dashboard that grades each catcher's pitch calls against batter hot/cold zones in real time, straight from the public MLB Stats API:
 
 ![Live game mode](docs/screenshots/live-game-mode.png)
 
@@ -355,6 +355,8 @@ Live MLB Stats API layer (no key required, in-memory TTL cache):
   - catchers on both boxscore rosters with headshot URLs
 - `GET /live/games/{game_pk}/pitches`
   - pitch-by-pitch event stream, most recent first; query params: `limit`
+- `GET /live/games/{game_pk}/zone-report`
+  - per-catcher game-calling grade vs batter hot/cold zones (3x3 strike-zone report)
 - `GET /live/players/{player_id}/gamelog`
   - query params: `season`, `stat_group` (`fielding|hitting|catching`)
 - `GET /live/cache-status`
@@ -370,11 +372,13 @@ curl "http://127.0.0.1:8000/catchers/672275?season=2025"
 ## Frontend routes
 
 - `/`
+  - live dashboard: today's games, catcher carousel, and live game-calling zone grades
+- `/scouting`
   - main catcher scouting dashboard
 - `/leaderboard`
   - season leaderboard with filters
 - `/catcher/{id}`
-  - redirects to the main dashboard selection
+  - redirects to the scouting dashboard selection
 
 ## Useful scripts
 

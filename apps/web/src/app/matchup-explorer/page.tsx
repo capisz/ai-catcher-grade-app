@@ -5,12 +5,12 @@ import type {
   RecommendationResponse,
 } from "@catcher-intel/contracts";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 import { ApiDebugPanel } from "@/components/api-debug-panel";
 import { DemoDataBadge } from "@/components/demo-data-badge";
 import { DataFreshnessPanel } from "@/components/data-freshness-panel";
 import { EmptyStatePanel } from "@/components/empty-state-panel";
-import { LiveGamePanel } from "@/components/live-game-panel";
 import { PairingDvaChart } from "@/components/pairing-dva-chart";
 import { RecommendationOptionBoard } from "@/components/recommendation-option-board";
 import { RecommendationRvChart } from "@/components/recommendation-rv-chart";
@@ -86,7 +86,6 @@ function debugErrorDetail(error: unknown) {
 
 const GAME_VIEWS = [
   { key: "matchup", label: "Matchup" },
-  { key: "live", label: "Live" },
   { key: "guide", label: "Guide" },
 ];
 
@@ -138,36 +137,9 @@ export default async function MatchupExplorerPage({
     ? requestedView
     : "matchup";
 
-  if (view === "live") {
-    const liveViewTabs = GAME_VIEWS.map((tab) => ({
-      ...tab,
-      href: buildHref("/matchup-explorer", {
-        season: readNumber(params.season),
-        team: readString(params.team, "").toUpperCase() || undefined,
-        catcher_id: readNumber(params.catcher_id),
-        view: tab.key,
-      }),
-    }));
-    return (
-      <div className="space-y-5">
-        <section className="card relative overflow-hidden rounded-xl p-5 sm:p-6">
-          <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
-          <div className="relative space-y-5">
-            <div>
-              <div className="label-kicker">Game Mode | Live</div>
-              <h1 className="mt-3 max-w-3xl font-serif text-2xl leading-tight text-ink">
-                Live pitch-by-pitch feed straight from today&apos;s MLB games.
-              </h1>
-              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-                Pick a game to watch the pitch stream — count, pitch type, velocity, zone — plus both rosters' catchers. Refreshes automatically.
-              </p>
-            </div>
-            <ViewTabs items={liveViewTabs} active="live" />
-          </div>
-        </section>
-        <LiveGamePanel />
-      </div>
-    );
+  if (requestedView === "live") {
+    // The live experience moved to the home page.
+    redirect("/");
   }
 
   const requestedSeason = readNumber(params.season);
