@@ -240,7 +240,39 @@ select.field {
 }
 
 select.field option {
+  background-color: #0e1729;
   color: var(--ink);
+}
+
+/* Native date inputs: tint the calendar glyph toward the theme */
+input[type="date"].field::-webkit-calendar-picker-indicator {
+  filter: invert(0.75) sepia(0.3) saturate(4) hue-rotate(195deg);
+  opacity: 0.85;
+}
+
+/* Themed scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2b3b61 transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #243355;
+  border: 2px solid var(--background);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #33486f;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .field:hover {

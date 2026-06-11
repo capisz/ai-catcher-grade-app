@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { AiAnalystCard } from "@/components/ai-analyst-card";
+import { GameSelect } from "@/components/ui/game-select";
 import { LiveZoneGrid } from "@/components/live-zone-grid";
 
 const PITCH_POLL_MS = 20_000;
@@ -83,16 +84,6 @@ async function fetchLiveJson<T>(url: string): Promise<T> {
     throw new Error(`Live data request failed (${response.status}).`);
   }
   return response.json() as Promise<T>;
-}
-
-function gameLabel(game: LiveGame) {
-  const away = game.away.name ?? "Away";
-  const home = game.home.name ?? "Home";
-  const score =
-    game.away.score != null && game.home.score != null
-      ? ` (${game.away.score}-${game.home.score})`
-      : "";
-  return `${away} @ ${home}${score} | ${game.detailed_state ?? game.state ?? "Unknown"}`;
 }
 
 function gradeLabel(grade: number | null) {
@@ -254,17 +245,7 @@ export function LiveDashboard() {
             <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
               Game ({games.length} today)
             </span>
-            <select
-              className="field"
-              value={selectedGamePk ?? ""}
-              onChange={(event) => setSelectedGamePk(Number(event.target.value))}
-            >
-              {games.map((game) => (
-                <option key={game.game_pk} value={game.game_pk}>
-                  {gameLabel(game)}
-                </option>
-              ))}
-            </select>
+            <GameSelect games={games} value={selectedGamePk} onChange={setSelectedGamePk} />
           </label>
           <div className="flex flex-wrap items-center gap-2 text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
             <span className="pill-sand rounded-full px-3 py-1.5">
