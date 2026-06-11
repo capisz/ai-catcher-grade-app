@@ -18,6 +18,7 @@ import { RecommendationRvChart } from "@/components/recommendation-rv-chart";
 import { SampleStabilityBadge } from "@/components/sample-stability-badge";
 import { SectionCard } from "@/components/section-card";
 import { LoadingForm } from "@/components/ui/loading-form";
+import { ViewTabs } from "@/components/view-tabs";
 import { LoadingLink } from "@/components/ui/loading-link";
 import {
   ApiRequestError,
@@ -84,6 +85,12 @@ function debugErrorDetail(error: unknown) {
   return errorMessage(error);
 }
 
+const GAME_VIEWS = [
+  { key: "matchup", label: "Matchup" },
+  { key: "live", label: "Live" },
+  { key: "guide", label: "Guide" },
+];
+
 function buildHref(pathname: string, params: Record<string, string | number | undefined>) {
   const search = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {
@@ -125,14 +132,23 @@ export default async function MatchupExplorerPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
-  const requestedTab = readString(params.tab, "matchup");
+  // "tab" is the legacy param name; keep reading it so old URLs still work.
+  const requestedView =
+    readString(params.view, "") || readString(params.tab, "") || "matchup";
+  const view = GAME_VIEWS.some((tab) => tab.key === requestedView)
+    ? requestedView
+    : "matchup";
 
-  if (requestedTab === "live") {
-    const matchupHref = buildHref("/matchup-explorer", {
-      season: readNumber(params.season),
-      team: readString(params.team, "").toUpperCase() || undefined,
-      catcher_id: readNumber(params.catcher_id),
-    });
+  if (view === "live") {
+    const liveViewTabs = GAME_VIEWS.map((tab) => ({
+      ...tab,
+      href: buildHref("/matchup-explorer", {
+        season: readNumber(params.season),
+        team: readString(params.team, "").toUpperCase() || undefined,
+        catcher_id: readNumber(params.catcher_id),
+        view: tab.key,
+      }),
+    }));
     return (
       <div className="space-y-8">
         <section className="card relative overflow-hidden rounded-xl px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
@@ -147,17 +163,7 @@ export default async function MatchupExplorerPage({
                 Pick a game to watch the pitch stream — count, pitch type, velocity, zone — plus both rosters' catchers. Refreshes automatically.
               </p>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <LoadingLink
-                href={matchupHref}
-                className="button-secondary px-4 py-2.5 text-sm"
-                loadingMessage="Opening season matchup mode..."
-                loadingSubtitle="Loading the recommendation workbench."
-              >
-                Season matchup
-              </LoadingLink>
-              <span className="button-primary px-4 py-2.5 text-sm">Live</span>
-            </div>
+            <ViewTabs items={liveViewTabs} active="live" />
           </div>
         </section>
         <LiveGamePanel />
@@ -425,18 +431,6 @@ export default async function MatchupExplorerPage({
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              <span className="button-primary px-4 py-2.5 text-sm">Season matchup</span>
-              <LoadingLink
-                href={`${buildQueryHref({})}&tab=live`}
-                className="button-secondary px-4 py-2.5 text-sm"
-                loadingMessage="Opening live game mode..."
-                loadingSubtitle="Loading today's MLB schedule."
-              >
-                Live
-              </LoadingLink>
-            </div>
-
             <ProductStatusStrip
               metadata={metadata}
               sampleLabel={catcherDetail.diagnostics.stability_label}
@@ -449,6 +443,7 @@ export default async function MatchupExplorerPage({
               loadingMessage="Loading game mode..."
               loadingSubtitle="Refreshing catcher, season, and team context."
             >
+              <input type="hidden" name="view" value={view} />
               <input type="hidden" name="pitcher_id" value={selectedPitcherId} />
               <input type="hidden" name="batter_id" value={batterId ?? ""} />
               <input type="hidden" name="stand" value={safeStand} />
@@ -750,14 +745,15 @@ export default async function MatchupExplorerPage({
         </div>
       </section>
 
-      <SectionCard
-        eyebrow="Live Readiness"
-        title="Freshness and scoring state"
-        subtitle="Game mode needs current context and honest freshness language. These cards show how recent the public-data pipeline really is."
-      >
-        <DataFreshnessPanel metadata={metadata} />
-      </SectionCard>
+      <ViewTabs
+        items={GAME_VIEWS.map((tab) => ({
+          ...tab,
+          href: `${buildQueryHref({})}&view=${tab.key}`,
+        }))}
+        active={view}
+      />
 
+      {view === "matchup" ? (<>
       <SectionCard
         eyebrow="Pairing Shortlist"
         title="Quick-select pitcher partners"
@@ -874,6 +870,16 @@ export default async function MatchupExplorerPage({
           </div>
         ) : null}
       </SectionCard>
+      </>) : null}
+
+      {view === "guide" ? (<>
+      <SectionCard
+        eyebrow="Live Readiness"
+        title="Freshness and scoring state"
+        subtitle="Game mode needs current context and honest freshness language. These cards show how recent the public-data pipeline really is."
+      >
+        <DataFreshnessPanel metadata={metadata} />
+      </SectionCard>
 
       <SectionCard
         eyebrow="Reading The Output"
@@ -905,6 +911,7 @@ export default async function MatchupExplorerPage({
           </div>
         </div>
       </SectionCard>
+      </>) : null}
 
       <ApiDebugPanel transport={apiTransport} items={debugItems} />
       <DemoDataBadge />

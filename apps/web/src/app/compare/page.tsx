@@ -18,6 +18,7 @@ import { ProductStatusStrip } from "@/components/product-status-strip";
 import { SampleStabilityBadge } from "@/components/sample-stability-badge";
 import { SectionCard } from "@/components/section-card";
 import { LoadingForm } from "@/components/ui/loading-form";
+import { ViewTabs } from "@/components/view-tabs";
 import { LoadingLink } from "@/components/ui/loading-link";
 import {
   ApiRequestError,
@@ -102,6 +103,15 @@ function debugErrorDetail(error: unknown) {
   }
   return errorMessage(error);
 }
+
+const COMPARE_VIEWS = [
+  { key: "overview", label: "Overview" },
+  { key: "grades", label: "Grades" },
+  { key: "counts", label: "Counts" },
+  { key: "pitch-mix", label: "Pitch Mix" },
+  { key: "batteries", label: "Batteries" },
+  { key: "data-trust", label: "Data Trust" },
+];
 
 function buildHref(pathname: string, params: Record<string, string | number | undefined>) {
   const search = new URLSearchParams();
@@ -209,6 +219,10 @@ export default async function ComparePage({
   const requestedTeam = readString(params.team, "").toUpperCase();
   const requestedA = readNumber(params.catcher_a);
   const requestedB = readNumber(params.catcher_b);
+  const requestedView = readString(params.view, "overview");
+  const view = COMPARE_VIEWS.some((tab) => tab.key === requestedView)
+    ? requestedView
+    : "overview";
   const apiTransport = await getApiTransport();
 
   const healthStatus = await getApiHealth()
@@ -345,7 +359,25 @@ export default async function ComparePage({
   const aLabel = shortName(catcherA.identity.catcher_name);
   const bLabel = shortName(catcherB.identity.catcher_name);
 
+  const compareContext = {
+    season: metadata.selected_season,
+    min_pitches: minPitches,
+    date_from: dateFrom || undefined,
+    date_to: dateTo || undefined,
+    team: requestedTeam || undefined,
+  };
+  const viewTabs = COMPARE_VIEWS.map((tab) => ({
+    ...tab,
+    href: buildHref("/compare", {
+      catcher_a: catcherA.identity.catcher_id,
+      catcher_b: catcherB.identity.catcher_id,
+      ...compareContext,
+      view: tab.key,
+    }),
+  }));
+
   const swapHref = buildHref("/compare", {
+    view,
     catcher_a: catcherB.identity.catcher_id,
     catcher_b: catcherA.identity.catcher_id,
     season: metadata.selected_season,
@@ -362,6 +394,7 @@ export default async function ComparePage({
   );
   const compareLeaderHref = leaderboardLeader
     ? buildHref("/compare", {
+        view,
         catcher_a: catcherA.identity.catcher_id,
         catcher_b: leaderboardLeader.catcher_id,
         season: metadata.selected_season,
@@ -624,6 +657,7 @@ export default async function ComparePage({
               loadingMessage="Loading compare mode..."
               loadingSubtitle="Refreshing both catchers under the same filter context."
             >
+              <input type="hidden" name="view" value={view} />
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1.1fr)_11rem_8.5rem_11rem_11rem]">
                 <label className="min-w-0 space-y-2">
                   <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
@@ -867,14 +901,9 @@ export default async function ComparePage({
         </div>
       </section>
 
-      <SectionCard
-        eyebrow="Freshness"
-        title="What context you are comparing"
-        subtitle="Compare mode keeps the public-data freshness and season context visible so a shared URL never hides stale or sparse inputs."
-      >
-        <DataFreshnessPanel metadata={metadata} />
-      </SectionCard>
+      <ViewTabs items={viewTabs} active={view} />
 
+      {view === "overview" ? (
       <SectionCard
         eyebrow="Topline"
         title="Summary metrics under one shared context"
@@ -882,7 +911,9 @@ export default async function ComparePage({
       >
         <ComparisonTable catcherALabel={aLabel} catcherBLabel={bLabel} rows={summaryRows} />
       </SectionCard>
+      ) : null}
 
+      {view === "grades" ? (
       <SectionCard
         eyebrow="Grades"
         title="20-80 game-calling grade sheet"
@@ -890,7 +921,9 @@ export default async function ComparePage({
       >
         <ComparisonTable catcherALabel={aLabel} catcherBLabel={bLabel} rows={gradeRows} />
       </SectionCard>
+      ) : null}
 
+      {view === "counts" ? (
       <SectionCard
         eyebrow="Count Logic"
         title="Exact count-state and count-bucket comparison"
@@ -947,7 +980,9 @@ export default async function ComparePage({
           </div>
         </div>
       </SectionCard>
+      ) : null}
 
+      {view === "pitch-mix" ? (
       <SectionCard
         eyebrow="Pitch Mix"
         title="Pitch-type behavior and delta view"
@@ -968,7 +1003,9 @@ export default async function ComparePage({
           </div>
         </div>
       </SectionCard>
+      ) : null}
 
+      {view === "batteries" ? (
       <SectionCard
         eyebrow="Pairings"
         title="Pitcher-catcher pairing comparison"
@@ -1005,6 +1042,16 @@ export default async function ComparePage({
           ))}
         </div>
       </SectionCard>
+      ) : null}
+
+      {view === "data-trust" ? (<>
+      <SectionCard
+        eyebrow="Freshness"
+        title="What context you are comparing"
+        subtitle="Compare mode keeps the public-data freshness and season context visible so a shared URL never hides stale or sparse inputs."
+      >
+        <DataFreshnessPanel metadata={metadata} />
+      </SectionCard>
 
       <SectionCard
         eyebrow="Support + Trust"
@@ -1027,6 +1074,7 @@ export default async function ComparePage({
           </div>
         </div>
       </SectionCard>
+      </>) : null}
 
       <ApiDebugPanel transport={apiTransport} items={debugItems} />
       <DemoDataBadge />

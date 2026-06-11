@@ -12,6 +12,7 @@ import { ReportBuilder } from "@/components/report-builder";
 import { SampleStabilityBadge } from "@/components/sample-stability-badge";
 import { SectionCard } from "@/components/section-card";
 import { LoadingForm } from "@/components/ui/loading-form";
+import { ViewTabs } from "@/components/view-tabs";
 import { LoadingLink } from "@/components/ui/loading-link";
 import {
   ApiRequestError,
@@ -77,6 +78,13 @@ function debugErrorDetail(error: unknown) {
   return errorMessage(error);
 }
 
+const RESEARCH_VIEWS = [
+  { key: "board", label: "Board" },
+  { key: "compare", label: "Compare" },
+  { key: "exports", label: "Exports" },
+  { key: "data-trust", label: "Data Trust" },
+];
+
 function buildHref(pathname: string, params: Record<string, string | number | undefined>) {
   const search = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {
@@ -124,6 +132,10 @@ export default async function ResearchPage({
   const dateFrom = readString(params.date_from, "");
   const dateTo = readString(params.date_to, "");
   const requestedTeam = readString(params.team, "").toUpperCase();
+  const requestedView = readString(params.view, "board");
+  const view = RESEARCH_VIEWS.some((tab) => tab.key === requestedView)
+    ? requestedView
+    : "board";
   const apiTransport = await getApiTransport();
 
   const healthStatus = await getApiHealth()
@@ -301,6 +313,7 @@ export default async function ResearchPage({
               loadingMessage="Refreshing research mode..."
               loadingSubtitle="Applying filtered leaderboard and comparison settings."
             >
+              <input type="hidden" name="view" value={view} />
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 <select
                   className="field"
@@ -436,15 +449,25 @@ export default async function ResearchPage({
         </div>
       </section>
 
-      <SectionCard
-        eyebrow="Freshness"
-        title="Current data window"
-        subtitle="Research mode still keeps the underlying ingest and scoring freshness visible so exports are easy to trust."
-      >
-        <DataFreshnessPanel metadata={metadata} />
-      </SectionCard>
+      <ViewTabs
+        items={RESEARCH_VIEWS.map((tab) => ({
+          ...tab,
+          href: buildHref("/research", {
+            season: metadata.selected_season,
+            team: requestedTeam || undefined,
+            min_pitches: minPitches,
+            date_from: dateFrom || undefined,
+            date_to: dateTo || undefined,
+            sort,
+            catcher_id: primaryDetail?.identity.catcher_id,
+            compare_catcher_id: compareDetail?.identity.catcher_id,
+            view: tab.key,
+          }),
+        }))}
+        active={view}
+      />
 
-      {primaryDetail ? (
+      {view === "compare" && primaryDetail ? (
         <SectionCard
           eyebrow="Comparison"
           title="Side-by-side catcher view"
@@ -505,6 +528,7 @@ export default async function ResearchPage({
         </SectionCard>
       ) : null}
 
+      {view === "exports" ? (
       <SectionCard
         eyebrow="Exports"
         title="JSON endpoints and report downloads"
@@ -537,7 +561,9 @@ export default async function ResearchPage({
           </a>
         </div>
       </SectionCard>
+      ) : null}
 
+      {view === "board" ? (<>
       <SectionCard
         eyebrow="Board Snapshot"
         title="Top of the filtered board"
@@ -687,6 +713,17 @@ export default async function ResearchPage({
           </div>
         )}
       </SectionCard>
+      </>) : null}
+
+      {view === "data-trust" ? (
+      <SectionCard
+        eyebrow="Freshness"
+        title="Current data window"
+        subtitle="Research mode still keeps the underlying ingest and scoring freshness visible so exports are easy to trust."
+      >
+        <DataFreshnessPanel metadata={metadata} />
+      </SectionCard>
+      ) : null}
 
       <ApiDebugPanel transport={apiTransport} items={debugItems} />
       <DemoDataBadge />

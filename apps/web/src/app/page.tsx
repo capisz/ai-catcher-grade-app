@@ -28,6 +28,7 @@ import { StrikeZoneCard } from "@/components/strike-zone-card";
 import { StealAgainstPanel } from "@/components/steal-against-panel";
 import { LoadingForm } from "@/components/ui/loading-form";
 import { LoadingLink } from "@/components/ui/loading-link";
+import { ViewTabs } from "@/components/view-tabs";
 import {
   ApiRequestError,
   describeBackendTarget,
@@ -187,6 +188,15 @@ function buildHref(params: Record<string, string | number | undefined>) {
   return `/?${search.toString()}`;
 }
 
+const HOME_VIEWS = [
+  { key: "overview", label: "Overview" },
+  { key: "grades", label: "Grades" },
+  { key: "counts", label: "Counts" },
+  { key: "pitch-mix", label: "Pitch Mix" },
+  { key: "batteries", label: "Batteries" },
+  { key: "data-trust", label: "Data Trust" },
+];
+
 export default async function HomePage({
   searchParams,
 }: {
@@ -197,6 +207,10 @@ export default async function HomePage({
   const requestedTeam = readString(params.team, "").toUpperCase();
   const minPitches = Math.max(readNumber(params.min_pitches) ?? 60, 1);
   const selectedCountParam = readString(params.selected_count, "");
+  const requestedView = readString(params.view, "overview");
+  const view = HOME_VIEWS.some((tab) => tab.key === requestedView)
+    ? requestedView
+    : "overview";
   const apiTransport = await getApiTransport();
 
   const healthStatus = await getApiHealth()
@@ -513,9 +527,21 @@ export default async function HomePage({
         team: requestedTeam || undefined,
         min_pitches: minPitches,
         selected_count: row.split_value,
+        view: "counts",
       }),
     ]),
   );
+  const viewTabs = HOME_VIEWS.map((tab) => ({
+    ...tab,
+    href: buildHref({
+      catcher_id: detail.identity.catcher_id,
+      season: metadata.selected_season,
+      team: requestedTeam || undefined,
+      min_pitches: minPitches,
+      selected_count: selectedCountParam || undefined,
+      view: tab.key,
+    }),
+  }));
   const leaderboardRows: NonNullable<typeof leaderboard>["leaderboard"] =
     leaderboard?.leaderboard ?? [];
   const leaderboardRank =
@@ -568,6 +594,7 @@ export default async function HomePage({
               loadingSubtitle="Refreshing catcher, season, team, and sample filters."
             >
               <input type="hidden" name="selected_count" value={selectedCount?.split_value ?? ""} />
+              <input type="hidden" name="view" value={view} />
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-[minmax(0,1.2fr)_11rem_11rem_8.5rem_auto]">
                 <label className="min-w-0 space-y-2">
                   <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
@@ -812,6 +839,8 @@ export default async function HomePage({
         </div>
       </section>
 
+      <ViewTabs items={viewTabs} active={view} />
+
       {sampleWarning ? (
         <section className="warning-panel rounded-xl p-5">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
@@ -836,6 +865,7 @@ export default async function HomePage({
         </section>
       ) : null}
 
+      {view === "overview" ? (
       <SectionCard
         eyebrow="Why This Catcher Wins"
         title="Fast scouting explanation"
@@ -849,31 +879,9 @@ export default async function HomePage({
       >
         <CatcherSummaryInsights insights={detail.summary_insights} />
       </SectionCard>
+      ) : null}
 
-      <SectionCard
-        eyebrow="Trust + Freshness"
-        title="What period and model you are looking at"
-        subtitle="This scouting surface is explicit about coverage, freshness, and scoring state so a live-looking UI never hides stale or sparse data."
-      >
-        <div className="space-y-5">
-          <DataFreshnessPanel metadata={metadata} />
-          <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
-            <div className="surface-panel rounded-xl p-5">
-              <div className="label-kicker">Coverage note</div>
-              <p className="mt-4 text-sm leading-6 text-muted">
-                {metadata.season_coverage_note}
-              </p>
-            </div>
-            <div className="surface-panel rounded-xl p-5">
-              <div className="label-kicker">Interpretation note</div>
-              <p className="mt-4 text-sm leading-6 text-muted">
-                {metadata.public_data_note}
-              </p>
-            </div>
-          </div>
-        </div>
-      </SectionCard>
-
+      {view === "grades" ? (
       <SectionCard
         eyebrow="Scouting Summary"
         title="Game-calling grade sheet"
@@ -934,7 +942,9 @@ export default async function HomePage({
           </div>
         </div>
       </SectionCard>
+      ) : null}
 
+      {view === "counts" ? (<>
       <SectionCard
         eyebrow="Count Logic"
         title="Exact count-state matrix"
@@ -1032,6 +1042,16 @@ export default async function HomePage({
       </SectionCard>
 
       <SectionCard
+        eyebrow="Running Game"
+        title="Where runners challenge this catcher"
+        subtitle="Exact-count steal pressure from public Statcast pitch descriptions, showing which counts runners go on and how often this catcher turns those attempts into outs versus the season baseline."
+      >
+        <StealAgainstPanel summary={detail.steal_against_summary} />
+      </SectionCard>
+      </>) : null}
+
+      {view === "pitch-mix" ? (
+      <SectionCard
         eyebrow="Pitch Mix"
         title="Pitch-type behavior and location summary"
         subtitle="Use pitch-type rows to see what overperforms baseline, then pair that with a real strike-zone heatmap from scored location buckets."
@@ -1076,15 +1096,9 @@ export default async function HomePage({
           </div>
         </div>
       </SectionCard>
+      ) : null}
 
-      <SectionCard
-        eyebrow="Running Game"
-        title="Where runners challenge this catcher"
-        subtitle="Exact-count steal pressure from public Statcast pitch descriptions, showing which counts runners go on and how often this catcher turns those attempts into outs versus the season baseline."
-      >
-        <StealAgainstPanel summary={detail.steal_against_summary} />
-      </SectionCard>
-
+      {view === "batteries" ? (
       <SectionCard
         eyebrow="Pairing Intelligence"
         title="Pitcher-catcher synergy and who else is good"
@@ -1127,6 +1141,7 @@ export default async function HomePage({
                       season: entry.season,
                       team: requestedTeam || undefined,
                       min_pitches: minPitches,
+                      view,
                     })}
                     loadingMessage="Loading scouting mode..."
                     loadingSubtitle={`Opening ${entry.catcher_name}.`}
@@ -1155,13 +1170,31 @@ export default async function HomePage({
           </div>
         </div>
       </SectionCard>
+      ) : null}
 
+      {view === "data-trust" ? (
       <SectionCard
-        eyebrow="Data Quality"
-        title="Diagnostics and support metrics"
-        subtitle="This is where you judge reliability: pitch count, games scored, sparse-context rate, fallback rate, and public catcher support metrics."
+        eyebrow="Data Trust"
+        title="Coverage, freshness, and diagnostics"
+        subtitle="Judge reliability here: what period and model you are looking at, plus pitch count, games scored, sparse-context rate, fallback rate, and public catcher support metrics."
         tone="quiet"
       >
+        <div className="space-y-6">
+        <DataFreshnessPanel metadata={metadata} />
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div className="surface-panel rounded-xl p-5">
+            <div className="label-kicker">Coverage note</div>
+            <p className="mt-4 text-sm leading-6 text-muted">
+              {metadata.season_coverage_note}
+            </p>
+          </div>
+          <div className="surface-panel rounded-xl p-5">
+            <div className="label-kicker">Interpretation note</div>
+            <p className="mt-4 text-sm leading-6 text-muted">
+              {metadata.public_data_note}
+            </p>
+          </div>
+        </div>
         <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
           <div className="grid gap-4 sm:grid-cols-2">
             <MetricCard
@@ -1239,7 +1272,9 @@ export default async function HomePage({
             ))}
           </div>
         </div>
+        </div>
       </SectionCard>
+      ) : null}
 
       <ApiDebugPanel transport={apiTransport} items={debugItems} />
       <DemoDataBadge />
