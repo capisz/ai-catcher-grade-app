@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-11T00:04:02.766Z",
+  "generatedAt": "2026-06-11T07:10:04.259Z",
   "season": 2025,
   "health": {
     "status": "ok"
@@ -12,7 +12,24 @@
     "available_seasons": [
       2025
     ],
-    "available_teams": [],
+    "available_teams": [
+      {
+        "value": "BAL",
+        "label": "BAL"
+      },
+      {
+        "value": "LAD",
+        "label": "LAD"
+      },
+      {
+        "value": "SEA",
+        "label": "SEA"
+      },
+      {
+        "value": "SF",
+        "label": "SF"
+      }
+    ],
     "season_pitch_count": 1600,
     "season_catcher_count": 4,
     "sparse_season": true,
@@ -25,7 +42,7 @@
     "latest_scored_game_date": "2025-04-27",
     "latest_refresh_timestamp": "2026-03-13T16:52:53Z",
     "latest_successful_scoring_timestamp": "2026-03-13T16:53:03Z",
-    "latest_summary_update_timestamp": "2026-06-10T23:59:39Z",
+    "latest_summary_update_timestamp": "2026-06-11T07:03:31Z",
     "model_version": "dva_v1_contextual",
     "supports_date_range": true,
     "min_date": "2025-04-01",
@@ -36,31 +53,15 @@
     "season": 2025,
     "catchers": [
       {
-        "catcher_id": 663728,
-        "catcher_name": "Catcher 663728",
-        "team": null,
-        "season": 2025,
-        "dropdown_label": "Catcher 663728 | FA | 2025",
-        "headshot_url": null,
-        "bats": null,
-        "throws": null,
-        "active": false,
-        "key_person": null,
-        "key_uuid": null,
-        "key_bbref": null,
-        "key_fangraphs": null,
-        "key_retro": null
-      },
-      {
         "catcher_id": 668939,
-        "catcher_name": "Catcher 668939",
-        "team": null,
+        "catcher_name": "Adley Rutschman",
+        "team": "BAL",
         "season": 2025,
-        "dropdown_label": "Catcher 668939 | FA | 2025",
-        "headshot_url": null,
-        "bats": null,
-        "throws": null,
-        "active": false,
+        "dropdown_label": "Adley Rutschman | BAL | 2025",
+        "headshot_url": "https://img.mlbstatic.com/mlb-photos/image/upload/w_180,q_auto:best/v1/people/668939/headshot/67/current",
+        "bats": "S",
+        "throws": "R",
+        "active": true,
         "key_person": null,
         "key_uuid": null,
         "key_bbref": null,
@@ -68,15 +69,15 @@
         "key_retro": null
       },
       {
-        "catcher_id": 669257,
-        "catcher_name": "Catcher 669257",
-        "team": null,
+        "catcher_id": 663728,
+        "catcher_name": "Cal Raleigh",
+        "team": "SEA",
         "season": 2025,
-        "dropdown_label": "Catcher 669257 | FA | 2025",
-        "headshot_url": null,
-        "bats": null,
-        "throws": null,
-        "active": false,
+        "dropdown_label": "Cal Raleigh | SEA | 2025",
+        "headshot_url": "https://img.mlbstatic.com/mlb-photos/image/upload/w_180,q_auto:best/v1/people/663728/headshot/67/current",
+        "bats": "S",
+        "throws": "R",
+        "active": true,
         "key_person": null,
         "key_uuid": null,
         "key_bbref": null,
@@ -85,14 +86,30 @@
       },
       {
         "catcher_id": 672275,
-        "catcher_name": "Catcher 672275",
-        "team": null,
+        "catcher_name": "Patrick Bailey",
+        "team": "SF",
         "season": 2025,
-        "dropdown_label": "Catcher 672275 | FA | 2025",
-        "headshot_url": null,
-        "bats": null,
-        "throws": null,
-        "active": false,
+        "dropdown_label": "Patrick Bailey | SF | 2025",
+        "headshot_url": "https://img.mlbstatic.com/mlb-photos/image/upload/w_180,q_auto:best/v1/people/672275/headshot/67/current",
+        "bats": "S",
+        "throws": "R",
+        "active": true,
+        "key_person": null,
+        "key_uuid": null,
+        "key_bbref": null,
+        "key_fangraphs": null,
+        "key_retro": null
+      },
+      {
+        "catcher_id": 669257,
+        "catcher_name": "Will Smith",
+        "team": "LAD",
+        "season": 2025,
+        "dropdown_label": "Will Smith | LAD | 2025",
+        "headshot_url": "https://img.mlbstatic.com/mlb-photos/image/upload/w_180,q_auto:best/v1/people/669257/headshot/67/current",
+        "bats": "R",
+        "throws": "R",
+        "active": true,
         "key_person": null,
         "key_uuid": null,
         "key_bbref": null,
@@ -106,10 +123,10 @@
     "leaderboard": [
       {
         "catcher_id": 669257,
-        "catcher_name": "Catcher 669257",
-        "team": null,
+        "catcher_name": "Will Smith",
+        "team": "LAD",
         "season": 2025,
-        "headshot_url": null,
+        "headshot_url": "https://img.mlbstatic.com/mlb-photos/image/upload/w_180,q_auto:best/v1/people/669257/headshot/67/current",
         "key_person": null,
         "key_bbref": null,
         "key_fangraphs": null,
@@ -168,24 +185,24 @@
           }
         },
         "public_metrics": {
-          "framing_runs": null,
-          "blocking_runs": null,
-          "blocks_above_average": null,
-          "pop_time_2b": null,
+          "framing_runs": -9.79825205156462,
+          "blocking_runs": -1,
+          "blocks_above_average": -3,
+          "pop_time_2b": 1.94,
           "pop_time_2b_cs": null,
           "pop_time_2b_sb": null,
           "pop_2b_attempts": null,
           "arm_overall": null,
           "max_arm_strength": null,
-          "source_note": null
+          "source_note": "Framing, blocking, pop time, and arm strength sourced from public Baseball Savant leaderboards."
         }
       },
       {
         "catcher_id": 663728,
-        "catcher_name": "Catcher 663728",
-        "team": null,
+        "catcher_name": "Cal Raleigh",
+        "team": "SEA",
         "season": 2025,
-        "headshot_url": null,
+        "headshot_url": "https://img.mlbstatic.com/mlb-photos/image/upload/w_180,q_auto:best/v1/people/663728/headshot/67/current",
         "key_person": null,
         "key_bbref": null,
         "key_fangraphs": null,
@@ -244,24 +261,24 @@
           }
         },
         "public_metrics": {
-          "framing_runs": null,
-          "blocking_runs": null,
-          "blocks_above_average": null,
-          "pop_time_2b": null,
+          "framing_runs": 7.0164458190605155,
+          "blocking_runs": -1,
+          "blocks_above_average": -4,
+          "pop_time_2b": 1.97,
           "pop_time_2b_cs": null,
           "pop_time_2b_sb": null,
           "pop_2b_attempts": null,
           "arm_overall": null,
           "max_arm_strength": null,
-          "source_note": null
+          "source_note": "Framing, blocking, pop time, and arm strength sourced from public Baseball Savant leaderboards."
         }
       },
       {
         "catcher_id": 672275,
-        "catcher_name": "Catcher 672275",
-        "team": null,
+        "catcher_name": "Patrick Bailey",
+        "team": "SF",
         "season": 2025,
-        "headshot_url": null,
+        "headshot_url": "https://img.mlbstatic.com/mlb-photos/image/upload/w_180,q_auto:best/v1/people/672275/headshot/67/current",
         "key_person": null,
         "key_bbref": null,
         "key_fangraphs": null,
@@ -320,24 +337,24 @@
           }
         },
         "public_metrics": {
-          "framing_runs": null,
-          "blocking_runs": null,
-          "blocks_above_average": null,
-          "pop_time_2b": null,
+          "framing_runs": 25.04100617476873,
+          "blocking_runs": 1,
+          "blocks_above_average": 5,
+          "pop_time_2b": 1.86,
           "pop_time_2b_cs": null,
           "pop_time_2b_sb": null,
           "pop_2b_attempts": null,
           "arm_overall": null,
           "max_arm_strength": null,
-          "source_note": null
+          "source_note": "Framing, blocking, pop time, and arm strength sourced from public Baseball Savant leaderboards."
         }
       },
       {
         "catcher_id": 668939,
-        "catcher_name": "Catcher 668939",
-        "team": null,
+        "catcher_name": "Adley Rutschman",
+        "team": "BAL",
         "season": 2025,
-        "headshot_url": null,
+        "headshot_url": "https://img.mlbstatic.com/mlb-photos/image/upload/w_180,q_auto:best/v1/people/668939/headshot/67/current",
         "key_person": null,
         "key_bbref": null,
         "key_fangraphs": null,
@@ -396,16 +413,16 @@
           }
         },
         "public_metrics": {
-          "framing_runs": null,
-          "blocking_runs": null,
-          "blocks_above_average": null,
-          "pop_time_2b": null,
+          "framing_runs": 2.421564131138831,
+          "blocking_runs": 1,
+          "blocks_above_average": 2,
+          "pop_time_2b": 1.94,
           "pop_time_2b_cs": null,
           "pop_time_2b_sb": null,
           "pop_2b_attempts": null,
           "arm_overall": null,
           "max_arm_strength": null,
-          "source_note": null
+          "source_note": "Framing, blocking, pop time, and arm strength sourced from public Baseball Savant leaderboards."
         }
       }
     ]
@@ -414,14 +431,14 @@
     "663728": {
       "identity": {
         "catcher_id": 663728,
-        "catcher_name": "Catcher 663728",
-        "team": null,
+        "catcher_name": "Cal Raleigh",
+        "team": "SEA",
         "season": 2025,
-        "headshot_url": null,
-        "bats": null,
-        "throws": null,
-        "active": false,
-        "dropdown_label": null,
+        "headshot_url": "https://img.mlbstatic.com/mlb-photos/image/upload/w_180,q_auto:best/v1/people/663728/headshot/67/current",
+        "bats": "S",
+        "throws": "R",
+        "active": true,
+        "dropdown_label": "Cal Raleigh | SEA | 2025",
         "key_person": null,
         "key_uuid": null,
         "key_bbref": null,
@@ -477,16 +494,16 @@
         }
       },
       "public_metrics": {
-        "framing_runs": null,
-        "blocking_runs": null,
-        "blocks_above_average": null,
-        "pop_time_2b": null,
-        "pop_time_2b_cs": null,
-        "pop_time_2b_sb": null,
-        "pop_2b_attempts": null,
+        "framing_runs": 7.0164458190605155,
+        "blocking_runs": -1,
+        "blocks_above_average": -4,
+        "pop_time_2b": 1.97,
+        "pop_time_2b_cs": 1.97,
+        "pop_time_2b_sb": 1.97,
+        "pop_2b_attempts": 55,
         "arm_overall": null,
         "max_arm_strength": null,
-        "source_note": null
+        "source_note": "Framing, blocking, pop time, and arm strength sourced from public Baseball Savant leaderboards."
       },
       "diagnostics": {
         "games_scored": 27,
@@ -651,7 +668,7 @@
           "key": "overall_profile",
           "label": "Strength",
           "headline": "The season line is still forming.",
-          "detail": "Catcher 663728 has -0.226 total DVA and -0.00056 avg DVA so far, but no grade component is stable enough yet to call a true carrying tool.",
+          "detail": "Cal Raleigh has -0.226 total DVA and -0.00056 avg DVA so far, but no grade component is stable enough yet to call a true carrying tool.",
           "tone": "neutral"
         },
         {
@@ -665,7 +682,7 @@
           "key": "pitch_pairing_edge",
           "label": "Pitch + pairing edge",
           "headline": "Pitch mix and battery fit add most of the secondary value.",
-          "detail": "SI is the best pitch-type result at +0.0050 avg DVA over 80 pitches; the strongest pairing is with Pitcher 700010 at +0.024 total DVA over 133 pitches.",
+          "detail": "SI is the best pitch-type result at +0.0050 avg DVA over 80 pitches; the strongest pairing is with Jun Sung Park at +0.024 total DVA over 133 pitches.",
           "tone": "positive"
         },
         {
@@ -693,10 +710,10 @@
         "throw_out_rate": null,
         "baseline_throw_out_rate": null,
         "throw_out_rate_delta": null,
-        "pop_time_2b": null,
-        "pop_time_2b_cs": null,
-        "pop_time_2b_sb": null,
-        "pop_2b_attempts": null,
+        "pop_time_2b": 1.97,
+        "pop_time_2b_cs": 1.97,
+        "pop_time_2b_sb": 1.97,
+        "pop_2b_attempts": 55,
         "count_summaries": []
       },
       "count_state_summaries": [
@@ -1136,7 +1153,7 @@
         },
         {
           "pitcher_id": 700010,
-          "pitcher_name": "Pitcher 700010",
+          "pitcher_name": "Jun Sung Park",
           "pitches": 133,
           "total_dva": 0.023895093853146462,
           "avg_dva": 0.0001796623597980937,
@@ -1146,7 +1163,7 @@
         },
         {
           "pitcher_id": 700006,
-          "pitcher_name": "Pitcher 700006",
+          "pitcher_name": "Se Hong Jang",
           "pitches": 133,
           "total_dva": -0.15654334179756305,
           "avg_dva": -0.001177017607500474,
@@ -1201,14 +1218,14 @@
     "668939": {
       "identity": {
         "catcher_id": 668939,
-        "catcher_name": "Catcher 668939",
-        "team": null,
+        "catcher_name": "Adley Rutschman",
+        "team": "BAL",
         "season": 2025,
-        "headshot_url": null,
-        "bats": null,
-        "throws": null,
-        "active": false,
-        "dropdown_label": null,
+        "headshot_url": "https://img.mlbstatic.com/mlb-photos/image/upload/w_180,q_auto:best/v1/people/668939/headshot/67/current",
+        "bats": "S",
+        "throws": "R",
+        "active": true,
+        "dropdown_label": "Adley Rutschman | BAL | 2025",
         "key_person": null,
         "key_uuid": null,
         "key_bbref": null,
@@ -1264,16 +1281,16 @@
         }
       },
       "public_metrics": {
-        "framing_runs": null,
-        "blocking_runs": null,
-        "blocks_above_average": null,
-        "pop_time_2b": null,
-        "pop_time_2b_cs": null,
-        "pop_time_2b_sb": null,
-        "pop_2b_attempts": null,
+        "framing_runs": 2.421564131138831,
+        "blocking_runs": 1,
+        "blocks_above_average": 2,
+        "pop_time_2b": 1.94,
+        "pop_time_2b_cs": 1.97,
+        "pop_time_2b_sb": 1.93,
+        "pop_2b_attempts": 29,
         "arm_overall": null,
         "max_arm_strength": null,
-        "source_note": null
+        "source_note": "Framing, blocking, pop time, and arm strength sourced from public Baseball Savant leaderboards."
       },
       "diagnostics": {
         "games_scored": 27,
@@ -1438,7 +1455,7 @@
           "key": "overall_profile",
           "label": "Strength",
           "headline": "The season line is still forming.",
-          "detail": "Catcher 668939 has -0.337 total DVA and -0.00084 avg DVA so far, but no grade component is stable enough yet to call a true carrying tool.",
+          "detail": "Adley Rutschman has -0.337 total DVA and -0.00084 avg DVA so far, but no grade component is stable enough yet to call a true carrying tool.",
           "tone": "neutral"
         },
         {
@@ -1480,10 +1497,10 @@
         "throw_out_rate": null,
         "baseline_throw_out_rate": null,
         "throw_out_rate_delta": null,
-        "pop_time_2b": null,
-        "pop_time_2b_cs": null,
-        "pop_time_2b_sb": null,
-        "pop_2b_attempts": null,
+        "pop_time_2b": 1.94,
+        "pop_time_2b_cs": 1.97,
+        "pop_time_2b_sb": 1.93,
+        "pop_2b_attempts": 29,
         "count_summaries": []
       },
       "count_state_summaries": [
@@ -1988,14 +2005,14 @@
     "669257": {
       "identity": {
         "catcher_id": 669257,
-        "catcher_name": "Catcher 669257",
-        "team": null,
+        "catcher_name": "Will Smith",
+        "team": "LAD",
         "season": 2025,
-        "headshot_url": null,
-        "bats": null,
-        "throws": null,
-        "active": false,
-        "dropdown_label": null,
+        "headshot_url": "https://img.mlbstatic.com/mlb-photos/image/upload/w_180,q_auto:best/v1/people/669257/headshot/67/current",
+        "bats": "R",
+        "throws": "R",
+        "active": true,
+        "dropdown_label": "Will Smith | LAD | 2025",
         "key_person": null,
         "key_uuid": null,
         "key_bbref": null,
@@ -2051,16 +2068,16 @@
         }
       },
       "public_metrics": {
-        "framing_runs": null,
-        "blocking_runs": null,
-        "blocks_above_average": null,
-        "pop_time_2b": null,
-        "pop_time_2b_cs": null,
-        "pop_time_2b_sb": null,
-        "pop_2b_attempts": null,
+        "framing_runs": -9.79825205156462,
+        "blocking_runs": -1,
+        "blocks_above_average": -3,
+        "pop_time_2b": 1.94,
+        "pop_time_2b_cs": 1.93,
+        "pop_time_2b_sb": 1.95,
+        "pop_2b_attempts": 53,
         "arm_overall": null,
         "max_arm_strength": null,
-        "source_note": null
+        "source_note": "Framing, blocking, pop time, and arm strength sourced from public Baseball Savant leaderboards."
       },
       "diagnostics": {
         "games_scored": 27,
@@ -2225,7 +2242,7 @@
           "key": "overall_profile",
           "label": "Strength",
           "headline": "The season line is still forming.",
-          "detail": "Catcher 669257 has +0.048 total DVA and +0.00012 avg DVA so far, but no grade component is stable enough yet to call a true carrying tool.",
+          "detail": "Will Smith has +0.048 total DVA and +0.00012 avg DVA so far, but no grade component is stable enough yet to call a true carrying tool.",
           "tone": "neutral"
         },
         {
@@ -2267,10 +2284,10 @@
         "throw_out_rate": null,
         "baseline_throw_out_rate": null,
         "throw_out_rate_delta": null,
-        "pop_time_2b": null,
-        "pop_time_2b_cs": null,
-        "pop_time_2b_sb": null,
-        "pop_2b_attempts": null,
+        "pop_time_2b": 1.94,
+        "pop_time_2b_cs": 1.93,
+        "pop_time_2b_sb": 1.95,
+        "pop_2b_attempts": 53,
         "count_summaries": []
       },
       "count_state_summaries": [
@@ -2720,7 +2737,7 @@
         },
         {
           "pitcher_id": 700005,
-          "pitcher_name": "Pitcher 700005",
+          "pitcher_name": "Hector Perez",
           "pitches": 133,
           "total_dva": -0.046223204765313615,
           "avg_dva": -0.0003475428929722828,
@@ -2775,14 +2792,14 @@
     "672275": {
       "identity": {
         "catcher_id": 672275,
-        "catcher_name": "Catcher 672275",
-        "team": null,
+        "catcher_name": "Patrick Bailey",
+        "team": "SF",
         "season": 2025,
-        "headshot_url": null,
-        "bats": null,
-        "throws": null,
-        "active": false,
-        "dropdown_label": null,
+        "headshot_url": "https://img.mlbstatic.com/mlb-photos/image/upload/w_180,q_auto:best/v1/people/672275/headshot/67/current",
+        "bats": "S",
+        "throws": "R",
+        "active": true,
+        "dropdown_label": "Patrick Bailey | SF | 2025",
         "key_person": null,
         "key_uuid": null,
         "key_bbref": null,
@@ -2838,16 +2855,16 @@
         }
       },
       "public_metrics": {
-        "framing_runs": null,
-        "blocking_runs": null,
-        "blocks_above_average": null,
-        "pop_time_2b": null,
-        "pop_time_2b_cs": null,
-        "pop_time_2b_sb": null,
-        "pop_2b_attempts": null,
+        "framing_runs": 25.04100617476873,
+        "blocking_runs": 1,
+        "blocks_above_average": 5,
+        "pop_time_2b": 1.86,
+        "pop_time_2b_cs": 1.87,
+        "pop_time_2b_sb": 1.86,
+        "pop_2b_attempts": 44,
         "arm_overall": null,
         "max_arm_strength": null,
-        "source_note": null
+        "source_note": "Framing, blocking, pop time, and arm strength sourced from public Baseball Savant leaderboards."
       },
       "diagnostics": {
         "games_scored": 27,
@@ -3012,7 +3029,7 @@
           "key": "overall_profile",
           "label": "Strength",
           "headline": "The season line is still forming.",
-          "detail": "Catcher 672275 has -0.308 total DVA and -0.00077 avg DVA so far, but no grade component is stable enough yet to call a true carrying tool.",
+          "detail": "Patrick Bailey has -0.308 total DVA and -0.00077 avg DVA so far, but no grade component is stable enough yet to call a true carrying tool.",
           "tone": "neutral"
         },
         {
@@ -3054,10 +3071,10 @@
         "throw_out_rate": null,
         "baseline_throw_out_rate": null,
         "throw_out_rate_delta": null,
-        "pop_time_2b": null,
-        "pop_time_2b_cs": null,
-        "pop_time_2b_sb": null,
-        "pop_2b_attempts": null,
+        "pop_time_2b": 1.86,
+        "pop_time_2b_cs": 1.87,
+        "pop_time_2b_sb": 1.86,
+        "pop_2b_attempts": 44,
         "count_summaries": []
       },
       "count_state_summaries": [
@@ -3577,7 +3594,7 @@
         },
         {
           "pitcher_id": 700010,
-          "pitcher_name": "Pitcher 700010",
+          "pitcher_name": "Jun Sung Park",
           "pitches": 133,
           "total_dva": 0.023895093853146462,
           "avg_dva": 0.0001796623597980937,
@@ -3587,7 +3604,7 @@
         },
         {
           "pitcher_id": 700006,
-          "pitcher_name": "Pitcher 700006",
+          "pitcher_name": "Se Hong Jang",
           "pitches": 133,
           "total_dva": -0.15654334179756305,
           "avg_dva": -0.001177017607500474,
@@ -3659,7 +3676,7 @@
         },
         {
           "pitcher_id": 700005,
-          "pitcher_name": "Pitcher 700005",
+          "pitcher_name": "Hector Perez",
           "pitches": 133,
           "total_dva": -0.046223204765313615,
           "avg_dva": -0.0003475428929722828,
@@ -6078,5 +6095,1602 @@
         }
       ]
     }
+  },
+  "compare": {
+    "filters": {
+      "season": 2025,
+      "min_pitches": 50,
+      "date_from": null,
+      "date_to": null,
+      "team": null
+    },
+    "population_size": 4,
+    "qualified_population_size": 0,
+    "updated_through": "2025-04-27",
+    "model_version": "xgb-delta-run-exp-v2",
+    "catcher_a": {
+      "identity": {
+        "catcher_id": 669257,
+        "catcher_name": "Will Smith",
+        "team": "LAD",
+        "season": 2025,
+        "headshot_url": "https://img.mlbstatic.com/mlb-photos/image/upload/w_180,q_auto:best/v1/people/669257/headshot/67/current",
+        "bats": "R",
+        "throws": "R",
+        "active": true,
+        "dropdown_label": "Will Smith | LAD | 2025",
+        "key_person": null,
+        "key_uuid": null,
+        "key_bbref": null,
+        "key_fangraphs": null,
+        "key_retro": null
+      },
+      "total_pitches": 400,
+      "total_dva": 0.04751283582833521,
+      "avg_dva": 0.00011878208957083803,
+      "avg_execution_gap": 0.0008208730984428116,
+      "grades": {
+        "overall_game_calling": {
+          "score": null,
+          "label": null,
+          "qualified": false,
+          "population_size": 0,
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers)."
+        },
+        "count_leverage": {
+          "score": null,
+          "label": null,
+          "qualified": false,
+          "population_size": 0,
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers)."
+        },
+        "putaway_count": {
+          "score": null,
+          "label": null,
+          "qualified": false,
+          "population_size": 0,
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers)."
+        },
+        "damage_avoidance": {
+          "score": null,
+          "label": null,
+          "qualified": false,
+          "population_size": 0,
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers)."
+        },
+        "pitch_mix_synergy": {
+          "score": null,
+          "label": null,
+          "qualified": false,
+          "population_size": 0,
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers)."
+        },
+        "receiving_support": {
+          "score": null,
+          "label": null,
+          "qualified": true,
+          "population_size": 4,
+          "stability_note": "Insufficient qualified catcher population for stable normalization (4 qualified catchers)."
+        }
+      },
+      "public_metrics": {
+        "framing_runs": -9.79825205156462,
+        "blocking_runs": -1,
+        "blocks_above_average": -3,
+        "pop_time_2b": 1.94,
+        "pop_time_2b_cs": 1.93,
+        "pop_time_2b_sb": 1.95,
+        "pop_2b_attempts": 53,
+        "arm_overall": null,
+        "max_arm_strength": null,
+        "source_note": "Framing, blocking, pop time, and arm strength sourced from public Baseball Savant leaderboards."
+      },
+      "diagnostics": {
+        "games_scored": 27,
+        "avg_expected_rv_actual": -0.01676650387671543,
+        "outperform_rate": 0.41,
+        "avg_surviving_candidate_count": null,
+        "single_candidate_pct": 0,
+        "dropped_sparse_context_pct": -0.06666666666666665,
+        "fallback_context_pct": 1,
+        "qualified_for_grades": false,
+        "stability_label": "Limited sample",
+        "stability_note": "400 pitches across 27 games. Use split-level outputs carefully.",
+        "model_version": "xgb-delta-run-exp-v2"
+      },
+      "grade_formula_notes": {
+        "count_leverage": {
+          "component_percentiles": {},
+          "description": "65% hitter-friendly count DVA, 35% hitter-friendly outperformance rate.",
+          "inputs": {
+            "leverage_dva": -0.000065,
+            "leverage_outperform": 0.392405
+          },
+          "normalization": "Percentile rank against qualified catchers in the selected season.",
+          "population_size": 0,
+          "qualified": false,
+          "scale": "20-80",
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers).",
+          "thresholds": {
+            "min_games": 20,
+            "min_pitches": 500,
+            "min_split_pitches": 120,
+            "min_split_pitches_column": "hitter_friendly_pitches"
+          },
+          "weights": {
+            "leverage_dva": 0.65,
+            "leverage_outperform": 0.35
+          }
+        },
+        "damage_avoidance": {
+          "component_percentiles": {},
+          "description": "55% lower-is-better expected run value in damage counts, 45% damage-count DVA.",
+          "inputs": {
+            "damage_dva": -0.000757,
+            "damage_expected_rv": -0.01021
+          },
+          "normalization": "Percentile rank against qualified catchers in the selected season.",
+          "population_size": 0,
+          "qualified": false,
+          "scale": "20-80",
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers).",
+          "thresholds": {
+            "min_games": 20,
+            "min_pitches": 500,
+            "min_split_pitches": 80,
+            "min_split_pitches_column": "damage_count_pitches"
+          },
+          "weights": {
+            "damage_dva": 0.45,
+            "damage_expected_rv": 0.55
+          }
+        },
+        "overall_game_calling": {
+          "component_percentiles": {},
+          "description": "45% avg DVA, 20% baseline outperformance rate, 20% hitter-friendly count DVA, 15% put-away count DVA.",
+          "inputs": {
+            "avg_dva": 0.000119,
+            "leverage": -0.000065,
+            "outperform": 0.41,
+            "putaway": -0.001499
+          },
+          "normalization": "Percentile rank against qualified catchers in the selected season.",
+          "population_size": 0,
+          "qualified": false,
+          "scale": "20-80",
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers).",
+          "thresholds": {
+            "min_games": 20,
+            "min_pitches": 500
+          },
+          "weights": {
+            "avg_dva": 0.45,
+            "leverage": 0.2,
+            "outperform": 0.2,
+            "putaway": 0.15
+          }
+        },
+        "pitch_mix_synergy": {
+          "component_percentiles": {},
+          "description": "40% count-family alignment rate, 40% pitcher-pairing avg DVA, 20% pitcher-pairing outperformance rate.",
+          "inputs": {
+            "family_alignment": 0.2975,
+            "pairing_dva": 0.000117,
+            "pairing_outperform": 0.40998
+          },
+          "normalization": "Percentile rank against qualified catchers in the selected season.",
+          "population_size": 0,
+          "qualified": false,
+          "scale": "20-80",
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers).",
+          "thresholds": {
+            "min_games": 20,
+            "min_pitches": 500
+          },
+          "weights": {
+            "family_alignment": 0.4,
+            "pairing_dva": 0.4,
+            "pairing_outperform": 0.2
+          }
+        },
+        "putaway_count": {
+          "component_percentiles": {},
+          "description": "70% put-away count DVA, 30% put-away outperformance rate.",
+          "inputs": {
+            "putaway_dva": -0.001499,
+            "putaway_outperform": 0.353535
+          },
+          "normalization": "Percentile rank against qualified catchers in the selected season.",
+          "population_size": 0,
+          "qualified": false,
+          "scale": "20-80",
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers).",
+          "thresholds": {
+            "min_games": 20,
+            "min_pitches": 500,
+            "min_split_pitches": 120,
+            "min_split_pitches_column": "putaway_pitches"
+          },
+          "weights": {
+            "putaway_dva": 0.7,
+            "putaway_outperform": 0.3
+          }
+        },
+        "receiving_support": {
+          "component_percentiles": {},
+          "description": "40% public framing runs, 25% blocking runs, 20% arm overall, 15% lower-is-better pop time to second.",
+          "inputs": {
+            "arm": null,
+            "blocking": -1,
+            "framing": -9.798252,
+            "pop": 1.94
+          },
+          "normalization": "Percentile rank against qualified catchers in the selected season.",
+          "population_size": 4,
+          "qualified": true,
+          "scale": "20-80",
+          "stability_note": "Insufficient qualified catcher population for stable normalization (4 qualified catchers).",
+          "thresholds": {
+            "min_games": 10,
+            "min_pitches": 300,
+            "min_public_metrics": 1
+          },
+          "weights": {
+            "arm": 0.2,
+            "blocking": 0.25,
+            "framing": 0.4,
+            "pop": 0.15
+          }
+        }
+      },
+      "summary_insights": [
+        {
+          "key": "overall_profile",
+          "label": "Strength",
+          "headline": "The season line is still forming.",
+          "detail": "Will Smith has +0.048 total DVA and +0.00012 avg DVA so far, but no grade component is stable enough yet to call a true carrying tool.",
+          "tone": "neutral"
+        },
+        {
+          "key": "situational_edge",
+          "label": "Situational edge",
+          "headline": "3-0 is the best value pocket.",
+          "detail": "Best exact-count edge is 3-0 (hitter-friendly count) at +0.0054 avg DVA over 32 pitches. Best-performing family signal there is offspeed. The broader full count bucket sits at +0.0011 avg DVA.",
+          "tone": "positive"
+        },
+        {
+          "key": "pitch_pairing_edge",
+          "label": "Pitch + pairing edge",
+          "headline": "Pitch mix and battery fit add most of the secondary value.",
+          "detail": "SI is the best pitch-type result at +0.0038 avg DVA over 80 pitches; the strongest pairing is with Pitcher 700001 at +0.131 total DVA over 134 pitches.",
+          "tone": "positive"
+        },
+        {
+          "key": "weakness",
+          "label": "Weakness",
+          "headline": "2-1 is the main pressure point.",
+          "detail": "The weakest exact-count pocket is 2-1 (hitter-friendly count) at -0.0040 avg DVA over 27 pitches. The softest pitch-type result is CU at -0.0051 avg DVA.",
+          "tone": "caution"
+        },
+        {
+          "key": "confidence",
+          "label": "Data confidence",
+          "headline": "The sample is still directional rather than settled.",
+          "detail": "Limited sample at 400 pitches across 27 games. -6.7% of eligible contexts dropped for sparse alternatives. +0.0008 avg execution gap.",
+          "tone": "caution"
+        }
+      ],
+      "steal_against_summary": null,
+      "count_state_summaries": [
+        {
+          "split_type": "count_state",
+          "split_value": "0-0",
+          "pitches": 39,
+          "total_dva": 0.07211296639870851,
+          "avg_dva": 0.0018490504204797054,
+          "avg_execution_gap": -0.003613648184198185,
+          "avg_expected_rv_actual": -0.022956270711102452,
+          "outperform_rate": 0.48717948717948717,
+          "fastball_rate": 0.48717948717948717,
+          "breaker_rate": 0.23076923076923078,
+          "offspeed_rate": 0.28205128205128205,
+          "fastball_dva": 0.005746651157377321,
+          "breaker_dva": -0.0069591873681120985,
+          "offspeed_dva": 0.002323570974686211,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "fastball",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "0-1",
+          "pitches": 29,
+          "total_dva": 0.1233323896381383,
+          "avg_dva": 0.004252841022004769,
+          "avg_execution_gap": 0.002553140262554858,
+          "avg_expected_rv_actual": -0.029679960342413134,
+          "outperform_rate": 0.4827586206896552,
+          "fastball_rate": 0.3448275862068966,
+          "breaker_rate": 0.5172413793103449,
+          "offspeed_rate": 0.13793103448275862,
+          "fastball_dva": -0.0001806891531062619,
+          "breaker_dva": 0.0018967982795503394,
+          "offspeed_dva": 0.024171826743986456,
+          "actual_top_pitch_family": "breaker",
+          "recommended_pitch_family": "offspeed",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": true,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "0-2",
+          "pitches": 35,
+          "total_dva": -0.10011758091665494,
+          "avg_dva": -0.0028605023119044268,
+          "avg_execution_gap": 0.0009375901164824295,
+          "avg_expected_rv_actual": -0.011624706829232829,
+          "outperform_rate": 0.3142857142857143,
+          "fastball_rate": 0.4,
+          "breaker_rate": 0.34285714285714286,
+          "offspeed_rate": 0.2571428571428571,
+          "fastball_dva": -0.0014605699508960933,
+          "breaker_dva": 0.001424348090626558,
+          "offspeed_dva": -0.010751308743514258,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "breaker",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": true,
+          "putaway_flag": true,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "1-0",
+          "pitches": 39,
+          "total_dva": 0.039957808707064654,
+          "avg_dva": 0.0010245591976170425,
+          "avg_execution_gap": -0.0007359033777835422,
+          "avg_expected_rv_actual": -0.02020655883452258,
+          "outperform_rate": 0.46153846153846156,
+          "fastball_rate": 0.48717948717948717,
+          "breaker_rate": 0.38461538461538464,
+          "offspeed_rate": 0.1282051282051282,
+          "fastball_dva": 0.00473048696049342,
+          "breaker_dva": -0.0032068746249812336,
+          "offspeed_dva": -0.0003636648335183665,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "fastball",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "1-1",
+          "pitches": 36,
+          "total_dva": -0.02912726352903216,
+          "avg_dva": -0.0008090906535842266,
+          "avg_execution_gap": 0.0007932911614277122,
+          "avg_expected_rv_actual": -0.020087501060010657,
+          "outperform_rate": 0.4444444444444444,
+          "fastball_rate": 0.2777777777777778,
+          "breaker_rate": 0.5555555555555556,
+          "offspeed_rate": 0.16666666666666666,
+          "fastball_dva": 0.0011774575350379263,
+          "breaker_dva": -0.0007701904512941834,
+          "offspeed_dva": -0.0042496716422546245,
+          "actual_top_pitch_family": "breaker",
+          "recommended_pitch_family": "fastball",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "1-2",
+          "pitches": 23,
+          "total_dva": 0.0638649138864518,
+          "avg_dva": 0.0027767353863674695,
+          "avg_execution_gap": -0.007585768919483733,
+          "avg_expected_rv_actual": -0.02076311297107326,
+          "outperform_rate": 0.34782608695652173,
+          "fastball_rate": 0.30434782608695654,
+          "breaker_rate": 0.5652173913043478,
+          "offspeed_rate": 0.13043478260869565,
+          "fastball_dva": -0.0035665132903626986,
+          "breaker_dva": 0.001219450349871738,
+          "offspeed_dva": 0.0243258841235527,
+          "actual_top_pitch_family": "breaker",
+          "recommended_pitch_family": "offspeed",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": true,
+          "putaway_flag": true,
+          "sample_label": "Low split sample",
+          "low_sample": true
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "2-0",
+          "pitches": 29,
+          "total_dva": -0.06738373373324669,
+          "avg_dva": -0.0023235770252843686,
+          "avg_execution_gap": 0.004506205876238694,
+          "avg_expected_rv_actual": -0.007927441800912392,
+          "outperform_rate": 0.3793103448275862,
+          "fastball_rate": 0.3448275862068966,
+          "breaker_rate": 0.4482758620689655,
+          "offspeed_rate": 0.20689655172413793,
+          "fastball_dva": 0.00006879433252227826,
+          "breaker_dva": -0.005576550335181541,
+          "offspeed_dva": 0.0007372462164817595,
+          "actual_top_pitch_family": "breaker",
+          "recommended_pitch_family": "offspeed",
+          "hitter_friendly_flag": true,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "2-1",
+          "pitches": 27,
+          "total_dva": -0.1088223431822068,
+          "avg_dva": -0.004030457154896548,
+          "avg_execution_gap": 0.007893876828073574,
+          "avg_expected_rv_actual": -0.008237644999839918,
+          "outperform_rate": 0.3333333333333333,
+          "fastball_rate": 0.37037037037037035,
+          "breaker_rate": 0.37037037037037035,
+          "offspeed_rate": 0.25925925925925924,
+          "fastball_dva": -0.010439114088270193,
+          "breaker_dva": -0.00429855104497013,
+          "offspeed_dva": 0.005507758307170921,
+          "actual_top_pitch_family": "breaker",
+          "recommended_pitch_family": "offspeed",
+          "hitter_friendly_flag": true,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "2-2",
+          "pitches": 41,
+          "total_dva": -0.1121705837547779,
+          "avg_dva": -0.0027358678964579976,
+          "avg_execution_gap": -0.0015027847648905657,
+          "avg_expected_rv_actual": -0.01705762418270929,
+          "outperform_rate": 0.3902439024390244,
+          "fastball_rate": 0.43902439024390244,
+          "breaker_rate": 0.34146341463414637,
+          "offspeed_rate": 0.21951219512195122,
+          "fastball_dva": -0.0013414116153769476,
+          "breaker_dva": -0.005308403951736788,
+          "offspeed_dva": -0.0015230577059642035,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "fastball",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": true,
+          "putaway_flag": true,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "3-0",
+          "pitches": 32,
+          "total_dva": 0.17342471715577024,
+          "avg_dva": 0.00541952241111782,
+          "avg_execution_gap": -0.001050434414484013,
+          "avg_expected_rv_actual": -0.01945144999990589,
+          "outperform_rate": 0.53125,
+          "fastball_rate": 0.375,
+          "breaker_rate": 0.375,
+          "offspeed_rate": 0.25,
+          "fastball_dva": -0.0016964791287642177,
+          "breaker_dva": 0.0032958140058326536,
+          "offspeed_dva": 0.019279087328868627,
+          "actual_top_pitch_family": "breaker",
+          "recommended_pitch_family": "offspeed",
+          "hitter_friendly_flag": true,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "3-1",
+          "pitches": 32,
+          "total_dva": -0.049496736110692524,
+          "avg_dva": -0.0015467730034591414,
+          "avg_execution_gap": -0.003494980932651333,
+          "avg_expected_rv_actual": -0.005922466785705183,
+          "outperform_rate": 0.4375,
+          "fastball_rate": 0.4375,
+          "breaker_rate": 0.40625,
+          "offspeed_rate": 0.15625,
+          "fastball_dva": -0.0026586696275487723,
+          "breaker_dva": -0.0034106967210298022,
+          "offspeed_dva": 0.0064127392096755415,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "offspeed",
+          "hitter_friendly_flag": true,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "3-2",
+          "pitches": 38,
+          "total_dva": 0.041938281268812716,
+          "avg_dva": 0.0011036389807582293,
+          "avg_execution_gap": 0.010534001411581582,
+          "avg_expected_rv_actual": -0.01556120571331121,
+          "outperform_rate": 0.2894736842105263,
+          "fastball_rate": 0.4473684210526316,
+          "breaker_rate": 0.3684210526315789,
+          "offspeed_rate": 0.18421052631578946,
+          "fastball_dva": 0.00027039160897188326,
+          "breaker_dva": 0.0016220688703469932,
+          "offspeed_dva": 0.0020903799616332564,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "offspeed",
+          "hitter_friendly_flag": true,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        }
+      ],
+      "count_bucket_summaries": [
+        {
+          "split_type": "count_bucket",
+          "split_value": "pitcher_ahead",
+          "pitches": 87,
+          "total_dva": 0.08707972260793514,
+          "avg_dva": 0.0010009163518153465,
+          "avg_execution_gap": -0.0007771949822660916,
+          "avg_expected_rv_actual": -0.02005902514123925,
+          "outperform_rate": 0.3793103448275862,
+          "fastball_rate": 0.3563218390804598,
+          "breaker_rate": 0.45977011494252873,
+          "offspeed_rate": 0.1839080459770115,
+          "fastball_dva": -0.001523240770198285,
+          "breaker_dva": 0.0015349251457276595,
+          "offspeed_dva": 0.004556448790935974,
+          "actual_top_pitch_family": "breaker",
+          "recommended_pitch_family": "offspeed",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Stable split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_bucket",
+          "split_value": "even",
+          "pitches": 155,
+          "total_dva": -0.029227072178036884,
+          "avg_dva": -0.00018856175598733473,
+          "avg_execution_gap": -0.0013076658352671154,
+          "avg_expected_rv_actual": -0.02003782568987639,
+          "outperform_rate": 0.44516129032258067,
+          "fastball_rate": 0.4258064516129032,
+          "breaker_rate": 0.3741935483870968,
+          "offspeed_rate": 0.2,
+          "fastball_dva": 0.002828708947168762,
+          "breaker_dva": -0.0034561598282401053,
+          "offspeed_dva": -0.0004988578275241642,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "fastball",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Stable split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_bucket",
+          "split_value": "hitter_ahead",
+          "pitches": 120,
+          "total_dva": -0.05227809587037577,
+          "avg_dva": -0.0004356507989197981,
+          "avg_execution_gap": 0.0016530112805048128,
+          "avg_expected_rv_actual": -0.010535646369680763,
+          "outperform_rate": 0.425,
+          "fastball_rate": 0.38333333333333336,
+          "breaker_rate": 0.4,
+          "offspeed_rate": 0.21666666666666667,
+          "fastball_dva": -0.003506137432355056,
+          "breaker_dva": -0.0025056240439678525,
+          "offspeed_dva": 0.008818237697246682,
+          "actual_top_pitch_family": "breaker",
+          "recommended_pitch_family": "offspeed",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Stable split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_bucket",
+          "split_value": "full_count",
+          "pitches": 38,
+          "total_dva": 0.041938281268812716,
+          "avg_dva": 0.0011036389807582293,
+          "avg_execution_gap": 0.010534001411581582,
+          "avg_expected_rv_actual": -0.01556120571331121,
+          "outperform_rate": 0.2894736842105263,
+          "fastball_rate": 0.4473684210526316,
+          "breaker_rate": 0.3684210526315789,
+          "offspeed_rate": 0.18421052631578946,
+          "fastball_dva": 0.00027039160897188326,
+          "breaker_dva": 0.0016220688703469932,
+          "offspeed_dva": 0.0020903799616332564,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "offspeed",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        }
+      ],
+      "pitch_type_summaries": [
+        {
+          "pitch_type": "SI",
+          "pitch_family": "fastball",
+          "pitches": 80,
+          "total_dva": 0.30156594902897876,
+          "avg_dva": 0.0037695743628622345,
+          "avg_execution_gap": 0.0016434753637252757,
+          "avg_expected_rv_actual": -0.029252549423108575,
+          "outperform_rate": 0.4375
+        },
+        {
+          "pitch_type": "CH",
+          "pitch_family": "offspeed",
+          "pitches": 80,
+          "total_dva": 0.30134542786157303,
+          "avg_dva": 0.003766817848269663,
+          "avg_execution_gap": 0.002756585919426538,
+          "avg_expected_rv_actual": -0.02061253043648321,
+          "outperform_rate": 0.4
+        },
+        {
+          "pitch_type": "SL",
+          "pitch_family": "breaker",
+          "pitches": 80,
+          "total_dva": 0.17263911791863698,
+          "avg_dva": 0.0021579889739829624,
+          "avg_execution_gap": -0.00011516488872665542,
+          "avg_expected_rv_actual": -0.019479916654381667,
+          "outperform_rate": 0.475
+        },
+        {
+          "pitch_type": "FF",
+          "pitch_family": "fastball",
+          "pitches": 80,
+          "total_dva": -0.31877728692779783,
+          "avg_dva": -0.003984716086597473,
+          "avg_execution_gap": -0.00022671147989931583,
+          "avg_expected_rv_actual": -0.007805882154207211,
+          "outperform_rate": 0.3625
+        },
+        {
+          "pitch_type": "CU",
+          "pitch_family": "breaker",
+          "pitches": 80,
+          "total_dva": -0.4092603720530557,
+          "avg_dva": -0.005115754650663196,
+          "avg_execution_gap": 0.00004618057768821569,
+          "avg_expected_rv_actual": -0.006681640715396497,
+          "outperform_rate": 0.375
+        }
+      ],
+      "pairings": [
+        {
+          "pitcher_id": 700001,
+          "pitcher_name": "Pitcher 700001",
+          "pitches": 134,
+          "total_dva": 0.13087842946163922,
+          "avg_dva": 0.0009767046974749195,
+          "avg_execution_gap": -0.00201224800388429,
+          "avg_expected_rv_actual": -0.018640967703219363,
+          "outperform_rate": 0.417910447761194
+        },
+        {
+          "pitcher_id": 700009,
+          "pitcher_name": "Pitcher 700009",
+          "pitches": 133,
+          "total_dva": -0.037142388867990386,
+          "avg_dva": -0.00027926608171421343,
+          "avg_execution_gap": 0.002590613268223761,
+          "avg_expected_rv_actual": -0.017156311140581266,
+          "outperform_rate": 0.39849624060150374
+        },
+        {
+          "pitcher_id": 700005,
+          "pitcher_name": "Hector Perez",
+          "pitches": 133,
+          "total_dva": -0.046223204765313615,
+          "avg_dva": -0.0003475428929722828,
+          "avg_execution_gap": 0.0019055556934124756,
+          "avg_expected_rv_actual": -0.014488139073364437,
+          "outperform_rate": 0.41353383458646614
+        }
+      ],
+      "matchup_summaries": [
+        {
+          "stand": "L",
+          "p_throws": "R",
+          "matchup_label": "L bat / R throw",
+          "pitches": 161,
+          "total_dva": 0.08225572529093675,
+          "avg_dva": 0.000510905126030663,
+          "avg_execution_gap": -0.00011705072952192765,
+          "outperform_rate": 0.42857142857142855
+        },
+        {
+          "stand": "R",
+          "p_throws": "R",
+          "matchup_label": "R bat / R throw",
+          "pitches": 159,
+          "total_dva": 0.2840343974651963,
+          "avg_dva": 0.001786379858271675,
+          "avg_execution_gap": 0.0022976812907050336,
+          "outperform_rate": 0.41509433962264153
+        },
+        {
+          "stand": "L",
+          "p_throws": "L",
+          "matchup_label": "L bat / L throw",
+          "pitches": 40,
+          "total_dva": -0.17839210994231203,
+          "avg_dva": -0.0044598027485578005,
+          "avg_execution_gap": -0.0006083587431167932,
+          "outperform_rate": 0.375
+        },
+        {
+          "stand": "R",
+          "p_throws": "L",
+          "matchup_label": "R bat / L throw",
+          "pitches": 40,
+          "total_dva": -0.1403851769854858,
+          "avg_dva": -0.003509629424637145,
+          "avg_execution_gap": 0.0001549357833181615,
+          "outperform_rate": 0.35
+        }
+      ]
+    },
+    "catcher_b": {
+      "identity": {
+        "catcher_id": 663728,
+        "catcher_name": "Cal Raleigh",
+        "team": "SEA",
+        "season": 2025,
+        "headshot_url": "https://img.mlbstatic.com/mlb-photos/image/upload/w_180,q_auto:best/v1/people/663728/headshot/67/current",
+        "bats": "S",
+        "throws": "R",
+        "active": true,
+        "dropdown_label": "Cal Raleigh | SEA | 2025",
+        "key_person": null,
+        "key_uuid": null,
+        "key_bbref": null,
+        "key_fangraphs": null,
+        "key_retro": null
+      },
+      "total_pitches": 400,
+      "total_dva": -0.22587164095123916,
+      "avg_dva": -0.0005646791023780979,
+      "avg_execution_gap": 0.0004771223715061365,
+      "grades": {
+        "overall_game_calling": {
+          "score": null,
+          "label": null,
+          "qualified": false,
+          "population_size": 0,
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers)."
+        },
+        "count_leverage": {
+          "score": null,
+          "label": null,
+          "qualified": false,
+          "population_size": 0,
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers)."
+        },
+        "putaway_count": {
+          "score": null,
+          "label": null,
+          "qualified": false,
+          "population_size": 0,
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers)."
+        },
+        "damage_avoidance": {
+          "score": null,
+          "label": null,
+          "qualified": false,
+          "population_size": 0,
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers)."
+        },
+        "pitch_mix_synergy": {
+          "score": null,
+          "label": null,
+          "qualified": false,
+          "population_size": 0,
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers)."
+        },
+        "receiving_support": {
+          "score": null,
+          "label": null,
+          "qualified": true,
+          "population_size": 4,
+          "stability_note": "Insufficient qualified catcher population for stable normalization (4 qualified catchers)."
+        }
+      },
+      "public_metrics": {
+        "framing_runs": 7.0164458190605155,
+        "blocking_runs": -1,
+        "blocks_above_average": -4,
+        "pop_time_2b": 1.97,
+        "pop_time_2b_cs": 1.97,
+        "pop_time_2b_sb": 1.97,
+        "pop_2b_attempts": 55,
+        "arm_overall": null,
+        "max_arm_strength": null,
+        "source_note": "Framing, blocking, pop time, and arm strength sourced from public Baseball Savant leaderboards."
+      },
+      "diagnostics": {
+        "games_scored": 27,
+        "avg_expected_rv_actual": -0.009753820729638391,
+        "outperform_rate": 0.3875,
+        "avg_surviving_candidate_count": null,
+        "single_candidate_pct": 0,
+        "dropped_sparse_context_pct": -0.0554089709762533,
+        "fallback_context_pct": 1,
+        "qualified_for_grades": false,
+        "stability_label": "Limited sample",
+        "stability_note": "400 pitches across 27 games. Use split-level outputs carefully.",
+        "model_version": "xgb-delta-run-exp-v2"
+      },
+      "grade_formula_notes": {
+        "count_leverage": {
+          "component_percentiles": {},
+          "description": "65% hitter-friendly count DVA, 35% hitter-friendly outperformance rate.",
+          "inputs": {
+            "leverage_dva": -0.000869,
+            "leverage_outperform": 0.371257
+          },
+          "normalization": "Percentile rank against qualified catchers in the selected season.",
+          "population_size": 0,
+          "qualified": false,
+          "scale": "20-80",
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers).",
+          "thresholds": {
+            "min_games": 20,
+            "min_pitches": 500,
+            "min_split_pitches": 120,
+            "min_split_pitches_column": "hitter_friendly_pitches"
+          },
+          "weights": {
+            "leverage_dva": 0.65,
+            "leverage_outperform": 0.35
+          }
+        },
+        "damage_avoidance": {
+          "component_percentiles": {},
+          "description": "55% lower-is-better expected run value in damage counts, 45% damage-count DVA.",
+          "inputs": {
+            "damage_dva": -0.000808,
+            "damage_expected_rv": -0.009968
+          },
+          "normalization": "Percentile rank against qualified catchers in the selected season.",
+          "population_size": 0,
+          "qualified": false,
+          "scale": "20-80",
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers).",
+          "thresholds": {
+            "min_games": 20,
+            "min_pitches": 500,
+            "min_split_pitches": 80,
+            "min_split_pitches_column": "damage_count_pitches"
+          },
+          "weights": {
+            "damage_dva": 0.45,
+            "damage_expected_rv": 0.55
+          }
+        },
+        "overall_game_calling": {
+          "component_percentiles": {},
+          "description": "45% avg DVA, 20% baseline outperformance rate, 20% hitter-friendly count DVA, 15% put-away count DVA.",
+          "inputs": {
+            "avg_dva": -0.000565,
+            "leverage": -0.000869,
+            "outperform": 0.3875,
+            "putaway": -0.000821
+          },
+          "normalization": "Percentile rank against qualified catchers in the selected season.",
+          "population_size": 0,
+          "qualified": false,
+          "scale": "20-80",
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers).",
+          "thresholds": {
+            "min_games": 20,
+            "min_pitches": 500
+          },
+          "weights": {
+            "avg_dva": 0.45,
+            "leverage": 0.2,
+            "outperform": 0.2,
+            "putaway": 0.15
+          }
+        },
+        "pitch_mix_synergy": {
+          "component_percentiles": {},
+          "description": "40% count-family alignment rate, 40% pitcher-pairing avg DVA, 20% pitcher-pairing outperformance rate.",
+          "inputs": {
+            "family_alignment": 0.475,
+            "pairing_dva": -0.000564,
+            "pairing_outperform": 0.387386
+          },
+          "normalization": "Percentile rank against qualified catchers in the selected season.",
+          "population_size": 0,
+          "qualified": false,
+          "scale": "20-80",
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers).",
+          "thresholds": {
+            "min_games": 20,
+            "min_pitches": 500
+          },
+          "weights": {
+            "family_alignment": 0.4,
+            "pairing_dva": 0.4,
+            "pairing_outperform": 0.2
+          }
+        },
+        "putaway_count": {
+          "component_percentiles": {},
+          "description": "70% put-away count DVA, 30% put-away outperformance rate.",
+          "inputs": {
+            "putaway_dva": -0.000821,
+            "putaway_outperform": 0.428571
+          },
+          "normalization": "Percentile rank against qualified catchers in the selected season.",
+          "population_size": 0,
+          "qualified": false,
+          "scale": "20-80",
+          "stability_note": "Insufficient qualified catcher population for stable normalization (0 qualified catchers).",
+          "thresholds": {
+            "min_games": 20,
+            "min_pitches": 500,
+            "min_split_pitches": 120,
+            "min_split_pitches_column": "putaway_pitches"
+          },
+          "weights": {
+            "putaway_dva": 0.7,
+            "putaway_outperform": 0.3
+          }
+        },
+        "receiving_support": {
+          "component_percentiles": {},
+          "description": "40% public framing runs, 25% blocking runs, 20% arm overall, 15% lower-is-better pop time to second.",
+          "inputs": {
+            "arm": null,
+            "blocking": -1,
+            "framing": 7.016446,
+            "pop": 1.97
+          },
+          "normalization": "Percentile rank against qualified catchers in the selected season.",
+          "population_size": 4,
+          "qualified": true,
+          "scale": "20-80",
+          "stability_note": "Insufficient qualified catcher population for stable normalization (4 qualified catchers).",
+          "thresholds": {
+            "min_games": 10,
+            "min_pitches": 300,
+            "min_public_metrics": 1
+          },
+          "weights": {
+            "arm": 0.2,
+            "blocking": 0.25,
+            "framing": 0.4,
+            "pop": 0.15
+          }
+        }
+      },
+      "summary_insights": [
+        {
+          "key": "overall_profile",
+          "label": "Strength",
+          "headline": "The season line is still forming.",
+          "detail": "Cal Raleigh has -0.226 total DVA and -0.00056 avg DVA so far, but no grade component is stable enough yet to call a true carrying tool.",
+          "tone": "neutral"
+        },
+        {
+          "key": "situational_edge",
+          "label": "Situational edge",
+          "headline": "0-1 is the best value pocket.",
+          "detail": "Best exact-count edge is 0-1 (pitcher-friendly count) at +0.0008 avg DVA over 26 pitches. Best-performing family signal there is fastball. The broader full count bucket sits at -0.0001 avg DVA.",
+          "tone": "positive"
+        },
+        {
+          "key": "pitch_pairing_edge",
+          "label": "Pitch + pairing edge",
+          "headline": "Pitch mix and battery fit add most of the secondary value.",
+          "detail": "SI is the best pitch-type result at +0.0050 avg DVA over 80 pitches; the strongest pairing is with Jun Sung Park at +0.024 total DVA over 133 pitches.",
+          "tone": "positive"
+        },
+        {
+          "key": "weakness",
+          "label": "Weakness",
+          "headline": "2-0 is the main pressure point.",
+          "detail": "The weakest exact-count pocket is 2-0 (hitter-friendly count) at -0.0022 avg DVA over 32 pitches. The softest pitch-type result is CU at -0.0074 avg DVA.",
+          "tone": "caution"
+        },
+        {
+          "key": "confidence",
+          "label": "Data confidence",
+          "headline": "The sample is still directional rather than settled.",
+          "detail": "Limited sample at 400 pitches across 27 games. -5.5% of eligible contexts dropped for sparse alternatives. +0.0005 avg execution gap.",
+          "tone": "caution"
+        }
+      ],
+      "steal_against_summary": null,
+      "count_state_summaries": [
+        {
+          "split_type": "count_state",
+          "split_value": "0-0",
+          "pitches": 23,
+          "total_dva": 0.016437688454364746,
+          "avg_dva": 0.0007146821067115107,
+          "avg_execution_gap": 0.012592778684464,
+          "avg_expected_rv_actual": -0.010391831980086863,
+          "outperform_rate": 0.30434782608695654,
+          "fastball_rate": 0.2608695652173913,
+          "breaker_rate": 0.4782608695652174,
+          "offspeed_rate": 0.2608695652173913,
+          "fastball_dva": -0.002337361504841182,
+          "breaker_dva": 0.005456673043998749,
+          "offspeed_dva": -0.004926924333429067,
+          "actual_top_pitch_family": "breaker",
+          "recommended_pitch_family": "breaker",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Low split sample",
+          "low_sample": true
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "0-1",
+          "pitches": 26,
+          "total_dva": 0.020259892824105938,
+          "avg_dva": 0.0007792266470809976,
+          "avg_execution_gap": -0.0009523811692426372,
+          "avg_expected_rv_actual": -0.025044980382797524,
+          "outperform_rate": 0.5,
+          "fastball_rate": 0.46153846153846156,
+          "breaker_rate": 0.2692307692307692,
+          "offspeed_rate": 0.2692307692307692,
+          "fastball_dva": 0.008416469624757561,
+          "breaker_dva": -0.008774775679090194,
+          "offspeed_dva": -0.0027591875599076348,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "fastball",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": true,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "0-2",
+          "pitches": 49,
+          "total_dva": -0.014330034018894378,
+          "avg_dva": -0.0002924496738549873,
+          "avg_execution_gap": 0.0032593588040040963,
+          "avg_expected_rv_actual": -0.00954489419426845,
+          "outperform_rate": 0.42857142857142855,
+          "fastball_rate": 0.42857142857142855,
+          "breaker_rate": 0.3673469387755102,
+          "offspeed_rate": 0.20408163265306123,
+          "fastball_dva": 0.005873953039935303,
+          "breaker_dva": -0.005288878513039418,
+          "offspeed_dva": -0.004248323462282618,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "fastball",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": true,
+          "putaway_flag": true,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "1-0",
+          "pitches": 30,
+          "total_dva": -0.03518429617785539,
+          "avg_dva": -0.0011728098725951796,
+          "avg_execution_gap": 0.0041722113904334454,
+          "avg_expected_rv_actual": -0.012167832775351902,
+          "outperform_rate": 0.3,
+          "fastball_rate": 0.4666666666666667,
+          "breaker_rate": 0.36666666666666664,
+          "offspeed_rate": 0.16666666666666666,
+          "fastball_dva": 0.00017492613724676837,
+          "breaker_dva": -0.006059528998748371,
+          "offspeed_dva": 0.005804311377384389,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "offspeed",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "1-1",
+          "pitches": 28,
+          "total_dva": 0.021176547486296243,
+          "avg_dva": 0.000756305267367723,
+          "avg_execution_gap": 0.004315514407604611,
+          "avg_expected_rv_actual": -0.006591002945372436,
+          "outperform_rate": 0.35714285714285715,
+          "fastball_rate": 0.32142857142857145,
+          "breaker_rate": 0.5,
+          "offspeed_rate": 0.17857142857142858,
+          "fastball_dva": 0.0085085388617935,
+          "breaker_dva": -0.012079942047421355,
+          "offspeed_dva": 0.02274377727881074,
+          "actual_top_pitch_family": "breaker",
+          "recommended_pitch_family": "offspeed",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "1-2",
+          "pitches": 41,
+          "total_dva": -0.061487144829394894,
+          "avg_dva": -0.001499686459253534,
+          "avg_execution_gap": -0.004234145218039786,
+          "avg_expected_rv_actual": -0.00866663355874352,
+          "outperform_rate": 0.4634146341463415,
+          "fastball_rate": 0.3902439024390244,
+          "breaker_rate": 0.43902439024390244,
+          "offspeed_rate": 0.17073170731707318,
+          "fastball_dva": 0.0016504584006421892,
+          "breaker_dva": -0.0035224774468655662,
+          "offspeed_dva": -0.0034985550280128195,
+          "actual_top_pitch_family": "breaker",
+          "recommended_pitch_family": "fastball",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": true,
+          "putaway_flag": true,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "2-0",
+          "pitches": 32,
+          "total_dva": -0.07172216040392718,
+          "avg_dva": -0.0022413175126227243,
+          "avg_execution_gap": -0.006990610997400427,
+          "avg_expected_rv_actual": -0.005551510956138372,
+          "outperform_rate": 0.40625,
+          "fastball_rate": 0.375,
+          "breaker_rate": 0.34375,
+          "offspeed_rate": 0.28125,
+          "fastball_dva": -0.0016528212436242027,
+          "breaker_dva": -0.003127522486135025,
+          "offspeed_dva": -0.0019428397925501618,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "fastball",
+          "hitter_friendly_flag": true,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "2-1",
+          "pitches": 24,
+          "total_dva": -0.05366044167385553,
+          "avg_dva": -0.002235851736410647,
+          "avg_execution_gap": -0.004804032631611343,
+          "avg_expected_rv_actual": -0.00391960713507918,
+          "outperform_rate": 0.25,
+          "fastball_rate": 0.5,
+          "breaker_rate": 0.375,
+          "offspeed_rate": 0.125,
+          "fastball_dva": -0.0002926396183384995,
+          "breaker_dva": -0.002737475793967153,
+          "offspeed_dva": -0.00850382803602972,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "fastball",
+          "hitter_friendly_flag": true,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Low split sample",
+          "low_sample": true
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "2-2",
+          "pitches": 36,
+          "total_dva": -0.027597052442918824,
+          "avg_dva": -0.0007665847900810784,
+          "avg_execution_gap": 0.004814067039320297,
+          "avg_expected_rv_actual": -0.00940398911997262,
+          "outperform_rate": 0.3888888888888889,
+          "fastball_rate": 0.5277777777777778,
+          "breaker_rate": 0.3055555555555556,
+          "offspeed_rate": 0.16666666666666666,
+          "fastball_dva": 0.0016497492952590907,
+          "breaker_dva": -0.0019075418734273897,
+          "offspeed_dva": -0.006326554740856712,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "fastball",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": true,
+          "putaway_flag": true,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "3-0",
+          "pitches": 40,
+          "total_dva": -0.008254077645930585,
+          "avg_dva": -0.00020635194114826464,
+          "avg_execution_gap": -0.00006366717905421648,
+          "avg_expected_rv_actual": -0.004486383654875681,
+          "outperform_rate": 0.525,
+          "fastball_rate": 0.3,
+          "breaker_rate": 0.475,
+          "offspeed_rate": 0.225,
+          "fastball_dva": 0.00035384996776378533,
+          "breaker_dva": -0.0030639513910915538,
+          "offspeed_dva": 0.00507942213018261,
+          "actual_top_pitch_family": "breaker",
+          "recommended_pitch_family": "offspeed",
+          "hitter_friendly_flag": true,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "3-1",
+          "pitches": 37,
+          "total_dva": -0.009402669682943555,
+          "avg_dva": -0.0002541262076471231,
+          "avg_execution_gap": -0.004509430784448029,
+          "avg_expected_rv_actual": -0.005689278355094831,
+          "outperform_rate": 0.32432432432432434,
+          "fastball_rate": 0.35135135135135137,
+          "breaker_rate": 0.5405405405405406,
+          "offspeed_rate": 0.10810810810810811,
+          "fastball_dva": 0.003204319853849041,
+          "breaker_dva": -0.0021739467454608527,
+          "offspeed_dva": -0.0018949732184410095,
+          "actual_top_pitch_family": "breaker",
+          "recommended_pitch_family": "fastball",
+          "hitter_friendly_flag": true,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_state",
+          "split_value": "3-2",
+          "pitches": 34,
+          "total_dva": -0.0021078928402857716,
+          "avg_dva": -0.00006199684824369917,
+          "avg_execution_gap": 0.0008515624860085336,
+          "avg_expected_rv_actual": -0.018779724520915326,
+          "outperform_rate": 0.29411764705882354,
+          "fastball_rate": 0.4117647058823529,
+          "breaker_rate": 0.3235294117647059,
+          "offspeed_rate": 0.2647058823529412,
+          "fastball_dva": 0.00018695947004570865,
+          "breaker_dva": -0.0011116264186884191,
+          "offspeed_dva": 0.0008336183538496564,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "offspeed",
+          "hitter_friendly_flag": true,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        }
+      ],
+      "count_bucket_summaries": [
+        {
+          "split_type": "count_bucket",
+          "split_value": "pitcher_ahead",
+          "pitches": 116,
+          "total_dva": -0.05555728602418329,
+          "avg_dva": -0.00047894212089813183,
+          "avg_execution_gap": -0.00033321795641154335,
+          "avg_expected_rv_actual": -0.012708631736037706,
+          "outperform_rate": 0.45689655172413796,
+          "fastball_rate": 0.4224137931034483,
+          "breaker_rate": 0.3706896551724138,
+          "offspeed_rate": 0.20689655172413793,
+          "fastball_dva": 0.005117509872367492,
+          "breaker_dva": -0.0051169264426028154,
+          "offspeed_dva": -0.00359530969742789,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "fastball",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Stable split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_bucket",
+          "split_value": "even",
+          "pitches": 117,
+          "total_dva": -0.025167112680113235,
+          "avg_dva": -0.000215103527180455,
+          "avg_execution_gap": 0.006059325369949874,
+          "avg_expected_rv_actual": -0.00963366503924784,
+          "outperform_rate": 0.3418803418803419,
+          "fastball_rate": 0.41025641025641024,
+          "breaker_rate": 0.4017094017094017,
+          "offspeed_rate": 0.18803418803418803,
+          "fastball_dva": 0.002007226734551498,
+          "breaker_dva": -0.004185820527103108,
+          "offspeed_dva": 0.0034190713106936805,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "offspeed",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Stable split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_bucket",
+          "split_value": "hitter_ahead",
+          "pitches": 133,
+          "total_dva": -0.1430393494066568,
+          "avg_dva": -0.001075483830125239,
+          "avg_execution_gap": -0.0038224959493400865,
+          "avg_expected_rv_actual": -0.004975019302044092,
+          "outperform_rate": 0.39097744360902253,
+          "fastball_rate": 0.3684210526315789,
+          "breaker_rate": 0.44360902255639095,
+          "offspeed_rate": 0.18796992481203006,
+          "fastball_dva": 0.0004603434157071536,
+          "breaker_dva": -0.0027243057768329866,
+          "offspeed_dva": -0.00019448543772644655,
+          "actual_top_pitch_family": "breaker",
+          "recommended_pitch_family": "fastball",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Stable split",
+          "low_sample": false
+        },
+        {
+          "split_type": "count_bucket",
+          "split_value": "full_count",
+          "pitches": 34,
+          "total_dva": -0.0021078928402857716,
+          "avg_dva": -0.00006199684824369917,
+          "avg_execution_gap": 0.0008515624860085336,
+          "avg_expected_rv_actual": -0.018779724520915326,
+          "outperform_rate": 0.29411764705882354,
+          "fastball_rate": 0.4117647058823529,
+          "breaker_rate": 0.3235294117647059,
+          "offspeed_rate": 0.2647058823529412,
+          "fastball_dva": 0.00018695947004570865,
+          "breaker_dva": -0.0011116264186884191,
+          "offspeed_dva": 0.0008336183538496564,
+          "actual_top_pitch_family": "fastball",
+          "recommended_pitch_family": "offspeed",
+          "hitter_friendly_flag": false,
+          "pitcher_friendly_flag": false,
+          "putaway_flag": false,
+          "sample_label": "Moderate split",
+          "low_sample": false
+        }
+      ],
+      "pitch_type_summaries": [
+        {
+          "pitch_type": "SI",
+          "pitch_family": "fastball",
+          "pitches": 80,
+          "total_dva": 0.40295958310792535,
+          "avg_dva": 0.005036994788849067,
+          "avg_execution_gap": -0.004463727815963025,
+          "avg_expected_rv_actual": -0.023413405133760536,
+          "outperform_rate": 0.5
+        },
+        {
+          "pitch_type": "SL",
+          "pitch_family": "breaker",
+          "pitches": 80,
+          "total_dva": 0.004686718120744154,
+          "avg_dva": 0.00005858397650930192,
+          "avg_execution_gap": 0.0025766451262310497,
+          "avg_expected_rv_actual": -0.009702165207272628,
+          "outperform_rate": 0.4125
+        },
+        {
+          "pitch_type": "CH",
+          "pitch_family": "offspeed",
+          "pitches": 80,
+          "total_dva": -0.00842743466152263,
+          "avg_dva": -0.00010534293326903286,
+          "avg_execution_gap": 0.0004235926268446349,
+          "avg_expected_rv_actual": -0.0117476571822408,
+          "outperform_rate": 0.4
+        },
+        {
+          "pitch_type": "FF",
+          "pitch_family": "fastball",
+          "pitches": 80,
+          "total_dva": -0.030680456153155882,
+          "avg_dva": -0.0003835057019144485,
+          "avg_execution_gap": -0.003288841992331993,
+          "avg_expected_rv_actual": -0.008218641606799793,
+          "outperform_rate": 0.375
+        },
+        {
+          "pitch_type": "CU",
+          "pitch_family": "breaker",
+          "pitches": 80,
+          "total_dva": -0.5944100513652302,
+          "avg_dva": -0.0074301256420653775,
+          "avg_execution_gap": 0.007137943912750015,
+          "avg_expected_rv_actual": 0.004312765481881797,
+          "outperform_rate": 0.25
+        }
+      ],
+      "pairings": [
+        {
+          "pitcher_id": 700002,
+          "pitcher_name": "Pitcher 700002",
+          "pitches": 134,
+          "total_dva": -0.09322339300682257,
+          "avg_dva": -0.0006956969627374818,
+          "avg_execution_gap": 0.0018152563732415031,
+          "avg_expected_rv_actual": -0.00694670924550242,
+          "outperform_rate": 0.43283582089552236
+        },
+        {
+          "pitcher_id": 700010,
+          "pitcher_name": "Jun Sung Park",
+          "pitches": 133,
+          "total_dva": 0.023895093853146462,
+          "avg_dva": 0.0001796623597980937,
+          "avg_execution_gap": -0.0016995272129841994,
+          "avg_expected_rv_actual": -0.009256377290471289,
+          "outperform_rate": 0.39849624060150374
+        },
+        {
+          "pitcher_id": 700006,
+          "pitcher_name": "Se Hong Jang",
+          "pitches": 133,
+          "total_dva": -0.15654334179756305,
+          "avg_dva": -0.001177017607500474,
+          "avg_execution_gap": 0.0013055767963533209,
+          "avg_expected_rv_actual": -0.013079481754325946,
+          "outperform_rate": 0.3308270676691729
+        }
+      ],
+      "matchup_summaries": [
+        {
+          "stand": "L",
+          "p_throws": "R",
+          "matchup_label": "L bat / R throw",
+          "pitches": 175,
+          "total_dva": -0.2544507114469524,
+          "avg_dva": -0.0014540040654111566,
+          "avg_execution_gap": 0.005273176747040691,
+          "outperform_rate": 0.37142857142857144
+        },
+        {
+          "stand": "R",
+          "p_throws": "R",
+          "matchup_label": "R bat / R throw",
+          "pitches": 145,
+          "total_dva": 0.059259526648869146,
+          "avg_dva": 0.0004086863906818562,
+          "avg_execution_gap": -0.0032334456740903913,
+          "outperform_rate": 0.41379310344827586
+        },
+        {
+          "stand": "R",
+          "p_throws": "L",
+          "matchup_label": "R bat / L throw",
+          "pitches": 41,
+          "total_dva": -0.14618488267781987,
+          "avg_dva": -0.0035654849433614604,
+          "avg_execution_gap": -0.002565784895476698,
+          "outperform_rate": 0.34146341463414637
+        },
+        {
+          "stand": "L",
+          "p_throws": "L",
+          "matchup_label": "L bat / L throw",
+          "pitches": 39,
+          "total_dva": 0.11550442652466399,
+          "avg_dva": 0.0029616519621708712,
+          "avg_execution_gap": -0.004048978940308072,
+          "outperform_rate": 0.41025641025641024
+        }
+      ]
+    }
+  },
+  "recommendation": {
+    "catcher_id": 669257,
+    "pitcher_id": 700001,
+    "batter_id": null,
+    "stand": "R",
+    "p_throws": "R",
+    "count_state": "0-0",
+    "count_bucket": "even",
+    "base_state": "000",
+    "outs_state": "0",
+    "platoon_flag": "same_side",
+    "candidate_count": 2,
+    "weighted_expected_rv": -0.043695710599422455,
+    "model_version": "xgb-delta-run-exp-v2",
+    "note": "Observed public-data recommendation using pitcher-specific historical candidates. This does not claim private PitchCom or hidden sign-call intent.",
+    "options": [
+      {
+        "pitch_type": "FF",
+        "pitch_name": "4-Seam Fastball",
+        "pitch_type_group": "fastball",
+        "expected_rv": -0.05558529496192932,
+        "usage_share": 0.5,
+        "zone_bucket_25": "2_3",
+        "zone_bucket_9": "1_1",
+        "target_plate_x": 0.6007644378323738,
+        "target_plate_z": 2.420393166556128
+      },
+      {
+        "pitch_type": "CU",
+        "pitch_name": "Curveball",
+        "pitch_type_group": "breaker",
+        "expected_rv": -0.03180612623691559,
+        "usage_share": 0.5,
+        "zone_bucket_25": "1_2",
+        "zone_bucket_9": "0_1",
+        "target_plate_x": -0.12928505589470615,
+        "target_plate_z": 2.1003478431400437
+      }
+    ]
   }
 }

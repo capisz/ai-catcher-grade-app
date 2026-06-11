@@ -77,6 +77,25 @@ async function main() {
     );
   }
 
+  // One comparison (top two leaderboard catchers) and one recommendation
+  // (top catcher with their most-paired pitcher), served for any demo-mode
+  // compare/recommendation request.
+  let compare = null;
+  if (snapshotIds.length >= 2) {
+    compare = await fetchJson(
+      `/catchers/compare?catcher_a=${snapshotIds[0]}&catcher_b=${snapshotIds[1]}&season=${season}&min_pitches=50`,
+    );
+  }
+
+  let recommendation = null;
+  const topPitcherId = pairings[snapshotIds[0]]?.pairings?.[0]?.pitcher_id;
+  if (topPitcherId) {
+    recommendation = await fetchJson(
+      `/atbat/recommendation?pitcher_id=${topPitcherId}&catcher_id=${snapshotIds[0]}` +
+        "&stand=R&p_throws=R&balls=0&strikes=0&outs_when_up=0&base_state=000",
+    );
+  }
+
   const snapshot = {
     generatedAt: new Date().toISOString(),
     season,
@@ -89,6 +108,8 @@ async function main() {
     counts,
     pitchTypes,
     locationSummaries,
+    compare,
+    recommendation,
   };
 
   const scriptDir = path.dirname(fileURLToPath(import.meta.url));

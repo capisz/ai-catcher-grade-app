@@ -26,6 +26,8 @@ const demoSnapshot = snapshot as {
   counts: KeyedPayloads;
   pitchTypes: KeyedPayloads;
   locationSummaries: KeyedPayloads;
+  compare: unknown;
+  recommendation: unknown;
 };
 
 // Per-request flag (React request-scoped cache) so server components rendered
@@ -70,6 +72,12 @@ export function getDemoResponse(path: string): unknown {
   }
   if (pathname === "/catchers/leaderboard") {
     return demoSnapshot.leaderboard;
+  }
+  if (pathname === "/catchers/compare") {
+    return demoSnapshot.compare ?? undefined;
+  }
+  if (pathname === "/atbat/recommendation") {
+    return demoSnapshot.recommendation ?? undefined;
   }
 
   const detailMatch = pathname.match(/^\/catchers\/(\d+)$/);
