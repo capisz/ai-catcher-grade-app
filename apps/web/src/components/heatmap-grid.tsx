@@ -49,7 +49,7 @@ export function HeatmapGrid({
               key={zone}
               className={`flex aspect-square flex-col justify-between rounded-2xl border border-line/60 p-3 ${cellColor(cell.value, compact)}`}
             >
-              <span className="text-[0.65rem] uppercase tracking-[0.18em] opacity-70">{zone}</span>
+              <span className="text-[0.65rem] uppercase tracking-[0.06em] opacity-70">{zone}</span>
               <span className={compact ? "text-sm font-semibold" : "text-base font-semibold"}>
                 {cell.label}
               </span>
@@ -57,7 +57,7 @@ export function HeatmapGrid({
           );
         })}
       </div>
-      <div className="mt-4 flex items-center gap-3 text-xs uppercase tracking-[0.18em] text-muted">
+      <div className="mt-4 flex items-center gap-3 text-xs uppercase tracking-[0.06em] text-muted">
         <span>{negativeLabel}</span>
         <div className="h-2 w-24 rounded-full bg-gradient-to-r from-accent via-brand-sand to-brand-primary" />
         <span>{positiveLabel}</span>

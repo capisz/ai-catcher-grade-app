@@ -9,7 +9,7 @@ export function MetricCard({ label, value, note, invert = false }: MetricCardPro
   return (
     <div
       className={[
-        "min-h-[9.1rem] rounded-[1.05rem] border p-4",
+        "rounded-lg border p-4",
         invert
           ? "scorebug border-white/12 bg-white/8 text-white"
           : "surface-panel text-ink",
@@ -17,18 +17,18 @@ export function MetricCard({ label, value, note, invert = false }: MetricCardPro
     >
       <div
         className={[
-          "text-[0.66rem] font-semibold uppercase tracking-[0.22em]",
-          invert ? "text-white/62" : "text-muted",
+          "text-[0.68rem] font-medium uppercase tracking-[0.06em]",
+          invert ? "text-white/60" : "text-muted",
         ].join(" ")}
       >
         {label}
       </div>
-      <div className="numeric mt-3 text-[1.85rem] font-semibold leading-none sm:text-[1.95rem]">
+      <div className="numeric mt-2 font-serif text-2xl font-semibold leading-none">
         {value}
       </div>
       {note ? (
         <div
-          className={["mt-2 text-xs leading-6", invert ? "text-white/70" : "text-muted"].join(" ")}
+          className={["mt-2 text-xs leading-5", invert ? "text-white/64" : "text-muted"].join(" ")}
         >
           {note}
         </div>

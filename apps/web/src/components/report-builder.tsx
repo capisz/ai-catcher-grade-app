@@ -181,22 +181,22 @@ export function ReportBuilder({
               onClick={() => setOpen(false)}
             />
             <div className="app-modal__viewport">
-              <div className="app-modal__panel card max-w-3xl rounded-[1.7rem]">
+              <div className="app-modal__panel card max-w-3xl rounded-xl">
                 <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
                 <div className="relative flex items-start justify-between gap-4 border-b border-line/60 px-6 py-5">
                   <div className="flex items-start gap-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-[1.2rem] border border-line/60 bg-surface-elevated text-brand-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.46)]">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-line/60 bg-surface-elevated text-brand-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.46)]">
                       <BaseballLogo className="h-9 w-9" />
                     </div>
                     <div>
                       <div className="label-kicker">Download Report</div>
-                      <h2 id="report-builder-title" className="mt-2 font-serif text-[2rem] leading-none text-ink">
+                      <h2 id="report-builder-title" className="mt-2 font-serif text-2xl leading-none text-ink">
                         {catcherName}
                       </h2>
-                      <p className="mt-2 text-sm leading-7 text-muted">
+                      <p className="mt-2 text-sm leading-6 text-muted">
                         Build a catcher report from real season data and choose exactly which sections to include.
                       </p>
-                      <div className="mt-3 flex flex-wrap gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                      <div className="mt-3 flex flex-wrap gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-muted">
                         <span className="pill-sage rounded-full px-3 py-1.5">{team ?? "FA"}</span>
                         <span className="pill-sand rounded-full px-3 py-1.5">Season {selectedSeason}</span>
                       </div>
@@ -213,22 +213,22 @@ export function ReportBuilder({
 
                 <div className="app-modal__body px-6 py-5">
                   {loadingOptions ? (
-                    <div className="surface-panel rounded-[1.3rem] p-5 text-sm leading-7 text-muted">
+                    <div className="surface-panel rounded-xl p-5 text-sm leading-6 text-muted">
                       Loading live report options for this catcher-season...
                     </div>
                   ) : error && !options ? (
-                    <div className="warning-panel rounded-[1.3rem] p-5 text-sm leading-7 text-muted">
+                    <div className="warning-panel rounded-xl p-5 text-sm leading-6 text-muted">
                       {error}
                     </div>
                   ) : options ? (
                     <div className="space-y-6">
                       <section className="grid gap-4 lg:grid-cols-[12rem_1fr]">
-                        <div className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                        <div className="text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-muted">
                           Report setup
                         </div>
-                        <div className="grid gap-4 rounded-[1.3rem] border border-line/60 bg-surface-elevated/72 p-4 md:grid-cols-2">
+                        <div className="grid gap-4 rounded-xl border border-line/60 bg-surface-elevated/72 p-4 md:grid-cols-2">
                           <label className="space-y-2">
-                            <span className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                            <span className="text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-muted">
                               Season
                             </span>
                             <select
@@ -247,7 +247,7 @@ export function ReportBuilder({
                             </select>
                           </label>
                           <label className="space-y-2">
-                            <span className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                            <span className="text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-muted">
                               Min row pitches
                             </span>
                             <input
@@ -264,7 +264,7 @@ export function ReportBuilder({
                       </section>
 
                       <section className="grid gap-4 lg:grid-cols-[12rem_1fr]">
-                        <div className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                        <div className="text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-muted">
                           Format
                         </div>
                         <div className="grid gap-3 md:grid-cols-3">
@@ -277,7 +277,7 @@ export function ReportBuilder({
                                 disabled={!format.available}
                                 onClick={() => setSelectedFormat(format.key as "csv" | "json" | "pdf")}
                                 className={[
-                                  "rounded-[1.2rem] border p-4 text-left transition",
+                                  "rounded-xl border p-4 text-left transition",
                                   active
                                     ? "border-accent/28 bg-surface-strong text-white shadow-[0_16px_26px_rgba(68,83,95,0.18)]"
                                     : format.available
@@ -296,7 +296,7 @@ export function ReportBuilder({
                       </section>
 
                       <section className="grid gap-4 lg:grid-cols-[12rem_1fr]">
-                        <div className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                        <div className="text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-muted">
                           Sections
                         </div>
                         <div className="space-y-4">
@@ -319,7 +319,7 @@ export function ReportBuilder({
                                 <label
                                   key={section.key}
                                   className={[
-                                    "flex cursor-pointer items-start gap-3 rounded-[1.1rem] border p-4 transition",
+                                    "flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition",
                                     checked
                                       ? "border-accent/24 bg-accent-soft/40"
                                       : section.available
@@ -339,7 +339,7 @@ export function ReportBuilder({
                                     <div className="mt-1 text-sm leading-6 text-muted">
                                       {section.description}
                                     </div>
-                                    <div className="mt-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                                    <div className="mt-2 text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-muted">
                                       {section.available
                                         ? `${section.row_count ?? 0} rows available`
                                         : "No real data available for this season"}
@@ -352,14 +352,14 @@ export function ReportBuilder({
                         </div>
                       </section>
 
-                      <section className="surface-panel-quiet rounded-[1.3rem] p-4 text-sm leading-7 text-muted">
+                      <section className="surface-panel-quiet rounded-xl p-4 text-sm leading-6 text-muted">
                         {multiSectionCsv
                           ? "CSV downloads with multiple sections are packaged as a zip file containing one CSV per selected section plus report metadata."
                           : "JSON preserves the full nested report structure. Single-section CSV downloads are optimized for spreadsheet use."}
                       </section>
 
                       {error ? (
-                        <div className="warning-panel rounded-[1.3rem] p-4 text-sm leading-7 text-muted">
+                        <div className="warning-panel rounded-xl p-4 text-sm leading-6 text-muted">
                           {error}
                         </div>
                       ) : null}

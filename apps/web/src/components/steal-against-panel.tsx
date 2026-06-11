@@ -62,7 +62,7 @@ function cellClasses(row: StealAgainstCountSummary) {
         : "";
 
   return [
-    "rounded-[1.05rem] border p-3 transition",
+    "rounded-lg border p-3 transition",
     tone,
     volume,
     row.low_sample || row.attempts === 0 ? "border-dashed opacity-78 saturate-[0.84]" : "border-line/65",
@@ -106,7 +106,7 @@ export function StealAgainstPanel({ summary }: StealAgainstPanelProps) {
 
   if (!summary) {
     return (
-      <div className="surface-panel rounded-[1.3rem] p-5 text-sm leading-7 text-muted">
+      <div className="surface-panel rounded-xl p-5 text-sm leading-6 text-muted">
         Running-game data is unavailable for this catcher-season response.
       </div>
     );
@@ -116,13 +116,13 @@ export function StealAgainstPanel({ summary }: StealAgainstPanelProps) {
     <div className="grid gap-6 xl:grid-cols-[1.06fr_0.94fr]">
       <div className="space-y-5">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">
+          <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
             Exact-count steal pressure
           </span>
-          <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">
+          <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
             Color = throw-out delta vs season
           </span>
-          <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">
+          <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
             Dashed = low running-game sample
           </span>
         </div>
@@ -132,7 +132,7 @@ export function StealAgainstPanel({ summary }: StealAgainstPanelProps) {
           {STRIKES.map((strike) => (
             <div
               key={strike}
-              className="meta-pill rounded-[0.95rem] px-3 py-2 text-center text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted"
+              className="meta-pill rounded-lg px-3 py-2 text-center text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-muted"
             >
               {strike} strike{strike === 1 ? "" : "s"}
             </div>
@@ -140,7 +140,7 @@ export function StealAgainstPanel({ summary }: StealAgainstPanelProps) {
 
           {BALLS.map((ball) => (
             <div key={ball} className="contents">
-              <div className="meta-pill flex items-center justify-center rounded-[0.95rem] px-2 py-3 text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
+              <div className="meta-pill flex items-center justify-center rounded-lg px-2 py-3 text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-muted">
                 {ball} ball{ball === 1 ? "" : "s"}
               </div>
               {STRIKES.map((strike) => {
@@ -149,7 +149,7 @@ export function StealAgainstPanel({ summary }: StealAgainstPanelProps) {
                   return (
                     <div
                       key={keyFor(ball, strike)}
-                      className="rounded-[1rem] border border-dashed border-line/70 bg-surface/70 p-3 text-center text-xs text-muted"
+                      className="rounded-lg border border-dashed border-line/70 bg-surface/70 p-3 text-center text-xs text-muted"
                     >
                       No data
                     </div>
@@ -161,16 +161,16 @@ export function StealAgainstPanel({ summary }: StealAgainstPanelProps) {
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <div className="text-sm font-semibold text-ink">{row.count_state}</div>
-                        <div className="mt-1 text-[0.58rem] uppercase tracking-[0.18em] text-muted">
+                        <div className="mt-1 text-[0.58rem] uppercase tracking-[0.06em] text-muted">
                           {contextLabel(row)}
                         </div>
                       </div>
-                      <div className="text-right text-[0.58rem] uppercase tracking-[0.18em] text-muted">
+                      <div className="text-right text-[0.58rem] uppercase tracking-[0.06em] text-muted">
                         {row.attempts > 0 ? `${row.attempts} att` : "No att"}
                       </div>
                     </div>
 
-                    <div className="numeric mt-4 text-[1.55rem] font-semibold leading-none text-ink">
+                    <div className="numeric mt-4 text-lg font-semibold leading-none text-ink">
                       {formatSignedPct(row.throw_out_rate_delta)}
                     </div>
                     <div className="mt-2 text-xs leading-6 text-muted">
@@ -183,11 +183,11 @@ export function StealAgainstPanel({ summary }: StealAgainstPanelProps) {
           ))}
         </div>
 
-        <div className="surface-panel rounded-[1.35rem] p-4">
-          <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
+        <div className="surface-panel rounded-xl p-4">
+          <div className="text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-muted">
             Interpretation note
           </div>
-          <p className="mt-3 text-sm leading-7 text-muted">
+          <p className="mt-3 text-sm leading-6 text-muted">
             {summary.note ??
               "These counts come from public Statcast pitch descriptions. They reflect running-game outcomes recorded on the pitch, not a pure isolated catcher-arm model."}
           </p>
@@ -223,11 +223,11 @@ export function StealAgainstPanel({ summary }: StealAgainstPanelProps) {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="surface-panel rounded-[1.3rem] p-4">
-            <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
+          <div className="surface-panel rounded-xl p-4">
+            <div className="text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-muted">
               Most tested count
             </div>
-            <div className="mt-3 font-serif text-[1.7rem] leading-none text-ink">
+            <div className="mt-3 font-serif text-lg leading-none text-ink">
               {mostTested?.count_state ?? "No tries"}
             </div>
             <p className="mt-2 text-sm leading-6 text-muted">
@@ -236,11 +236,11 @@ export function StealAgainstPanel({ summary }: StealAgainstPanelProps) {
                 : "No described attempts against this catcher yet."}
             </p>
           </div>
-          <div className="surface-panel rounded-[1.3rem] p-4">
-            <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
+          <div className="surface-panel rounded-xl p-4">
+            <div className="text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-muted">
               Best throw-out delta
             </div>
-            <div className="mt-3 font-serif text-[1.7rem] leading-none text-ink">
+            <div className="mt-3 font-serif text-lg leading-none text-ink">
               {bestDelta?.count_state ?? "No edge"}
             </div>
             <p className="mt-2 text-sm leading-6 text-muted">
@@ -249,11 +249,11 @@ export function StealAgainstPanel({ summary }: StealAgainstPanelProps) {
                 : "No count has enough described attempts to show a delta yet."}
             </p>
           </div>
-          <div className="surface-panel rounded-[1.3rem] p-4">
-            <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
+          <div className="surface-panel rounded-xl p-4">
+            <div className="text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-muted">
               Weakest pressure count
             </div>
-            <div className="mt-3 font-serif text-[1.7rem] leading-none text-ink">
+            <div className="mt-3 font-serif text-lg leading-none text-ink">
               {worstDelta?.count_state ?? "No gap"}
             </div>
             <p className="mt-2 text-sm leading-6 text-muted">
@@ -264,9 +264,9 @@ export function StealAgainstPanel({ summary }: StealAgainstPanelProps) {
           </div>
         </div>
 
-        <div className="surface-panel overflow-hidden rounded-[1.35rem]">
+        <div className="surface-panel overflow-hidden rounded-xl">
           <div className="flex items-center justify-between gap-4 border-b border-line/60 px-4 py-3">
-            <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
+            <div className="text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-muted">
               Count-by-count table
             </div>
             <div className="text-xs text-muted">
@@ -275,7 +275,7 @@ export function StealAgainstPanel({ summary }: StealAgainstPanelProps) {
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full text-left text-sm">
-              <thead className="bg-surface/70 text-[0.66rem] uppercase tracking-[0.18em] text-muted">
+              <thead className="bg-surface/70 text-[0.66rem] uppercase tracking-[0.06em] text-muted">
                 <tr>
                   <th className="px-4 py-3 font-semibold">Count</th>
                   <th className="px-4 py-3 font-semibold">Attempts</th>

@@ -72,7 +72,7 @@ export function CompareCountStatePanel({
             type="button"
             onClick={() => setMode(option.key)}
             className={[
-              "rounded-full border px-4 py-2 text-[0.66rem] font-semibold uppercase tracking-[0.18em] transition",
+              "rounded-full border px-4 py-2 text-[0.66rem] font-semibold uppercase tracking-[0.06em] transition",
               mode === option.key
                 ? "border-accent/28 bg-surface-strong text-white shadow-[0_12px_20px_rgba(68,83,95,0.16)]"
                 : "border-line/60 bg-surface-elevated/72 text-muted hover:border-accent/24 hover:text-ink",
@@ -88,14 +88,14 @@ export function CompareCountStatePanel({
         {STRIKES.map((strike) => (
           <div
             key={strike}
-            className="meta-pill rounded-[1rem] px-3 py-2 text-center text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-muted"
+            className="meta-pill rounded-lg px-3 py-2 text-center text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-muted"
           >
             {strike} strike{strike === 1 ? "" : "s"}
           </div>
         ))}
         {BALLS.map((ball) => (
           <div key={ball} className="contents">
-            <div className="meta-pill flex items-center justify-center rounded-[1rem] px-2 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-muted">
+            <div className="meta-pill flex items-center justify-center rounded-lg px-2 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-muted">
               {ball} ball{ball === 1 ? "" : "s"}
             </div>
             {STRIKES.map((strike) => {
@@ -114,7 +114,7 @@ export function CompareCountStatePanel({
                 return (
                   <div
                     key={countKey}
-                    className="rounded-[1rem] border border-dashed border-line/70 bg-surface/70 p-4 text-center text-xs text-muted"
+                    className="rounded-lg border border-dashed border-line/70 bg-surface/70 p-4 text-center text-xs text-muted"
                   >
                     {mode === "delta" ? "No shared data" : "No data"}
                   </div>
@@ -125,13 +125,13 @@ export function CompareCountStatePanel({
                 <div
                   key={countKey}
                   className={[
-                    "min-h-[10rem] rounded-[1rem] border p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]",
+                    "min-h-[10rem] rounded-lg border p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]",
                     toneFor(value, mode),
                   ].join(" ")}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="text-sm font-semibold">{countKey}</div>
-                    <div className="text-[0.62rem] uppercase tracking-[0.18em] opacity-70">
+                    <div className="text-[0.62rem] uppercase tracking-[0.06em] opacity-70">
                       {mode === "delta"
                         ? `${rowA?.pitches?.toLocaleString() ?? 0}/${rowB?.pitches?.toLocaleString() ?? 0}`
                         : currentRow?.pitches?.toLocaleString() ?? "0"}
@@ -141,7 +141,7 @@ export function CompareCountStatePanel({
                     {value >= 0 ? "+" : ""}
                     {value.toFixed(4)}
                   </div>
-                  <div className="mt-2 text-[0.68rem] uppercase tracking-[0.18em] opacity-70">
+                  <div className="mt-2 text-[0.68rem] uppercase tracking-[0.06em] opacity-70">
                     {mode === "delta"
                       ? `${catcherALabel} vs ${catcherBLabel}`
                       : currentRow?.recommended_pitch_family ?? "No signal"}
@@ -158,7 +158,7 @@ export function CompareCountStatePanel({
         ))}
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">
+      <div className="flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-muted">
         <span>{mode === "delta" ? `Positive = ${catcherALabel} edge` : "Clay = worse than baseline"}</span>
         <div className="h-2.5 w-28 rounded-full bg-gradient-to-r from-accent-clay via-brand-sand/40 to-brand-primary" />
         <span>{mode === "delta" ? `Negative = ${catcherBLabel} edge` : "Slate = better than baseline"}</span>

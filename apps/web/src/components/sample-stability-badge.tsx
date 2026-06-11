@@ -22,7 +22,7 @@ export function SampleStabilityBadge({
   return (
     <span
       className={[
-        "inline-flex items-center gap-2 rounded-full border font-semibold uppercase tracking-[0.18em]",
+        "inline-flex items-center gap-2 rounded-full border font-semibold uppercase tracking-[0.06em]",
         compact ? "px-3 py-1.5 text-[0.62rem]" : "px-3.5 py-2 text-[0.68rem]",
         classes,
       ].join(" ")}

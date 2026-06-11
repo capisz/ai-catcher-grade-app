@@ -541,19 +541,17 @@ export default async function HomePage({
 
   return (
     <div className="space-y-8">
-      <section className="card relative overflow-hidden rounded-[1.6rem] px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
+      <section className="card relative overflow-hidden rounded-xl px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
         <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
         <div className="relative grid gap-6 xl:grid-cols-[1.04fr_0.96fr]">
           <div className="space-y-6">
             <div>
               <div className="label-kicker">Scouting Mode</div>
-              <h1 className="mt-4 max-w-3xl font-serif text-[2.55rem] leading-[0.98] text-ink sm:text-[3.15rem]">
-                Season-long catcher evaluation built for real scouting decisions.
+              <h1 className="mt-4 max-w-3xl font-serif text-2xl leading-tight text-ink sm:text-3xl">
+                Season-long catcher evaluation for real scouting decisions.
               </h1>
-              <p className="mt-4 max-w-3xl text-sm leading-8 text-muted sm:text-[0.98rem]">
-                Use exact-count decision quality, pitch-type performance, pitcher-catcher synergy,
-                and public receiving support to answer the core scouting questions: who grades
-                well, why, in which counts, with which pitchers, and with how much confidence.
+              <p className="mt-4 max-w-3xl text-sm leading-6 text-muted sm:text-[0.98rem]">
+                Who grades well, why, in which counts, with which pitchers — and with how much confidence.
               </p>
             </div>
 
@@ -565,14 +563,14 @@ export default async function HomePage({
 
             <LoadingForm
               action="/"
-              className="shell-panel rounded-[1.25rem] p-4"
+              className="shell-panel rounded-xl p-4"
               loadingMessage="Loading scouting mode..."
               loadingSubtitle="Refreshing catcher, season, team, and sample filters."
             >
               <input type="hidden" name="selected_count" value={selectedCount?.split_value ?? ""} />
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-[minmax(0,1.2fr)_11rem_11rem_8.5rem_auto]">
                 <label className="min-w-0 space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Catcher
                   </span>
                   <select
@@ -589,7 +587,7 @@ export default async function HomePage({
                   </select>
                 </label>
                 <label className="min-w-0 space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Season
                   </span>
                   <select
@@ -606,7 +604,7 @@ export default async function HomePage({
                   </select>
                 </label>
                 <label className="min-w-0 space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Team filter
                   </span>
                   <select
@@ -624,7 +622,7 @@ export default async function HomePage({
                   </select>
                 </label>
                 <label className="min-w-0 space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Min pitches
                   </span>
                   <input
@@ -677,11 +675,11 @@ export default async function HomePage({
             </LoadingForm>
 
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="card-tone-slate rounded-[1rem] p-4">
-                <div className="text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-muted">
+              <div className="card-tone-slate rounded-lg p-4">
+                <div className="text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
                   Board rank
                 </div>
-                <div className="mt-3 font-serif text-[1.8rem] leading-tight text-ink">
+                <div className="mt-3 font-serif text-xl leading-tight text-ink">
                   {leaderboardRank > 0 ? `#${leaderboardRank}` : "Open board"}
                 </div>
                 <div className="mt-2 text-sm leading-6 text-muted">
@@ -690,11 +688,11 @@ export default async function HomePage({
                     : "Leaderboard unavailable for this render."}
                 </div>
               </div>
-              <div className="card-tone-sand rounded-[1rem] p-4">
-                <div className="text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-muted">
+              <div className="card-tone-sand rounded-lg p-4">
+                <div className="text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
                   Best present tool
                 </div>
-                <div className="mt-3 font-serif text-[1.55rem] leading-tight text-ink">
+                <div className="mt-3 font-serif text-lg leading-tight text-ink">
                   {bestGrade ? bestGrade.label : "Unscored"}
                 </div>
                 <div className="mt-2 text-sm leading-6 text-muted">
@@ -703,11 +701,11 @@ export default async function HomePage({
                     : "No stable grade lead yet."}
                 </div>
               </div>
-              <div className="card-tone-clay rounded-[1rem] p-4">
-                <div className="text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-muted">
+              <div className="card-tone-clay rounded-lg p-4">
+                <div className="text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
                   Best count pocket
                 </div>
-                <div className="mt-3 font-serif text-[1.55rem] leading-tight text-ink">
+                <div className="mt-3 font-serif text-lg leading-tight text-ink">
                   {selectedCount?.split_value ?? "No signal"}
                 </div>
                 <div className="mt-2 text-sm leading-6 text-muted">
@@ -716,11 +714,11 @@ export default async function HomePage({
                     : "No exact-count split available."}
                 </div>
               </div>
-              <div className="card-tone-sage rounded-[1rem] p-4">
-                <div className="text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-muted">
+              <div className="card-tone-sage rounded-lg p-4">
+                <div className="text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
                   Best battery fit
                 </div>
-                <div className="mt-3 font-serif text-[1.55rem] leading-tight text-ink">
+                <div className="mt-3 font-serif text-lg leading-tight text-ink">
                   {bestPairing?.pitcher_name ?? "No signal"}
                 </div>
                 <div className="mt-2 text-sm leading-6 text-muted">
@@ -732,7 +730,7 @@ export default async function HomePage({
             </div>
           </div>
 
-          <aside className="panel-dark overflow-hidden rounded-[1.55rem] p-5 text-white sm:p-6">
+          <aside className="panel-dark overflow-hidden rounded-xl p-5 text-white sm:p-6">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-4">
                 {detail.identity.headshot_url ? (
@@ -741,28 +739,28 @@ export default async function HomePage({
                     alt={detail.identity.catcher_name}
                     width={104}
                     height={104}
-                    className="h-24 w-24 rounded-[1.25rem] border border-white/12 object-cover"
+                    className="h-24 w-24 rounded-xl border border-white/12 object-cover"
                   />
                 ) : (
-                  <div className="dark-pill flex h-24 w-24 items-center justify-center rounded-[1.25rem] text-4xl font-semibold">
+                  <div className="dark-pill flex h-24 w-24 items-center justify-center rounded-xl text-4xl font-semibold">
                     {detail.identity.catcher_name[0]}
                   </div>
                 )}
                 <div>
-                  <div className="text-[0.64rem] font-semibold uppercase tracking-[0.22em] text-white/56">
+                  <div className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-white/56">
                     Selected catcher
                   </div>
-                  <h2 className="mt-3 font-serif text-[2.2rem] leading-none">
+                  <h2 className="mt-3 font-serif text-2xl leading-none">
                     {detail.identity.catcher_name}
                   </h2>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
+                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.06em]">
                       {detail.identity.team ?? "FA"}
                     </span>
-                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
+                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.06em]">
                       {detail.identity.bats ?? "?"}/{detail.identity.throws ?? "?"}
                     </span>
-                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
+                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.06em]">
                       Season {detail.identity.season}
                     </span>
                   </div>
@@ -803,10 +801,10 @@ export default async function HomePage({
               />
             </div>
 
-            <p className="mt-5 text-sm leading-7 text-white/74">
+            <p className="mt-5 text-sm leading-6 text-white/74">
               {metadata.season_coverage_note}
             </p>
-            <p className="mt-3 text-sm leading-7 text-white/74">
+            <p className="mt-3 text-sm leading-6 text-white/74">
               {detail.diagnostics.stability_note ??
                 "Season-level stability guidance is not available for this catcher yet."}
             </p>
@@ -815,16 +813,16 @@ export default async function HomePage({
       </section>
 
       {sampleWarning ? (
-        <section className="warning-panel rounded-[1.45rem] p-5">
+        <section className="warning-panel rounded-xl p-5">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
             <div>
-              <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-warning">
+              <div className="text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-warning">
                 Season Trust Note
               </div>
-              <div className="mt-2 font-serif text-[1.9rem] leading-none text-ink">
+              <div className="mt-2 font-serif text-xl leading-none text-ink">
                 {metadata.sparse_season ? "Sparse season selected" : "Limited-sample catcher read"}
               </div>
-              <p className="mt-3 max-w-3xl text-sm leading-7 text-muted">
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">
                 {metadata.sparse_season
                   ? metadata.season_coverage_note
                   : "This catcher-season is using real scored rows, but the sample has not yet cleared the stronger stability threshold. Treat exact-count and pairing signals as directional scouting evidence rather than settled truth."}
@@ -860,15 +858,15 @@ export default async function HomePage({
         <div className="space-y-5">
           <DataFreshnessPanel metadata={metadata} />
           <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
-            <div className="surface-panel rounded-[1.35rem] p-5">
+            <div className="surface-panel rounded-xl p-5">
               <div className="label-kicker">Coverage note</div>
-              <p className="mt-4 text-sm leading-8 text-muted">
+              <p className="mt-4 text-sm leading-6 text-muted">
                 {metadata.season_coverage_note}
               </p>
             </div>
-            <div className="surface-panel rounded-[1.35rem] p-5">
+            <div className="surface-panel rounded-xl p-5">
               <div className="label-kicker">Interpretation note</div>
-              <p className="mt-4 text-sm leading-8 text-muted">
+              <p className="mt-4 text-sm leading-6 text-muted">
                 {metadata.public_data_note}
               </p>
             </div>
@@ -899,9 +897,9 @@ export default async function HomePage({
             ))}
           </div>
           <div className="space-y-4">
-            <div className="surface-panel rounded-[1.6rem] p-5">
+            <div className="surface-panel rounded-xl p-5">
               <div className="label-kicker">Scouting notes</div>
-              <div className="mt-4 space-y-4 text-sm leading-7 text-muted">
+              <div className="mt-4 space-y-4 text-sm leading-6 text-muted">
                 <p>
                   Total DVA is season-level decision value added. Avg DVA is the per-pitch version
                   of that same concept. Positive numbers mean the observed pitch choice beat the
@@ -918,9 +916,9 @@ export default async function HomePage({
                 </p>
               </div>
             </div>
-            <div className="card-quiet rounded-[1.6rem] p-5">
+            <div className="card-quiet rounded-xl p-5">
               <div className="label-kicker">Research handoff</div>
-              <p className="mt-3 text-sm leading-7 text-muted">
+              <p className="mt-3 text-sm leading-6 text-muted">
                 Need exports, date filters, or side-by-side comparison? Research mode keeps the
                 current filters in the URL and adds broader leaderboard and report workflows.
               </p>
@@ -953,22 +951,22 @@ export default async function HomePage({
             />
           </div>
           <div id="count-detail" className="space-y-4">
-            <div className="surface-panel rounded-[1.45rem] p-5">
+            <div className="surface-panel rounded-xl p-5">
               <div className="label-kicker">Pinned drill-down</div>
               <div className="mt-3 flex items-start justify-between gap-4">
                 <div>
-                  <div className="font-serif text-[2rem] leading-none text-ink">
+                  <div className="font-serif text-2xl leading-none text-ink">
                     {selectedCount?.split_value ?? "No count"}
                   </div>
-                  <div className="mt-3 text-sm leading-7 text-muted">
+                  <div className="mt-3 text-sm leading-6 text-muted">
                     {selectedCount
                       ? `${selectedCount.pitches.toLocaleString()} pitches scored in this exact count. Click a matrix cell to pin it in the URL and keep this drill-down in view.`
                       : "Click a count cell to pin a deeper drill-down for that exact state."}
                   </div>
                 </div>
                 {selectedCount ? (
-                  <div className="meta-pill rounded-[1rem] px-4 py-3 text-right">
-                    <div className="text-[0.62rem] uppercase tracking-[0.18em] text-muted">
+                  <div className="meta-pill rounded-lg px-4 py-3 text-right">
+                    <div className="text-[0.62rem] uppercase tracking-[0.06em] text-muted">
                       Avg DVA
                     </div>
                     <div className="numeric mt-2 text-lg font-semibold text-ink">
@@ -1010,11 +1008,11 @@ export default async function HomePage({
 
             <div className="grid gap-4 sm:grid-cols-2">
               {bucketHighlights.map((row) => (
-                <div key={row.split_value} className="surface-panel rounded-[1.35rem] p-4">
-                  <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
+                <div key={row.split_value} className="surface-panel rounded-xl p-4">
+                  <div className="text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     {row.split_value.replaceAll("_", " ")}
                   </div>
-                  <div className="numeric mt-3 text-[1.9rem] font-semibold text-ink">
+                  <div className="numeric mt-3 text-xl font-semibold text-ink">
                     {formatSigned(row.avg_dva, 4)}
                   </div>
                   <div className="mt-2 text-sm text-muted">
@@ -1040,7 +1038,7 @@ export default async function HomePage({
       >
         <div className="grid gap-6 xl:grid-cols-[1.08fr_0.92fr]">
           <div className="space-y-5">
-            <div className="surface-panel rounded-[1.45rem] p-5">
+            <div className="surface-panel rounded-xl p-5">
               <PitchTypeDvaChart rows={visiblePitchTypes} title="Pitch-type total DVA" />
             </div>
             <PitchTypePerformanceBoard rows={visiblePitchTypes} />
@@ -1048,27 +1046,27 @@ export default async function HomePage({
           <div className="space-y-4">
             <StrikeZoneCard summary={locationSummary} />
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="surface-panel rounded-[1.45rem] p-4">
-                <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
+              <div className="surface-panel rounded-xl p-4">
+                <div className="text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-muted">
                   Most used pitch
                 </div>
                 <div className="mt-3 text-2xl font-semibold text-ink">
                   {mostUsedPitch?.pitch_type ?? "No signal"}
                 </div>
-                <div className="mt-2 text-sm leading-7 text-muted">
+                <div className="mt-2 text-sm leading-6 text-muted">
                   {mostUsedPitch
                     ? `${mostUsedPitch.pitches.toLocaleString()} pitches with ${formatSigned(mostUsedPitch.avg_dva, 4)} avg DVA.`
                     : "No pitch-type rows are available yet."}
                 </div>
               </div>
-              <div className="surface-panel rounded-[1.45rem] p-4">
-                <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
+              <div className="surface-panel rounded-xl p-4">
+                <div className="text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-muted">
                   Best value pitch
                 </div>
                 <div className="mt-3 text-2xl font-semibold text-ink">
                   {bestPitch?.pitch_type ?? "No signal"}
                 </div>
-                <div className="mt-2 text-sm leading-7 text-muted">
+                <div className="mt-2 text-sm leading-6 text-muted">
                   {bestPitch
                     ? `${formatSigned(bestPitch.avg_dva, 4)} avg DVA on ${bestPitch.pitches.toLocaleString()} pitches.`
                     : "No stable value leader yet."}
@@ -1094,15 +1092,15 @@ export default async function HomePage({
       >
         <div className="grid gap-6 xl:grid-cols-[1.02fr_0.98fr]">
           <div className="space-y-5">
-            <div className="surface-panel rounded-[1.45rem] p-5">
+            <div className="surface-panel rounded-xl p-5">
               <PairingDvaChart rows={visiblePairings} title="Top pitcher pairing value" />
             </div>
             <PairingIntelTable rows={visiblePairings} />
           </div>
           <div className="space-y-4">
-            <div className="surface-panel rounded-[1.45rem] p-5">
+            <div className="surface-panel rounded-xl p-5">
               <div className="label-kicker">Best pairing read</div>
-              <p className="mt-4 text-sm leading-8 text-muted">
+              <p className="mt-4 text-sm leading-6 text-muted">
                 {bestPairing
                   ? `${bestPairing.pitcher_name} is the best battery partner in the current season slice with ${formatSigned(bestPairing.total_dva, 3)} total DVA across ${bestPairing.pitches.toLocaleString()} paired pitches.`
                   : "No pairing rows are available yet for this catcher-season."}
@@ -1132,14 +1130,14 @@ export default async function HomePage({
                     })}
                     loadingMessage="Loading scouting mode..."
                     loadingSubtitle={`Opening ${entry.catcher_name}.`}
-                    className="surface-panel grid gap-3 rounded-[1.2rem] p-4 md:grid-cols-[3rem_1fr_auto]"
+                    className="surface-panel grid gap-3 rounded-xl p-4 md:grid-cols-[3rem_1fr_auto]"
                   >
-                    <div className="flex h-11 w-11 items-center justify-center rounded-[0.95rem] bg-surface-strong text-sm font-semibold text-white">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-surface-strong text-sm font-semibold text-white">
                       {index + 1}
                     </div>
                     <div>
                       <div className="font-semibold text-ink">{entry.catcher_name}</div>
-                      <div className="mt-2 text-xs uppercase tracking-[0.18em] text-muted">
+                      <div className="mt-2 text-xs uppercase tracking-[0.06em] text-muted">
                         {entry.team ?? "FA"} | {entry.pitches.toLocaleString()} pitches
                       </div>
                     </div>
@@ -1149,7 +1147,7 @@ export default async function HomePage({
                   </LoadingLink>
                 ))
               ) : (
-                <div className="rounded-[1.2rem] border border-dashed border-line/70 bg-surface/72 p-5 text-sm leading-7 text-muted">
+                <div className="rounded-xl border border-dashed border-line/70 bg-surface/72 p-5 text-sm leading-6 text-muted">
                   No peer leaderboard rows matched the current filter set.
                 </div>
               )}
@@ -1207,31 +1205,31 @@ export default async function HomePage({
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="surface-panel rounded-[1.45rem] p-4">
-              <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
+            <div className="surface-panel rounded-xl p-4">
+              <div className="text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-muted">
                 Qualified status
               </div>
-              <p className="mt-3 text-sm leading-7 text-muted">
+              <p className="mt-3 text-sm leading-6 text-muted">
                 {detail.diagnostics.qualified_for_grades
                   ? "This catcher-season meets the grade qualification threshold and is safe to compare to other qualified seasons."
                   : "This catcher-season is still below the stronger grade threshold. Keep the page usable, but treat it as directional rather than settled."}
               </p>
             </div>
-            <div className="surface-panel rounded-[1.45rem] p-4">
-              <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
+            <div className="surface-panel rounded-xl p-4">
+              <div className="text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-muted">
                 Coverage window
               </div>
-              <p className="mt-3 text-sm leading-7 text-muted">
+              <p className="mt-3 text-sm leading-6 text-muted">
                 Updated through {formatDate(metadata.updated_through)}. Latest scored game date is{" "}
                 {formatDate(metadata.latest_scored_game_date)}.
               </p>
             </div>
             {Object.entries(detail.grade_formula_notes).slice(0, 4).map(([gradeName, note]) => (
-              <div key={gradeName} className="surface-panel rounded-[1.45rem] p-4">
-                <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
+              <div key={gradeName} className="surface-panel rounded-xl p-4">
+                <div className="text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-muted">
                   {gradeName.replaceAll("_", " ")}
                 </div>
-                <p className="mt-3 text-sm leading-7 text-muted">
+                <p className="mt-3 text-sm leading-6 text-muted">
                   {String(note.description ?? "No description available.")}
                 </p>
                 <p className="mt-2 text-xs leading-6 text-muted">

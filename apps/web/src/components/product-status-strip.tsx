@@ -36,7 +36,7 @@ export function ProductStatusStrip({
     <div className="flex flex-wrap items-center gap-2">
       <span
         className={[
-          "pill-sage rounded-full font-semibold uppercase tracking-[0.18em]",
+          "pill-sage rounded-full font-semibold uppercase tracking-[0.06em]",
           compact ? "px-3 py-1.5 text-[0.62rem]" : "px-3.5 py-2 text-[0.64rem]",
         ].join(" ")}
       >
@@ -44,7 +44,7 @@ export function ProductStatusStrip({
       </span>
       <span
         className={[
-          "pill-sand rounded-full font-semibold uppercase tracking-[0.18em]",
+          "pill-sand rounded-full font-semibold uppercase tracking-[0.06em]",
           compact ? "px-3 py-1.5 text-[0.62rem]" : "px-3.5 py-2 text-[0.64rem]",
         ].join(" ")}
       >
@@ -52,7 +52,7 @@ export function ProductStatusStrip({
       </span>
       <span
         className={[
-          "pill-clay rounded-full font-semibold uppercase tracking-[0.18em]",
+          "pill-clay rounded-full font-semibold uppercase tracking-[0.06em]",
           compact ? "px-3 py-1.5 text-[0.62rem]" : "px-3.5 py-2 text-[0.64rem]",
         ].join(" ")}
       >

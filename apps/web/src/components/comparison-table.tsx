@@ -47,23 +47,23 @@ export function ComparisonTable({
       {rows.map((row) => (
         <div
           key={row.label}
-          className="rounded-[1.2rem] border border-line/60 bg-surface-elevated/62 px-4 py-3"
+          className="rounded-xl border border-line/60 bg-surface-elevated/62 px-4 py-3"
         >
           <div className="space-y-3 md:hidden">
             <div className="text-[0.64rem] font-semibold uppercase tracking-[0.2em] text-muted">
               {row.label}
             </div>
             <div className="grid gap-2 sm:grid-cols-3">
-              <div className={["rounded-[0.95rem] px-3 py-2 text-sm font-semibold", leadTone(row.lead, "a")].join(" ")}>
-                <div className="text-[0.58rem] uppercase tracking-[0.18em] opacity-70">{catcherALabel}</div>
+              <div className={["rounded-lg px-3 py-2 text-sm font-semibold", leadTone(row.lead, "a")].join(" ")}>
+                <div className="text-[0.58rem] uppercase tracking-[0.06em] opacity-70">{catcherALabel}</div>
                 <div className="mt-1">{row.catcherA}</div>
               </div>
-              <div className="rounded-[0.95rem] bg-surface-soft px-3 py-2 text-sm font-semibold text-ink">
-                <div className="text-[0.58rem] uppercase tracking-[0.18em] text-muted">{deltaLabel}</div>
+              <div className="rounded-lg bg-surface-soft px-3 py-2 text-sm font-semibold text-ink">
+                <div className="text-[0.58rem] uppercase tracking-[0.06em] text-muted">{deltaLabel}</div>
                 <div className="mt-1">{row.delta ?? "--"}</div>
               </div>
-              <div className={["rounded-[0.95rem] px-3 py-2 text-sm font-semibold", leadTone(row.lead, "b")].join(" ")}>
-                <div className="text-[0.58rem] uppercase tracking-[0.18em] opacity-70">{catcherBLabel}</div>
+              <div className={["rounded-lg px-3 py-2 text-sm font-semibold", leadTone(row.lead, "b")].join(" ")}>
+                <div className="text-[0.58rem] uppercase tracking-[0.06em] opacity-70">{catcherBLabel}</div>
                 <div className="mt-1">{row.catcherB}</div>
               </div>
             </div>
@@ -74,13 +74,13 @@ export function ComparisonTable({
               <div className="text-sm font-semibold text-ink">{row.label}</div>
               {row.note ? <div className="mt-1 text-xs leading-6 text-muted">{row.note}</div> : null}
             </div>
-            <div className={["rounded-[0.95rem] px-3 py-2 text-sm font-semibold", leadTone(row.lead, "a")].join(" ")}>
+            <div className={["rounded-lg px-3 py-2 text-sm font-semibold", leadTone(row.lead, "a")].join(" ")}>
               {row.catcherA}
             </div>
-            <div className="rounded-[0.95rem] bg-surface-soft px-3 py-2 text-sm font-semibold text-ink">
+            <div className="rounded-lg bg-surface-soft px-3 py-2 text-sm font-semibold text-ink">
               {row.delta ?? "--"}
             </div>
-            <div className={["rounded-[0.95rem] px-3 py-2 text-sm font-semibold", leadTone(row.lead, "b")].join(" ")}>
+            <div className={["rounded-lg px-3 py-2 text-sm font-semibold", leadTone(row.lead, "b")].join(" ")}>
               {row.catcherB}
             </div>
           </div>

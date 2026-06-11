@@ -16,7 +16,7 @@ export function AppNav() {
 
   return (
     <nav className="overflow-x-auto">
-      <div className="flex min-w-max items-center gap-1.5 rounded-[1rem] border border-line/60 bg-[color:var(--nav-surface)] p-1.5 shadow-[0_10px_24px_rgba(68,83,95,0.06)]">
+      <div className="flex min-w-max items-center gap-1 rounded-lg bg-background-subtle p-1">
         {NAV_ITEMS.map((item) => {
           const active =
             pathname === item.href ||
@@ -25,14 +25,13 @@ export function AppNav() {
             <LoadingLink
               key={item.href}
               href={item.href}
-              style={active ? { color: "var(--nav-active-text)" } : undefined}
               loadingMessage="Loading catcher intelligence..."
               loadingSubtitle={`Opening ${item.label.toLowerCase()}.`}
               className={[
-                "rounded-[0.8rem] border px-3.5 py-2.5 text-sm font-semibold transition",
+                "rounded-md px-3 py-1.5 text-sm font-medium transition",
                 active
-                  ? "border-[color:var(--nav-active-border)] bg-[color:var(--nav-active)] text-white shadow-[0_10px_18px_rgba(68,83,95,0.18)]"
-                  : "border-transparent bg-[color:var(--nav-chip)] text-muted hover:border-line/50 hover:bg-[color:var(--nav-chip-hover)] hover:text-ink",
+                  ? "bg-surface text-ink shadow-[0_1px_2px_rgba(24,24,27,0.08)]"
+                  : "text-muted hover:text-ink",
               ].join(" ")}
             >
               {item.label}

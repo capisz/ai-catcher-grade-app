@@ -79,7 +79,7 @@ function formatCount(count: LivePitch["count"]) {
 
 function CatcherChip({ catcher }: { catcher: LiveCatcher }) {
   return (
-    <div className="surface-panel flex items-center gap-3 rounded-[1rem] p-3">
+    <div className="surface-panel flex items-center gap-3 rounded-lg p-3">
       {catcher.headshot_url ? (
         <Image
           src={catcher.headshot_url}
@@ -95,7 +95,7 @@ function CatcherChip({ catcher }: { catcher: LiveCatcher }) {
       )}
       <div>
         <div className="text-sm font-semibold text-ink">{catcher.name ?? "Unknown"}</div>
-        <div className="mt-1 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted">
+        <div className="mt-1 text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
           {catcher.starting ? "Starting catcher" : "Roster catcher"}
         </div>
       </div>
@@ -176,7 +176,7 @@ export function LiveGamePanel() {
 
   if (!scheduleLoaded) {
     return (
-      <div className="surface-panel rounded-[1.45rem] p-6 text-sm leading-7 text-muted">
+      <div className="surface-panel rounded-xl p-6 text-sm leading-6 text-muted">
         Loading today&apos;s MLB schedule...
       </div>
     );
@@ -184,16 +184,16 @@ export function LiveGamePanel() {
 
   if (scheduleError) {
     return (
-      <div className="warning-panel rounded-[1.45rem] p-6">
+      <div className="warning-panel rounded-xl p-6">
         <div className="label-kicker">Live feed unavailable</div>
-        <p className="mt-3 text-sm leading-7 text-muted">{scheduleError}</p>
+        <p className="mt-3 text-sm leading-6 text-muted">{scheduleError}</p>
       </div>
     );
   }
 
   if (games.length === 0) {
     return (
-      <div className="surface-panel rounded-[1.45rem] p-6 text-sm leading-7 text-muted">
+      <div className="surface-panel rounded-xl p-6 text-sm leading-6 text-muted">
         No MLB games are scheduled today.
       </div>
     );
@@ -201,9 +201,9 @@ export function LiveGamePanel() {
 
   return (
     <div className="space-y-5">
-      <div className="surface-panel rounded-[1.45rem] p-5">
+      <div className="surface-panel rounded-xl p-5">
         <label className="block space-y-2">
-          <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+          <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
             Game ({games.length} today)
           </span>
           <select
@@ -218,7 +218,7 @@ export function LiveGamePanel() {
             ))}
           </select>
         </label>
-        <div className="mt-3 flex flex-wrap items-center gap-2 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted">
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
           <span className="meta-pill rounded-full px-3 py-1.5">
             {selectedGame?.detailed_state ?? "Unknown state"}
           </span>
@@ -239,7 +239,7 @@ export function LiveGamePanel() {
       {catchers ? (
         <div className="grid gap-4 lg:grid-cols-2">
           {(["away", "home"] as const).map((side) => (
-            <div key={side} className="surface-panel rounded-[1.45rem] p-5">
+            <div key={side} className="surface-panel rounded-xl p-5">
               <div className="label-kicker">
                 {side === "home" ? selectedGame?.home.name ?? "Home" : selectedGame?.away.name ?? "Away"}{" "}
                 catchers
@@ -250,7 +250,7 @@ export function LiveGamePanel() {
                     <CatcherChip key={catcher.player_id ?? catcher.name} catcher={catcher} />
                   ))
                 ) : (
-                  <p className="text-sm leading-7 text-muted">
+                  <p className="text-sm leading-6 text-muted">
                     No catchers listed on the boxscore roster yet.
                   </p>
                 )}
@@ -260,23 +260,23 @@ export function LiveGamePanel() {
         </div>
       ) : null}
 
-      <div className="surface-panel rounded-[1.45rem] p-5">
+      <div className="surface-panel rounded-xl p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="label-kicker">Pitch-by-pitch stream</div>
-          <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.16em]">
+          <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.06em]">
             {feed ? `${feed.pitch_count.toLocaleString()} pitches tracked` : "Waiting for feed"}
           </span>
         </div>
 
         {feedError ? (
-          <p className="mt-4 text-sm leading-7 text-muted">{feedError}</p>
+          <p className="mt-4 text-sm leading-6 text-muted">{feedError}</p>
         ) : null}
 
         {feed && feed.pitches.length > 0 ? (
           <div className="mt-4 overflow-x-auto">
             <table className="w-full min-w-[40rem] text-left text-sm">
               <thead>
-                <tr className="text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted">
+                <tr className="text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
                   <th className="px-2 py-2">Inning</th>
                   <th className="px-2 py-2">Count</th>
                   <th className="px-2 py-2">Pitcher</th>
@@ -313,7 +313,7 @@ export function LiveGamePanel() {
             </table>
           </div>
         ) : feed && !feedError ? (
-          <p className="mt-4 text-sm leading-7 text-muted">
+          <p className="mt-4 text-sm leading-6 text-muted">
             No pitches in the feed yet for this game.
           </p>
         ) : null}

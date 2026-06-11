@@ -33,7 +33,7 @@ export function PairingDvaChart({
 }: PairingDvaChartProps) {
   if (rows.length === 0) {
     return (
-      <div className={`${heightClass} flex items-center justify-center rounded-[1.2rem] border border-dashed border-line/70 bg-surface/72 px-5 text-center text-sm leading-7 text-muted`}>
+      <div className={`${heightClass} flex items-center justify-center rounded-xl border border-dashed border-line/70 bg-surface/72 px-5 text-center text-sm leading-6 text-muted`}>
         No pairing rows are available for this catcher-season yet.
       </div>
     );

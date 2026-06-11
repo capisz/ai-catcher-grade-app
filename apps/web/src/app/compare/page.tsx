@@ -602,19 +602,17 @@ export default async function ComparePage({
 
   return (
     <div className="space-y-8">
-      <section className="card relative overflow-hidden rounded-[1.6rem] px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
+      <section className="card relative overflow-hidden rounded-xl px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
         <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
         <div className="relative grid gap-6 xl:grid-cols-[1.06fr_0.94fr]">
           <div className="space-y-6">
             <div>
               <div className="label-kicker">Compare Mode</div>
-              <h1 className="mt-4 max-w-4xl font-serif text-[2.45rem] leading-[0.98] text-ink sm:text-[3.05rem]">
+              <h1 className="mt-4 max-w-4xl font-serif text-2xl leading-tight text-ink sm:text-3xl">
                 Side-by-side catcher evaluation built for real scouting decisions.
               </h1>
-              <p className="mt-4 max-w-3xl text-sm leading-8 text-muted">
-                Compare two catchers under the same scored context and focus on what actually matters:
-                total value, count-state performance, pitch-type tendencies, pairing fit, public support
-                metrics, and how stable the sample really is.
+              <p className="mt-4 max-w-3xl text-sm leading-6 text-muted">
+                Two catchers under the same scored context: value, count-state performance, pitch mix, pairing fit, and sample stability.
               </p>
             </div>
 
@@ -622,13 +620,13 @@ export default async function ComparePage({
 
             <LoadingForm
               action="/compare"
-              className="shell-panel rounded-[1.25rem] p-4"
+              className="shell-panel rounded-xl p-4"
               loadingMessage="Loading compare mode..."
               loadingSubtitle="Refreshing both catchers under the same filter context."
             >
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1.1fr)_11rem_8.5rem_11rem_11rem]">
                 <label className="min-w-0 space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Catcher A
                   </span>
                   <select
@@ -649,7 +647,7 @@ export default async function ComparePage({
                   </select>
                 </label>
                 <label className="min-w-0 space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Catcher B
                   </span>
                   <select
@@ -670,7 +668,7 @@ export default async function ComparePage({
                   </select>
                 </label>
                 <label className="min-w-0 space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Season
                   </span>
                   <select
@@ -687,7 +685,7 @@ export default async function ComparePage({
                   </select>
                 </label>
                 <label className="min-w-0 space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Min pitches
                   </span>
                   <input
@@ -700,7 +698,7 @@ export default async function ComparePage({
                   />
                 </label>
                 <label className="min-w-0 space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Date from
                   </span>
                   <input
@@ -712,7 +710,7 @@ export default async function ComparePage({
                   />
                 </label>
                 <label className="min-w-0 space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Date to
                   </span>
                   <input
@@ -727,7 +725,7 @@ export default async function ComparePage({
 
               <div className="mt-3 grid gap-3 md:grid-cols-[minmax(0,1fr)_auto_auto]">
                 <label className="min-w-0 space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Team filter
                   </span>
                   <select className="field" name="team" defaultValue={requestedTeam} data-auto-submit="true">
@@ -760,7 +758,7 @@ export default async function ComparePage({
                       Compare to leader
                     </LoadingLink>
                   ) : (
-                    <div className="meta-pill flex h-[3.15rem] items-center rounded-[0.95rem] px-4 text-xs font-semibold uppercase tracking-[0.18em]">
+                    <div className="meta-pill flex h-[3.15rem] items-center rounded-lg px-4 text-xs font-semibold uppercase tracking-[0.06em]">
                       URL-backed compare state
                     </div>
                   )}
@@ -769,13 +767,13 @@ export default async function ComparePage({
             </LoadingForm>
 
             {sameCatcherRequested ? (
-              <div className="warning-panel rounded-[1.25rem] px-4 py-3 text-sm leading-7 text-muted">
+              <div className="warning-panel rounded-xl px-4 py-3 text-sm leading-6 text-muted">
                 The same catcher was requested twice, so compare mode automatically switched to the next
                 available distinct catcher.
               </div>
             ) : null}
             {belowFloor.length > 0 ? (
-              <div className="warning-panel rounded-[1.25rem] px-4 py-3 text-sm leading-7 text-muted">
+              <div className="warning-panel rounded-xl px-4 py-3 text-sm leading-6 text-muted">
                 {belowFloor.map((detail) => detail.identity.catcher_name).join(" and ")} are below the current
                 {` ${minPitches.toLocaleString()}-pitch`} display floor. Their comparison stays visible, but split
                 tables should be treated as low-sample.
@@ -783,10 +781,10 @@ export default async function ComparePage({
             ) : null}
           </div>
 
-          <aside className="panel-dark overflow-hidden rounded-[1.55rem] p-5 text-white sm:p-6">
+          <aside className="panel-dark overflow-hidden rounded-xl p-5 text-white sm:p-6">
             <div className="grid gap-4 lg:grid-cols-2">
               {[catcherA, catcherB].map((detail, index) => (
-                <div key={detail.identity.catcher_id} className="scorebug rounded-[1.25rem] border border-white/10 p-4">
+                <div key={detail.identity.catcher_id} className="scorebug rounded-xl border border-white/10 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3">
                       {detail.identity.headshot_url ? (
@@ -795,10 +793,10 @@ export default async function ComparePage({
                           alt={detail.identity.catcher_name}
                           width={72}
                           height={72}
-                          className="h-16 w-16 rounded-[1rem] border border-white/12 object-cover"
+                          className="h-16 w-16 rounded-lg border border-white/12 object-cover"
                         />
                       ) : (
-                        <div className="dark-pill flex h-16 w-16 items-center justify-center rounded-[1rem] text-2xl font-semibold">
+                        <div className="dark-pill flex h-16 w-16 items-center justify-center rounded-lg text-2xl font-semibold">
                           {detail.identity.catcher_name[0]}
                         </div>
                       )}
@@ -820,19 +818,19 @@ export default async function ComparePage({
                   </div>
                   <div className="mt-4 grid gap-2 sm:grid-cols-2">
                     <div>
-                      <div className="text-[0.58rem] uppercase tracking-[0.18em] text-white/56">Pitches</div>
+                      <div className="text-[0.58rem] uppercase tracking-[0.06em] text-white/56">Pitches</div>
                       <div className="numeric mt-1 text-lg font-semibold">{detail.total_pitches.toLocaleString()}</div>
                     </div>
                     <div>
-                      <div className="text-[0.58rem] uppercase tracking-[0.18em] text-white/56">Games</div>
+                      <div className="text-[0.58rem] uppercase tracking-[0.06em] text-white/56">Games</div>
                       <div className="numeric mt-1 text-lg font-semibold">{detail.diagnostics.games_scored ?? 0}</div>
                     </div>
                     <div>
-                      <div className="text-[0.58rem] uppercase tracking-[0.18em] text-white/56">Total DVA</div>
+                      <div className="text-[0.58rem] uppercase tracking-[0.06em] text-white/56">Total DVA</div>
                       <div className="numeric mt-1 text-lg font-semibold">{formatSigned(detail.total_dva, 3)}</div>
                     </div>
                     <div>
-                      <div className="text-[0.58rem] uppercase tracking-[0.18em] text-white/56">Avg DVA</div>
+                      <div className="text-[0.58rem] uppercase tracking-[0.06em] text-white/56">Avg DVA</div>
                       <div className="numeric mt-1 text-lg font-semibold">{formatSigned(detail.avg_dva, 5)}</div>
                     </div>
                   </div>
@@ -843,21 +841,21 @@ export default async function ComparePage({
             <div className="scouting-seam mt-5" />
 
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              <div className="scorebug rounded-[1rem] border border-white/10 px-4 py-3">
+              <div className="scorebug rounded-lg border border-white/10 px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-white/56">DVA delta</div>
-                <div className="numeric mt-2 text-[1.45rem] font-semibold">
+                <div className="numeric mt-2 text-lg font-semibold">
                   {formatSigned(catcherA.total_dva - catcherB.total_dva, 3)}
                 </div>
                 <div className="mt-2 text-sm text-white/72">Positive favors catcher A.</div>
               </div>
-              <div className="scorebug rounded-[1rem] border border-white/10 px-4 py-3">
+              <div className="scorebug rounded-lg border border-white/10 px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-white/56">Population</div>
-                <div className="numeric mt-2 text-[1.45rem] font-semibold">{comparison.population_size}</div>
+                <div className="numeric mt-2 text-lg font-semibold">{comparison.population_size}</div>
                 <div className="mt-2 text-sm text-white/72">
                   {comparison.qualified_population_size} qualified for grade normalization.
                 </div>
               </div>
-              <div className="scorebug rounded-[1rem] border border-white/10 px-4 py-3">
+              <div className="scorebug rounded-lg border border-white/10 px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-white/56">Context</div>
                 <div className="mt-2 text-lg font-semibold">{requestedTeam || "All teams"}</div>
                 <div className="mt-2 text-sm text-white/72">
@@ -899,7 +897,7 @@ export default async function ComparePage({
         subtitle="Use the matrix to toggle catcher A, catcher B, and delta. Then use the bucket table and strongest-count cards to understand where the edge lives."
       >
         <div className="grid gap-6 xl:grid-cols-[1.08fr_0.92fr]">
-          <div className="surface-panel rounded-[1.45rem] p-5">
+          <div className="surface-panel rounded-xl p-5">
             <CompareCountStatePanel
               catcherALabel={aLabel}
               catcherBLabel={bLabel}
@@ -908,37 +906,37 @@ export default async function ComparePage({
             />
           </div>
           <div className="space-y-5">
-            <div className="surface-panel rounded-[1.45rem] p-5">
+            <div className="surface-panel rounded-xl p-5">
               <div className="label-kicker">Count bucket delta</div>
               <div className="mt-4">
                 <ComparisonTable catcherALabel={aLabel} catcherBLabel={bLabel} rows={countBucketRows} />
               </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="surface-panel rounded-[1.35rem] p-4">
+              <div className="surface-panel rounded-xl p-4">
                 <div className="label-kicker">{catcherA.identity.catcher_name}</div>
-                <div className="mt-4 text-sm leading-7 text-muted">
+                <div className="mt-4 text-sm leading-6 text-muted">
                   Strongest count:{" "}
                   <span className="font-semibold text-ink">
                     {strongestA?.split_value ?? "--"} ({formatSigned(strongestA?.avg_dva, 4)})
                   </span>
                 </div>
-                <div className="mt-2 text-sm leading-7 text-muted">
+                <div className="mt-2 text-sm leading-6 text-muted">
                   Weakest count:{" "}
                   <span className="font-semibold text-ink">
                     {weakestA?.split_value ?? "--"} ({formatSigned(weakestA?.avg_dva, 4)})
                   </span>
                 </div>
               </div>
-              <div className="surface-panel rounded-[1.35rem] p-4">
+              <div className="surface-panel rounded-xl p-4">
                 <div className="label-kicker">{catcherB.identity.catcher_name}</div>
-                <div className="mt-4 text-sm leading-7 text-muted">
+                <div className="mt-4 text-sm leading-6 text-muted">
                   Strongest count:{" "}
                   <span className="font-semibold text-ink">
                     {strongestB?.split_value ?? "--"} ({formatSigned(strongestB?.avg_dva, 4)})
                   </span>
                 </div>
-                <div className="mt-2 text-sm leading-7 text-muted">
+                <div className="mt-2 text-sm leading-6 text-muted">
                   Weakest count:{" "}
                   <span className="font-semibold text-ink">
                     {weakestB?.split_value ?? "--"} ({formatSigned(weakestB?.avg_dva, 4)})
@@ -956,14 +954,14 @@ export default async function ComparePage({
         subtitle="The charts show each catcher’s pitch-type profile, while the table highlights where pitch-type value or usage diverges."
       >
         <div className="grid gap-6 xl:grid-cols-2">
-          <div className="surface-panel rounded-[1.45rem] p-5">
+          <div className="surface-panel rounded-xl p-5">
             <PitchTypeDvaChart rows={pitchTypeRowsA} title={`${catcherA.identity.catcher_name} pitch-type DVA`} />
           </div>
-          <div className="surface-panel rounded-[1.45rem] p-5">
+          <div className="surface-panel rounded-xl p-5">
             <PitchTypeDvaChart rows={pitchTypeRowsB} title={`${catcherB.identity.catcher_name} pitch-type DVA`} />
           </div>
         </div>
-        <div className="mt-6 surface-panel rounded-[1.45rem] p-5">
+        <div className="mt-6 surface-panel rounded-xl p-5">
           <div className="label-kicker">Pitch-type delta table</div>
           <div className="mt-4">
             <ComparisonTable catcherALabel={aLabel} catcherBLabel={bLabel} rows={pitchTypeCompareRows} />
@@ -978,18 +976,18 @@ export default async function ComparePage({
       >
         <div className="grid gap-6 xl:grid-cols-2">
           {[catcherA, catcherB].map((detail) => (
-            <div key={detail.identity.catcher_id} className="surface-panel rounded-[1.45rem] p-5">
+            <div key={detail.identity.catcher_id} className="surface-panel rounded-xl p-5">
               <PairingDvaChart rows={pitcherTopline(detail)} title={`${detail.identity.catcher_name} top pairings`} />
               <div className="mt-5 space-y-3">
                 {pitcherTopline(detail).map((row) => (
                   <div
                     key={`${detail.identity.catcher_id}-${row.pitcher_id}`}
-                    className="rounded-[1.1rem] border border-line/60 bg-surface-elevated/72 p-4"
+                    className="rounded-lg border border-line/60 bg-surface-elevated/72 p-4"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <div className="text-sm font-semibold text-ink">{row.pitcher_name}</div>
-                        <div className="mt-2 text-xs uppercase tracking-[0.18em] text-muted">
+                        <div className="mt-2 text-xs uppercase tracking-[0.06em] text-muted">
                           {row.pitches.toLocaleString()} pitches
                         </div>
                       </div>
@@ -1015,13 +1013,13 @@ export default async function ComparePage({
         tone="quiet"
       >
         <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
-          <div className="surface-panel rounded-[1.45rem] p-5">
+          <div className="surface-panel rounded-xl p-5">
             <div className="label-kicker">Public catcher support metrics</div>
             <div className="mt-4">
               <ComparisonTable catcherALabel={aLabel} catcherBLabel={bLabel} rows={publicMetricRows} />
             </div>
           </div>
-          <div className="surface-panel rounded-[1.45rem] p-5">
+          <div className="surface-panel rounded-xl p-5">
             <div className="label-kicker">Diagnostics and sample quality</div>
             <div className="mt-4">
               <ComparisonTable catcherALabel={aLabel} catcherBLabel={bLabel} rows={diagnosticRows} />

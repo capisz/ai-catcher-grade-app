@@ -20,7 +20,7 @@ export function EmptyStatePanel({
   return (
     <section
       className={[
-        "rounded-[1.8rem] border p-6 sm:p-7",
+        "rounded-xl border p-6 sm:p-7",
         tone === "caution" ? "warning-panel" : "card",
       ].join(" ")}
     >
@@ -28,17 +28,17 @@ export function EmptyStatePanel({
         <div className="max-w-3xl">
           <div
             className={[
-              "text-xs font-semibold uppercase tracking-[0.22em]",
+              "text-xs font-semibold uppercase tracking-[0.06em]",
               tone === "caution" ? "text-warning" : "text-accent-clay",
             ].join(" ")}
           >
             {eyebrow}
           </div>
           <h1 className="mt-3 font-serif text-4xl text-ink">{title}</h1>
-          <p className="mt-4 text-sm leading-7 text-muted">{description}</p>
-          {detail ? <p className="mt-2 text-sm leading-7 text-muted">{detail}</p> : null}
+          <p className="mt-4 text-sm leading-6 text-muted">{description}</p>
+          {detail ? <p className="mt-2 text-sm leading-6 text-muted">{detail}</p> : null}
         </div>
-        <div className="surface-panel-quiet flex h-24 w-24 items-center justify-center rounded-[1.25rem]">
+        <div className="surface-panel-quiet flex h-24 w-24 items-center justify-center rounded-xl">
           <BaseballLogo className="h-12 w-12" />
         </div>
       </div>

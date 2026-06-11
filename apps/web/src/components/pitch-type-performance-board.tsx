@@ -28,7 +28,7 @@ function familyTone(family: string | null | undefined) {
 export function PitchTypePerformanceBoard({ rows }: { rows: PitchTypeSummary[] }) {
   if (rows.length === 0) {
     return (
-      <div className="rounded-[1.45rem] border border-dashed border-line/70 bg-surface/70 p-5 text-sm leading-7 text-muted">
+      <div className="rounded-xl border border-dashed border-line/70 bg-surface/70 p-5 text-sm leading-6 text-muted">
         No real pitch-type summary rows are available for this catcher-season yet.
       </div>
     );
@@ -46,7 +46,7 @@ export function PitchTypePerformanceBoard({ rows }: { rows: PitchTypeSummary[] }
         return (
           <div
             key={row.pitch_type}
-            className="surface-panel min-h-[9.6rem] rounded-[1.15rem] p-4"
+            className="surface-panel min-h-[9.6rem] rounded-lg p-4"
           >
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
@@ -54,14 +54,14 @@ export function PitchTypePerformanceBoard({ rows }: { rows: PitchTypeSummary[] }
                   <div className="text-lg font-semibold text-ink">{row.pitch_type}</div>
                   <span
                     className={[
-                      "rounded-full border px-2.5 py-1 text-[0.64rem] font-semibold uppercase tracking-[0.18em]",
+                      "rounded-full border px-2.5 py-1 text-[0.64rem] font-semibold uppercase tracking-[0.06em]",
                       tone.chip,
                     ].join(" ")}
                   >
                     {row.pitch_family ?? "unknown"}
                   </span>
                 </div>
-                <div className="mt-2 text-xs uppercase tracking-[0.18em] text-muted">
+                <div className="mt-2 text-xs uppercase tracking-[0.06em] text-muted">
                   {row.pitches.toLocaleString()} pitches | {share.toFixed(1)}% usage
                 </div>
               </div>
@@ -70,7 +70,7 @@ export function PitchTypePerformanceBoard({ rows }: { rows: PitchTypeSummary[] }
                   {row.avg_dva >= 0 ? "+" : ""}
                   {row.avg_dva.toFixed(4)}
                 </div>
-                <div className="text-xs uppercase tracking-[0.18em] text-muted">Avg DVA</div>
+                <div className="text-xs uppercase tracking-[0.06em] text-muted">Avg DVA</div>
               </div>
             </div>
             <div className="mt-4 h-3 rounded-full bg-surface-quiet">

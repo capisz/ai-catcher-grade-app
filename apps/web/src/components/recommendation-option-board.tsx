@@ -27,7 +27,7 @@ export function RecommendationOptionBoard({
 }) {
   if (options.length === 0) {
     return (
-      <div className="rounded-[1.25rem] border border-dashed border-line/70 bg-surface/72 p-5 text-sm leading-7 text-muted">
+      <div className="rounded-xl border border-dashed border-line/70 bg-surface/72 p-5 text-sm leading-6 text-muted">
         No recommendation candidates survived for this context.
       </div>
     );
@@ -38,9 +38,9 @@ export function RecommendationOptionBoard({
       {options.map((option, index) => (
         <div
           key={`${option.pitch_type}-${option.zone_bucket_25}-${index}`}
-          className="surface-panel grid gap-4 rounded-[1.2rem] p-4 lg:grid-cols-[4rem_1.25fr_0.95fr_0.95fr]"
+          className="surface-panel grid gap-4 rounded-xl p-4 lg:grid-cols-[4rem_1.25fr_0.95fr_0.95fr]"
         >
-          <div className="flex h-11 w-11 items-center justify-center rounded-[0.9rem] bg-surface-strong text-sm font-semibold text-white">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-surface-strong text-sm font-semibold text-white">
             {index + 1}
           </div>
           <div>
@@ -48,7 +48,7 @@ export function RecommendationOptionBoard({
               <div className="text-lg font-semibold text-ink">{option.pitch_type}</div>
               <span
                 className={[
-                  "rounded-full border px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.18em]",
+                  "rounded-full border px-2.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.06em]",
                   familyTone(option.pitch_type_group),
                 ].join(" ")}
               >
@@ -58,7 +58,7 @@ export function RecommendationOptionBoard({
             <div className="mt-2 text-sm leading-6 text-muted">
               {option.pitch_name ?? "Pitch name unavailable"}
             </div>
-            <div className="mt-2 text-xs uppercase tracking-[0.18em] text-muted">
+            <div className="mt-2 text-xs uppercase tracking-[0.06em] text-muted">
               Usage share {(option.usage_share * 100).toFixed(1)}%
             </div>
           </div>
@@ -77,13 +77,13 @@ export function RecommendationOptionBoard({
             <div className="text-[0.64rem] font-semibold uppercase tracking-[0.2em] text-muted">
               Target
             </div>
-            <div className="mt-2 text-sm leading-7 text-muted">
+            <div className="mt-2 text-sm leading-6 text-muted">
               Zone 25: <span className="font-semibold text-ink">{option.zone_bucket_25 ?? "--"}</span>
             </div>
-            <div className="text-sm leading-7 text-muted">
+            <div className="text-sm leading-6 text-muted">
               Zone 9: <span className="font-semibold text-ink">{option.zone_bucket_9 ?? "--"}</span>
             </div>
-            <div className="text-sm leading-7 text-muted">
+            <div className="text-sm leading-6 text-muted">
               Plate target:{" "}
               <span className="font-semibold text-ink">
                 {option.target_plate_x == null || option.target_plate_z == null

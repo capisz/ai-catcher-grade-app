@@ -135,18 +135,16 @@ export default async function MatchupExplorerPage({
     });
     return (
       <div className="space-y-8">
-        <section className="card relative overflow-hidden rounded-[1.6rem] px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
+        <section className="card relative overflow-hidden rounded-xl px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
           <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
           <div className="relative space-y-5">
             <div>
               <div className="label-kicker">Game Mode | Live</div>
-              <h1 className="mt-4 max-w-3xl font-serif text-[2.45rem] leading-[0.98] text-ink sm:text-[3.05rem]">
+              <h1 className="mt-4 max-w-3xl font-serif text-2xl leading-tight text-ink sm:text-3xl">
                 Live pitch-by-pitch feed straight from today&apos;s MLB games.
               </h1>
-              <p className="mt-4 max-w-3xl text-sm leading-8 text-muted">
-                Pick an in-progress game to watch the pitch stream with count, pitch type,
-                velocity, and zone, plus the catchers on both rosters. Data comes from the public
-                MLB Stats API and refreshes automatically.
+              <p className="mt-4 max-w-3xl text-sm leading-6 text-muted">
+                Pick a game to watch the pitch stream — count, pitch type, velocity, zone — plus both rosters' catchers. Refreshes automatically.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -413,19 +411,17 @@ export default async function MatchupExplorerPage({
 
   return (
     <div className="space-y-8">
-      <section className="card relative overflow-hidden rounded-[1.6rem] px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
+      <section className="card relative overflow-hidden rounded-xl px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
         <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
         <div className="relative grid gap-6 xl:grid-cols-[1.02fr_0.98fr]">
           <div className="space-y-6">
             <div>
               <div className="label-kicker">Game Mode</div>
-              <h1 className="mt-4 max-w-3xl font-serif text-[2.45rem] leading-[0.98] text-ink sm:text-[3.05rem]">
+              <h1 className="mt-4 max-w-3xl font-serif text-2xl leading-tight text-ink sm:text-3xl">
                 Live-context recommendation support from real public baseball data.
               </h1>
-              <p className="mt-4 max-w-3xl text-sm leading-8 text-muted">
-                Game mode is for current matchup context, not season board-reading. It uses
-                pitcher-specific candidate options, public context filters, and observed expected
-                run value. It does not know private PitchCom or hidden sign intent.
+              <p className="mt-4 max-w-3xl text-sm leading-6 text-muted">
+                Pitcher-specific recommendation options for the current matchup context, built from observed expected run value.
               </p>
             </div>
 
@@ -449,7 +445,7 @@ export default async function MatchupExplorerPage({
 
             <LoadingForm
               action="/matchup-explorer"
-              className="shell-panel rounded-[1.2rem] p-4"
+              className="shell-panel rounded-xl p-4"
               loadingMessage="Loading game mode..."
               loadingSubtitle="Refreshing catcher, season, and team context."
             >
@@ -466,7 +462,7 @@ export default async function MatchupExplorerPage({
               <input type="hidden" name="prev_pitch_type_2" value={prevPitchType2} />
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-[minmax(0,1.2fr)_11rem_11rem_auto]">
                 <label className="min-w-0 space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Catcher
                   </span>
                   <select
@@ -483,7 +479,7 @@ export default async function MatchupExplorerPage({
                   </select>
                 </label>
                 <label className="min-w-0 space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Season
                   </span>
                   <select
@@ -500,7 +496,7 @@ export default async function MatchupExplorerPage({
                   </select>
                 </label>
                 <label className="min-w-0 space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Team filter
                   </span>
                   <select
@@ -527,7 +523,7 @@ export default async function MatchupExplorerPage({
 
             <LoadingForm
               action="/matchup-explorer"
-              className="shell-panel rounded-[1.2rem] p-4"
+              className="shell-panel rounded-xl p-4"
               loadingMessage="Running matchup recommendation..."
               loadingSubtitle="Scoring pitcher-specific options for the selected count and base/out context."
             >
@@ -536,7 +532,7 @@ export default async function MatchupExplorerPage({
               <input type="hidden" name="catcher_id" value={selectedCatcherId} />
               <div className="grid gap-3 xl:grid-cols-2">
                 <label className="space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Pitcher
                   </span>
                   <input
@@ -549,7 +545,7 @@ export default async function MatchupExplorerPage({
                   />
                 </label>
                 <label className="space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Batter
                   </span>
                   <input
@@ -562,7 +558,7 @@ export default async function MatchupExplorerPage({
                   />
                 </label>
                 <label className="space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Batter side
                   </span>
                   <select className="field" name="stand" defaultValue={safeStand}>
@@ -572,7 +568,7 @@ export default async function MatchupExplorerPage({
                   </select>
                 </label>
                 <label className="space-y-2">
-                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-muted">
+                  <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Pitcher hand
                   </span>
                   <select className="field" name="p_throws" defaultValue={safePThrows}>
@@ -655,7 +651,7 @@ export default async function MatchupExplorerPage({
             </LoadingForm>
           </div>
 
-          <aside className="panel-dark overflow-hidden rounded-[1.55rem] p-5 text-white sm:p-6">
+          <aside className="panel-dark overflow-hidden rounded-xl p-5 text-white sm:p-6">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-4">
                 {catcherDetail.identity.headshot_url ? (
@@ -664,28 +660,28 @@ export default async function MatchupExplorerPage({
                     alt={catcherDetail.identity.catcher_name}
                     width={96}
                     height={96}
-                    className="h-24 w-24 rounded-[1.15rem] border border-white/12 object-cover"
+                    className="h-24 w-24 rounded-lg border border-white/12 object-cover"
                   />
                 ) : (
-                  <div className="dark-pill flex h-24 w-24 items-center justify-center rounded-[1.15rem] text-3xl font-semibold">
+                  <div className="dark-pill flex h-24 w-24 items-center justify-center rounded-lg text-3xl font-semibold">
                     {catcherDetail.identity.catcher_name[0]}
                   </div>
                 )}
                 <div>
-                  <div className="text-[0.64rem] font-semibold uppercase tracking-[0.22em] text-white/56">
+                  <div className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-white/56">
                     Active game context
                   </div>
-                  <h2 className="mt-3 font-serif text-[2rem] leading-none">
+                  <h2 className="mt-3 font-serif text-2xl leading-none">
                     {catcherDetail.identity.catcher_name}
                   </h2>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
+                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.06em]">
                       {catcherDetail.identity.team ?? "FA"}
                     </span>
-                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
+                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.06em]">
                       Pitcher {selectedPitcherId}
                     </span>
-                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em]">
+                    <span className="dark-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.06em]">
                       {balls}-{strikes}, {outsWhenUp} outs
                     </span>
                   </div>
@@ -700,7 +696,7 @@ export default async function MatchupExplorerPage({
             <div className="scouting-seam mt-5" />
 
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <div className="scorebug rounded-[1rem] border border-white/10 px-4 py-3">
+              <div className="scorebug rounded-lg border border-white/10 px-4 py-3">
                 <div className="text-[0.64rem] uppercase tracking-[0.2em] text-white/58">
                   Confidence
                 </div>
@@ -709,29 +705,29 @@ export default async function MatchupExplorerPage({
                   Candidate count drives how much weight to place on the output
                 </div>
               </div>
-              <div className="scorebug rounded-[1rem] border border-white/10 px-4 py-3">
+              <div className="scorebug rounded-lg border border-white/10 px-4 py-3">
                 <div className="text-[0.64rem] uppercase tracking-[0.2em] text-white/58">
                   Weighted expected RV
                 </div>
-                <div className="numeric mt-2 text-[1.45rem] font-semibold">
+                <div className="numeric mt-2 text-lg font-semibold">
                   {formatSigned(recommendation?.weighted_expected_rv, 4)}
                 </div>
                 <div className="mt-2 text-sm text-white/72">
                   Context baseline before picking the top option
                 </div>
               </div>
-              <div className="scorebug rounded-[1rem] border border-white/10 px-4 py-3">
+              <div className="scorebug rounded-lg border border-white/10 px-4 py-3">
                 <div className="text-[0.64rem] uppercase tracking-[0.2em] text-white/58">
                   Candidate count
                 </div>
-                <div className="numeric mt-2 text-[1.45rem] font-semibold">
+                <div className="numeric mt-2 text-lg font-semibold">
                   {recommendation?.candidate_count ?? 0}
                 </div>
                 <div className="mt-2 text-sm text-white/72">
                   Real pitch alternatives surviving context filters
                 </div>
               </div>
-              <div className="scorebug rounded-[1rem] border border-white/10 px-4 py-3">
+              <div className="scorebug rounded-lg border border-white/10 px-4 py-3">
                 <div className="text-[0.64rem] uppercase tracking-[0.2em] text-white/58">
                   Best option
                 </div>
@@ -746,7 +742,7 @@ export default async function MatchupExplorerPage({
               </div>
             </div>
 
-            <p className="mt-5 text-sm leading-7 text-white/74">
+            <p className="mt-5 text-sm leading-6 text-white/74">
               {recommendation?.note ??
                 "Recommendation data is unavailable for this exact context. The page keeps the live context visible so missing model support is explicit."}
             </p>
@@ -768,7 +764,7 @@ export default async function MatchupExplorerPage({
         subtitle="Anchor the recommendation context with real pitcher-catcher pairings before adjusting count, base state, and handedness."
       >
         <div className="grid gap-6 xl:grid-cols-[0.94fr_1.06fr]">
-          <div className="surface-panel rounded-[1.35rem] p-5">
+          <div className="surface-panel rounded-xl p-5">
             <PairingDvaChart rows={pairings.pairings} title="Pairing DVA snapshot" />
           </div>
           <div className="grid gap-3 md:grid-cols-2">
@@ -781,7 +777,7 @@ export default async function MatchupExplorerPage({
                   loadingMessage="Loading pairing context..."
                   loadingSubtitle={`Opening ${row.pitcher_name}.`}
                   className={[
-                    "rounded-[1.1rem] border p-4 transition",
+                    "rounded-lg border p-4 transition",
                     active
                       ? "border-accent/30 bg-surface-strong text-white shadow-[0_14px_24px_rgba(68,83,95,0.18)]"
                       : "surface-panel hover:-translate-y-0.5 hover:border-accent/24",
@@ -824,31 +820,31 @@ export default async function MatchupExplorerPage({
         ) : recommendation ? (
           <div className="space-y-5">
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
-              <div className="surface-panel rounded-[1rem] px-4 py-3">
+              <div className="surface-panel rounded-lg px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-muted">Count</div>
                 <div className="mt-2 text-lg font-semibold text-ink">{recommendation.count_state}</div>
               </div>
-              <div className="surface-panel rounded-[1rem] px-4 py-3">
+              <div className="surface-panel rounded-lg px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-muted">Count bucket</div>
                 <div className="mt-2 text-lg font-semibold text-ink">
                   {recommendation.count_bucket.replaceAll("_", " ")}
                 </div>
               </div>
-              <div className="surface-panel rounded-[1rem] px-4 py-3">
+              <div className="surface-panel rounded-lg px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-muted">Base state</div>
                 <div className="mt-2 text-lg font-semibold text-ink">{recommendation.base_state}</div>
               </div>
-              <div className="surface-panel rounded-[1rem] px-4 py-3">
+              <div className="surface-panel rounded-lg px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-muted">Outs</div>
                 <div className="mt-2 text-lg font-semibold text-ink">{recommendation.outs_state}</div>
               </div>
-              <div className="surface-panel rounded-[1rem] px-4 py-3">
+              <div className="surface-panel rounded-lg px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-muted">Platoon</div>
                 <div className="mt-2 text-lg font-semibold text-ink">
                   {recommendation.platoon_flag.replaceAll("_", " ")}
                 </div>
               </div>
-              <div className="surface-panel rounded-[1rem] px-4 py-3">
+              <div className="surface-panel rounded-lg px-4 py-3">
                 <div className="text-[0.62rem] uppercase tracking-[0.2em] text-muted">Leverage</div>
                 <div className="mt-2 text-lg font-semibold text-ink">
                   {leverageBucket.replaceAll("_", " ")}
@@ -857,16 +853,16 @@ export default async function MatchupExplorerPage({
             </div>
 
             <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
-              <div className="surface-panel rounded-[1.25rem] p-5">
+              <div className="surface-panel rounded-xl p-5">
                 <RecommendationRvChart options={recommendation.options} />
               </div>
               <div className="space-y-5">
-                <div className="surface-panel rounded-[1.25rem] p-5">
+                <div className="surface-panel rounded-xl p-5">
                   <div className="label-kicker">Why this is preferred</div>
-                  <p className="mt-4 text-sm leading-8 text-muted">
+                  <p className="mt-4 text-sm leading-6 text-muted">
                     {recommendationSummary(recommendation)}
                   </p>
-                  <p className="mt-3 text-sm leading-8 text-muted">
+                  <p className="mt-3 text-sm leading-6 text-muted">
                     Confidence depends on candidate count and context coverage. When the candidate pool
                     gets thin, the UI keeps that visible rather than pretending precision.
                   </p>
@@ -886,23 +882,23 @@ export default async function MatchupExplorerPage({
         tone="quiet"
       >
         <div className="grid gap-4 lg:grid-cols-3">
-          <div className="surface-panel rounded-[1.2rem] p-5">
+          <div className="surface-panel rounded-xl p-5">
             <div className="label-kicker">What it knows</div>
-            <p className="mt-4 text-sm leading-8 text-muted">
+            <p className="mt-4 text-sm leading-6 text-muted">
               Pitcher-specific historical candidates, count/base/out context, platoon lane,
               historical usage share, and expected run value by option.
             </p>
           </div>
-          <div className="surface-panel rounded-[1.2rem] p-5">
+          <div className="surface-panel rounded-xl p-5">
             <div className="label-kicker">What it does not know</div>
-            <p className="mt-4 text-sm leading-8 text-muted">
+            <p className="mt-4 text-sm leading-6 text-muted">
               Private PitchCom plans, shake-offs, scouting meetings, injury restrictions, or hidden
               catcher intent. Those limits stay explicit in the UI.
             </p>
           </div>
-          <div className="surface-panel rounded-[1.2rem] p-5">
+          <div className="surface-panel rounded-xl p-5">
             <div className="label-kicker">Best workflow</div>
-            <p className="mt-4 text-sm leading-8 text-muted">
+            <p className="mt-4 text-sm leading-6 text-muted">
               Start with a real pairing, set the count and base/out state, and compare top options
               by expected RV, usage share, and confidence before making a baseball decision.
             </p>

@@ -138,13 +138,13 @@ export function CountStateMatrix({
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">
+        <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
           Avg DVA by exact count
         </span>
-        <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">
+        <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
           Hover or tap for detail
         </span>
-        <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">
+        <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
           Dashed = low split sample
         </span>
       </div>
@@ -154,7 +154,7 @@ export function CountStateMatrix({
         {STRIKES.map((strike) => (
           <div
             key={strike}
-            className="meta-pill rounded-[1rem] px-3 py-2 text-center text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-muted"
+            className="meta-pill rounded-lg px-3 py-2 text-center text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-muted"
           >
             {strike} strike{strike === 1 ? "" : "s"}
           </div>
@@ -162,7 +162,7 @@ export function CountStateMatrix({
 
         {BALLS.map((ball) => (
           <div key={ball} className="contents">
-            <div className="meta-pill flex items-center justify-center rounded-[1rem] px-2 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-muted">
+            <div className="meta-pill flex items-center justify-center rounded-lg px-2 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-muted">
               {ball} ball{ball === 1 ? "" : "s"}
             </div>
             {STRIKES.map((strike) => {
@@ -173,7 +173,7 @@ export function CountStateMatrix({
                 return (
                   <div
                     key={countKey}
-                    className="rounded-[1.15rem] border border-dashed border-line/70 bg-surface/70 p-4 text-center text-xs text-muted"
+                    className="rounded-lg border border-dashed border-line/70 bg-surface/70 p-4 text-center text-xs text-muted"
                   >
                     No data
                   </div>
@@ -185,32 +185,32 @@ export function CountStateMatrix({
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <div className="text-sm font-semibold">{row.split_value}</div>
-                      <div className="mt-2 text-[0.6rem] uppercase tracking-[0.18em] opacity-70">
+                      <div className="mt-2 text-[0.6rem] uppercase tracking-[0.06em] opacity-70">
                         {row.pitches.toLocaleString()} pitches
                       </div>
                     </div>
                     {row.low_sample ? (
-                      <span className="rounded-full border border-current/14 px-2 py-1 text-[0.52rem] font-semibold uppercase tracking-[0.16em]">
+                      <span className="rounded-full border border-current/14 px-2 py-1 text-[0.52rem] font-semibold uppercase tracking-[0.06em]">
                         Low sample
                       </span>
                     ) : null}
                   </div>
 
-                  <div className="numeric mt-4 text-[1.85rem] font-semibold leading-none">
+                  <div className="numeric mt-4 text-xl font-semibold leading-none">
                     {formatSigned(row.avg_dva, 4)}
                   </div>
 
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     <span
                       className={[
-                        "rounded-full border px-2 py-1 text-[0.55rem] font-semibold uppercase tracking-[0.16em]",
+                        "rounded-full border px-2 py-1 text-[0.55rem] font-semibold uppercase tracking-[0.06em]",
                         toneChip(row),
                       ].join(" ")}
                     >
                       {contextLabel(row)}
                     </span>
                     {row.recommended_pitch_family ? (
-                      <span className="rounded-full border border-current/14 px-2 py-1 text-[0.55rem] font-semibold uppercase tracking-[0.16em]">
+                      <span className="rounded-full border border-current/14 px-2 py-1 text-[0.55rem] font-semibold uppercase tracking-[0.06em]">
                         {row.recommended_pitch_family}
                       </span>
                     ) : null}
@@ -223,7 +223,7 @@ export function CountStateMatrix({
               );
 
               const className = [
-                "min-h-[11rem] rounded-[1.1rem] border p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)] transition",
+                "min-h-[11rem] rounded-lg border p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)] transition",
                 cellClasses(row, selectedCount === row.split_value || activeKey === row.split_value),
               ].join(" ");
               const href = hrefByCount[row.split_value];
@@ -263,54 +263,54 @@ export function CountStateMatrix({
       </div>
 
       {activeRow ? (
-        <div className="surface-panel rounded-[1.35rem] p-5">
+        <div className="surface-panel rounded-xl p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
               <div className="label-kicker">Active count preview</div>
-              <div className="mt-3 font-serif text-[2rem] leading-none text-ink">
+              <div className="mt-3 font-serif text-2xl leading-none text-ink">
                 {activeRow.split_value}
               </div>
-              <p className="mt-3 max-w-3xl text-sm leading-7 text-muted">
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">
                 {activeRow.pitches.toLocaleString()} pitches in this exact count. This cell uses
                 avg DVA per pitch, with outperform rate and pitch-family guidance shown below.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
-              <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">
+              <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
                 {contextLabel(activeRow)}
               </span>
-              <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">
+              <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
                 {activeRow.sample_label ?? "Sample unknown"}
               </span>
             </div>
           </div>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-[1rem] border border-line/60 bg-surface/72 p-4">
+            <div className="rounded-lg border border-line/60 bg-surface/72 p-4">
               <div className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-muted">
                 Avg DVA
               </div>
-              <div className="numeric mt-2 text-[1.8rem] font-semibold text-ink">
+              <div className="numeric mt-2 text-xl font-semibold text-ink">
                 {formatSigned(activeRow.avg_dva, 4)}
               </div>
             </div>
-            <div className="rounded-[1rem] border border-line/60 bg-surface/72 p-4">
+            <div className="rounded-lg border border-line/60 bg-surface/72 p-4">
               <div className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-muted">
                 Total DVA
               </div>
-              <div className="numeric mt-2 text-[1.8rem] font-semibold text-ink">
+              <div className="numeric mt-2 text-xl font-semibold text-ink">
                 {formatSigned(activeRow.total_dva, 3)}
               </div>
             </div>
-            <div className="rounded-[1rem] border border-line/60 bg-surface/72 p-4">
+            <div className="rounded-lg border border-line/60 bg-surface/72 p-4">
               <div className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-muted">
                 Outperform
               </div>
-              <div className="numeric mt-2 text-[1.8rem] font-semibold text-ink">
+              <div className="numeric mt-2 text-xl font-semibold text-ink">
                 {formatPct(activeRow.outperform_rate)}
               </div>
             </div>
-            <div className="rounded-[1rem] border border-line/60 bg-surface/72 p-4">
+            <div className="rounded-lg border border-line/60 bg-surface/72 p-4">
               <div className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-muted">
                 Pitch-family read
               </div>
@@ -341,11 +341,11 @@ export function CountStateMatrix({
             row: weakestHitterFriendly,
           },
         ].map((item) => (
-          <div key={item.label} className="surface-panel rounded-[1.25rem] p-4">
+          <div key={item.label} className="surface-panel rounded-xl p-4">
             <div className="text-[0.64rem] font-semibold uppercase tracking-[0.2em] text-muted">
               {item.label}
             </div>
-            <div className="mt-3 font-serif text-[1.55rem] leading-none text-ink">
+            <div className="mt-3 font-serif text-lg leading-none text-ink">
               {item.row?.split_value ?? "No read"}
             </div>
             <div className="numeric mt-3 text-xl font-semibold text-ink">
@@ -360,7 +360,7 @@ export function CountStateMatrix({
         ))}
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">
+      <div className="flex flex-wrap items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-muted">
         <span>Clay = worse than baseline</span>
         <div className="h-2.5 w-28 rounded-full bg-gradient-to-r from-accent-clay via-brand-sand/40 to-brand-primary" />
         <span>Slate = better than baseline</span>

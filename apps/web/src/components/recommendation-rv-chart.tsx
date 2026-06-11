@@ -22,7 +22,7 @@ type RecommendationRvChartProps = {
 export function RecommendationRvChart({ options }: RecommendationRvChartProps) {
   if (options.length === 0) {
     return (
-      <div className="flex h-[20rem] items-center justify-center rounded-[1.2rem] border border-dashed border-line/70 bg-surface/72 px-5 text-center text-sm leading-7 text-muted">
+      <div className="flex h-[20rem] items-center justify-center rounded-xl border border-dashed border-line/70 bg-surface/72 px-5 text-center text-sm leading-6 text-muted">
         No recommendation candidates survived for this context.
       </div>
     );

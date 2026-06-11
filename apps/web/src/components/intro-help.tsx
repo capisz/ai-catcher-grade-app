@@ -98,23 +98,23 @@ export function IntroHelp() {
               onClick={dismiss}
             />
             <div className="app-modal__viewport">
-              <section className="app-modal__panel card z-10 max-w-3xl rounded-[1.85rem] p-6 shadow-[0_36px_110px_rgba(27,35,40,0.28)] sm:p-7">
+              <section className="app-modal__panel card z-10 max-w-3xl rounded-xl p-6 shadow-[0_36px_110px_rgba(27,35,40,0.28)] sm:p-7">
                 <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-28 opacity-90" />
                 <div className="app-modal__body">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-start gap-4">
-                      <div className="flex h-14 w-14 items-center justify-center rounded-[1.2rem] border border-line/70 bg-surface-elevated text-brand-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.46)]">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-line/70 bg-surface-elevated text-brand-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.46)]">
                         <BaseballLogo className="h-9 w-9" />
                       </div>
                       <div>
                         <div className="label-kicker">Dashboard Guide</div>
                         <h2
                           id="intro-help-title"
-                          className="mt-2 font-serif text-[2rem] leading-none text-ink sm:text-[2.3rem]"
+                          className="mt-2 font-serif text-2xl leading-none text-ink sm:text-2xl"
                         >
                           What this app is showing you
                         </h2>
-                        <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">
+                        <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
                           Catcher Intel uses public Statcast data and public catcher-defense signals
                           to summarize pitch-decision quality, pairing context, and season-level
                           scouting indicators. It is a decision-support dashboard, not a claim about
@@ -132,31 +132,31 @@ export function IntroHelp() {
                   </div>
 
                   <div className="mt-6 grid gap-4 lg:grid-cols-3">
-                    <article className="surface-panel rounded-[1.35rem] p-4">
-                      <div className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-accent-clay">
+                    <article className="surface-panel rounded-xl p-4">
+                      <div className="text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-accent-clay">
                         What It Does
                       </div>
-                      <p className="mt-3 text-sm leading-7 text-muted">
+                      <p className="mt-3 text-sm leading-6 text-muted">
                         Compares the pitch that was actually called to a realistic baseline of other
                         pitch options in the same public game context, then rolls that up into
                         catcher, count, pitch-type, and pitcher-pairing views.
                       </p>
                     </article>
-                    <article className="surface-panel rounded-[1.35rem] p-4">
-                      <div className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-accent-clay">
+                    <article className="surface-panel rounded-xl p-4">
+                      <div className="text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-accent-clay">
                         How To Read It
                       </div>
-                      <p className="mt-3 text-sm leading-7 text-muted">
+                      <p className="mt-3 text-sm leading-6 text-muted">
                         Positive DVA means the observed pitch choice outperformed the modeled
                         baseline. Negative DVA means it trailed the baseline. Grades are relative
                         season comps on a 20-80 style scouting scale, not absolute truth.
                       </p>
                     </article>
-                    <article className="surface-panel rounded-[1.35rem] p-4">
-                      <div className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-accent-clay">
+                    <article className="surface-panel rounded-xl p-4">
+                      <div className="text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-accent-clay">
                         Interpretation Notes
                       </div>
-                      <p className="mt-3 text-sm leading-7 text-muted">
+                      <p className="mt-3 text-sm leading-6 text-muted">
                         Sample size matters. Use pitch totals and stability badges before leaning too
                         hard on small differences. Public framing, blocking, and throwing metrics are
                         supporting context, not isolated proof of catcher game-calling skill.
@@ -164,7 +164,7 @@ export function IntroHelp() {
                     </article>
                   </div>
 
-                  <div className="mt-5 rounded-[1.25rem] border border-brand-secondary/20 bg-brand-secondary/10 px-4 py-3 text-sm leading-7 text-muted">
+                  <div className="mt-5 rounded-xl border border-brand-secondary/20 bg-brand-secondary/10 px-4 py-3 text-sm leading-6 text-muted">
                     Best use: treat this as a fast scouting lens for identifying interesting
                     signals, then combine it with video, coaching context, pitcher tendencies, and
                     sample-size judgment.

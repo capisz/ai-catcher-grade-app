@@ -71,8 +71,8 @@ export function DataFreshnessPanel({ metadata }: { metadata: AppMetadataResponse
   return (
     <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
       {LABELS.map((item) => (
-        <div key={item.key} className="surface-panel rounded-[1.1rem] p-4">
-          <div className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted">
+        <div key={item.key} className="surface-panel rounded-lg p-4">
+          <div className="text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
             {item.label}
           </div>
           <div className="mt-3 text-base font-semibold text-ink">

@@ -23,22 +23,22 @@ export function GradeCard({ label, grade, description }: GradeCardProps) {
   return (
     <div
       className={[
-        "min-h-[14.5rem] rounded-[1.2rem] border p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]",
+        "min-h-[14.5rem] rounded-xl border p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]",
         tone(grade.score),
       ].join(" ")}
     >
-      <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-muted">
+      <div className="text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-muted">
         {label}
       </div>
       <div className="mt-4 flex items-end justify-between gap-3">
-        <div className="numeric text-[2.35rem] font-semibold leading-none text-ink">
+        <div className="numeric text-2xl font-semibold leading-none text-ink">
           {grade.score?.toFixed(1) ?? "--"}
         </div>
-        <div className="meta-pill rounded-full px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-accent-clay">
+        <div className="meta-pill rounded-full px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.06em] text-accent-clay">
           {grade.label ?? "Unscored"}
         </div>
       </div>
-      <div className="mt-3 flex flex-wrap gap-2 text-[0.68rem] uppercase tracking-[0.18em] text-muted">
+      <div className="mt-3 flex flex-wrap gap-2 text-[0.68rem] uppercase tracking-[0.06em] text-muted">
         <span>{grade.qualified ? "Qualified" : "Limited sample"}</span>
         {grade.population_size ? <span>{grade.population_size} catchers</span> : null}
       </div>

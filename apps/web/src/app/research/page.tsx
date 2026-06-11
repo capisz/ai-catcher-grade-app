@@ -271,19 +271,17 @@ export default async function ResearchPage({
 
   return (
     <div className="space-y-8">
-      <section className="card relative overflow-hidden rounded-[1.6rem] px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
+      <section className="card relative overflow-hidden rounded-xl px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
         <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
         <div className="relative grid gap-6 xl:grid-cols-[1.04fr_0.96fr]">
           <div className="space-y-6">
             <div>
               <div className="label-kicker">Research Mode</div>
-              <h1 className="mt-4 max-w-4xl font-serif text-[2.5rem] leading-[0.98] text-ink sm:text-[3.1rem]">
+              <h1 className="mt-4 max-w-4xl font-serif text-2xl leading-tight text-ink sm:text-3xl">
                 Advanced filtering, comparison, and export for deeper catcher analysis.
               </h1>
-              <p className="mt-5 max-w-3xl text-sm leading-8 text-muted">
-                Research mode is where you slice the board, compare catchers side by side, export
-                live JSON or full reports, and keep your filter state in the URL so the page is
-                naturally shareable.
+              <p className="mt-5 max-w-3xl text-sm leading-6 text-muted">
+                Slice the board, compare catchers, and export reports — filter state lives in the URL so every view is shareable.
               </p>
             </div>
 
@@ -299,7 +297,7 @@ export default async function ResearchPage({
 
             <LoadingForm
               action="/research"
-              className="shell-panel rounded-[1.2rem] p-4"
+              className="shell-panel rounded-xl p-4"
               loadingMessage="Refreshing research mode..."
               loadingSubtitle="Applying filtered leaderboard and comparison settings."
             >
@@ -391,19 +389,19 @@ export default async function ResearchPage({
             </LoadingForm>
           </div>
 
-          <aside className="panel-dark overflow-hidden rounded-[1.55rem] p-5 text-white sm:p-6">
-            <div className="text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-white/56">
+          <aside className="panel-dark overflow-hidden rounded-xl p-5 text-white sm:p-6">
+            <div className="text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-white/56">
               Research board
             </div>
             <div className="mt-3 flex items-end justify-between gap-4">
               <div>
-                <div className="font-serif text-[2.8rem] leading-none">{metadata.selected_season}</div>
+                <div className="font-serif text-3xl leading-none">{metadata.selected_season}</div>
                 <div className="mt-3 text-sm text-white/72">
                   {orderedLeaderboard.length} qualifying catchers on the current filter set
                 </div>
               </div>
-              <div className="scorebug rounded-[1.25rem] px-4 py-3">
-                <div className="text-[0.64rem] uppercase tracking-[0.18em] text-white/56">
+              <div className="scorebug rounded-xl px-4 py-3">
+                <div className="text-[0.64rem] uppercase tracking-[0.06em] text-white/56">
                   Filter floor
                 </div>
                 <div className="numeric mt-2 text-2xl font-semibold">{minPitches}</div>
@@ -413,8 +411,8 @@ export default async function ResearchPage({
             <div className="scouting-seam mt-6" />
 
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              <div className="scorebug rounded-[1.2rem] border border-white/10 px-4 py-3">
-                <div className="text-[0.64rem] uppercase tracking-[0.18em] text-white/56">
+              <div className="scorebug rounded-xl border border-white/10 px-4 py-3">
+                <div className="text-[0.64rem] uppercase tracking-[0.06em] text-white/56">
                   Shareable state
                 </div>
                 <div className="mt-2 text-lg font-semibold">URL-backed</div>
@@ -422,8 +420,8 @@ export default async function ResearchPage({
                   Current filters, compare target, and date window live in the page URL
                 </div>
               </div>
-              <div className="scorebug rounded-[1.2rem] border border-white/10 px-4 py-3">
-                <div className="text-[0.64rem] uppercase tracking-[0.18em] text-white/56">
+              <div className="scorebug rounded-xl border border-white/10 px-4 py-3">
+                <div className="text-[0.64rem] uppercase tracking-[0.06em] text-white/56">
                   Date filter status
                 </div>
                 <div className="mt-2 text-lg font-semibold">
@@ -454,11 +452,11 @@ export default async function ResearchPage({
         >
           <div className="grid gap-6 xl:grid-cols-2">
             {[primaryDetail, compareDetail].filter(Boolean).map((detail) => (
-              <div key={detail!.identity.catcher_id} className="card-quiet rounded-[1.5rem] p-5">
+              <div key={detail!.identity.catcher_id} className="card-quiet rounded-xl p-5">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <div className="label-kicker">{detail!.identity.team ?? "FA"}</div>
-                    <h3 className="mt-3 font-serif text-[2rem] leading-none text-ink">
+                    <h3 className="mt-3 font-serif text-2xl leading-none text-ink">
                       {detail!.identity.catcher_name}
                     </h3>
                   </div>
@@ -478,7 +476,7 @@ export default async function ResearchPage({
                     />
                   ))}
                 </div>
-                <div className="mt-5 surface-panel rounded-[1.35rem] p-4">
+                <div className="mt-5 surface-panel rounded-xl p-4">
                   <PitchTypeDvaChart
                     rows={detail!.pitch_type_summaries.slice(0, 6)}
                     title={`${detail!.identity.catcher_name} pitch-type DVA`}
@@ -513,27 +511,27 @@ export default async function ResearchPage({
         subtitle="Research mode surfaces direct JSON paths for the live filtered board and catcher breakdown endpoints, plus report downloads for richer exports."
       >
         <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
-          <a href={boardExportUrl} className="surface-panel rounded-[1.2rem] p-5 transition hover:-translate-y-0.5 hover:border-accent/24">
+          <a href={boardExportUrl} className="surface-panel rounded-xl p-5 transition hover:-translate-y-0.5 hover:border-accent/24">
             <div className="label-kicker">Leaderboard JSON</div>
-            <p className="mt-4 text-sm leading-7 text-muted">
+            <p className="mt-4 text-sm leading-6 text-muted">
               Export the current filtered leaderboard payload directly from the proxy-backed API.
             </p>
           </a>
-          <a href={countsExportUrl || "#"} className="surface-panel rounded-[1.2rem] p-5 transition hover:-translate-y-0.5 hover:border-accent/24">
+          <a href={countsExportUrl || "#"} className="surface-panel rounded-xl p-5 transition hover:-translate-y-0.5 hover:border-accent/24">
             <div className="label-kicker">Count breakdown JSON</div>
-            <p className="mt-4 text-sm leading-7 text-muted">
+            <p className="mt-4 text-sm leading-6 text-muted">
               Export the selected catcher&apos;s exact-count and bucket breakdowns.
             </p>
           </a>
-          <a href={pitchTypeExportUrl || "#"} className="surface-panel rounded-[1.2rem] p-5 transition hover:-translate-y-0.5 hover:border-accent/24">
+          <a href={pitchTypeExportUrl || "#"} className="surface-panel rounded-xl p-5 transition hover:-translate-y-0.5 hover:border-accent/24">
             <div className="label-kicker">Pitch-type JSON</div>
-            <p className="mt-4 text-sm leading-7 text-muted">
+            <p className="mt-4 text-sm leading-6 text-muted">
               Export pitch-type usage and DVA rows for the selected catcher-season.
             </p>
           </a>
-          <a href={pairingExportUrl || "#"} className="surface-panel rounded-[1.2rem] p-5 transition hover:-translate-y-0.5 hover:border-accent/24">
+          <a href={pairingExportUrl || "#"} className="surface-panel rounded-xl p-5 transition hover:-translate-y-0.5 hover:border-accent/24">
             <div className="label-kicker">Pairings JSON</div>
-            <p className="mt-4 text-sm leading-7 text-muted">
+            <p className="mt-4 text-sm leading-6 text-muted">
               Export pairing intelligence for the selected catcher-season.
             </p>
           </a>
@@ -576,11 +574,11 @@ export default async function ResearchPage({
                 loadingSubtitle={`Opening ${entry.catcher_name}.`}
                 className={[
                   ["card-tone-slate", "card-tone-sand", "card-tone-clay", "card-tone-sage"][index % 4],
-                  "rounded-[1.25rem] p-4 transition hover:-translate-y-0.5 hover:border-accent/24",
+                  "rounded-xl p-4 transition hover:-translate-y-0.5 hover:border-accent/24",
                 ].join(" ")}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-[0.95rem] bg-surface-strong text-sm font-semibold text-white">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-strong text-sm font-semibold text-white">
                     {index + 1}
                   </div>
                   <SampleStabilityBadge
@@ -590,7 +588,7 @@ export default async function ResearchPage({
                   />
                 </div>
                 <div className="mt-4 font-semibold text-ink">{entry.catcher_name}</div>
-                <div className="mt-1 text-xs uppercase tracking-[0.18em] text-muted">
+                <div className="mt-1 text-xs uppercase tracking-[0.06em] text-muted">
                   {entry.team ?? "FA"} | {entry.games_scored} games | {entry.pitches.toLocaleString()} pitches
                 </div>
                 <div className="numeric mt-4 text-2xl font-semibold text-ink">
@@ -612,7 +610,7 @@ export default async function ResearchPage({
         tone="quiet"
       >
         {orderedLeaderboard.length === 0 ? (
-          <div className="rounded-[1.6rem] border border-dashed border-line/70 bg-surface/72 p-6 text-sm leading-7 text-muted">
+          <div className="rounded-xl border border-dashed border-line/70 bg-surface/72 p-6 text-sm leading-6 text-muted">
             No real scored catchers matched the current filters for season {leaderboard.season}.
             Lower the minimum pitch threshold, widen the date range, or switch to a populated
             scored season.
@@ -634,14 +632,14 @@ export default async function ResearchPage({
                 })}
                 loadingMessage="Refreshing research comparison..."
                 loadingSubtitle={`Focusing research mode on ${entry.catcher_name}.`}
-                className="surface-panel grid gap-4 rounded-[1.3rem] p-4 transition hover:-translate-y-0.5 hover:border-accent/24 md:grid-cols-[4rem_1.6fr_.95fr_.9fr_.9fr_1.1fr]"
+                className="surface-panel grid gap-4 rounded-xl p-4 transition hover:-translate-y-0.5 hover:border-accent/24 md:grid-cols-[4rem_1.6fr_.95fr_.9fr_.9fr_1.1fr]"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-[0.95rem] bg-surface-strong text-sm font-semibold text-white">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-strong text-sm font-semibold text-white">
                   {index + 1}
                 </div>
                 <div>
                   <div className="font-semibold text-ink">{entry.catcher_name}</div>
-                  <div className="mt-2 text-xs uppercase tracking-[0.18em] text-muted">
+                  <div className="mt-2 text-xs uppercase tracking-[0.06em] text-muted">
                     {entry.team ?? "FA"} | {entry.games_scored} games | {entry.pitches.toLocaleString()} pitches
                   </div>
                 </div>
