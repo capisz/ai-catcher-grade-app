@@ -115,7 +115,7 @@ export function IntroHelp() {
                           What this app is showing you
                         </h2>
                         <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-                          Catcher Intel uses public Statcast data and public catcher-defense signals
+                          backstop.ai uses public Statcast data and public catcher-defense signals
                           to summarize pitch-decision quality, pairing context, and season-level
                           scouting indicators. It is a decision-support dashboard, not a claim about
                           hidden intent.

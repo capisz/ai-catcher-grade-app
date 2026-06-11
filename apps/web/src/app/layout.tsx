@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 
 import { AppNav } from "@/components/app-nav";
-import { BaseballLogo } from "@/components/icons/baseball-logo";
+import { BrandMark } from "@/components/brand-mark";
 import { IntroHelp } from "@/components/intro-help";
 import { LoadingLink } from "@/components/ui/loading-link";
 import { LoadingProvider } from "@/components/ui/loading-provider";
@@ -19,8 +19,8 @@ const displayFont = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Catcher Intel",
-  description: "Public-data catcher scouting dashboard for MLB game-calling evaluation.",
+  title: "backstop.ai",
+  description: "backstop.ai — live MLB catcher game-calling intelligence from public data.",
 };
 
 export default function RootLayout({
@@ -33,20 +33,14 @@ export default function RootLayout({
       <body className={`${bodyFont.variable} ${displayFont.variable} antialiased`}>
         <LoadingProvider>
           <div className="relative min-h-screen overflow-x-hidden">
-            <header className="sticky top-0 z-40 border-b border-line bg-[color:var(--nav-surface)] backdrop-blur-xl">
+            <header className="site-header">
               <div className="mx-auto flex h-14 max-w-[88rem] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
                 <LoadingLink
                   href="/"
-                  className="flex items-center gap-2.5"
-                  loadingMessage="Loading catcher intelligence..."
-                  loadingSubtitle="Opening the main scouting dashboard."
+                  loadingMessage="Loading backstop.ai..."
+                  loadingSubtitle="Opening the live dashboard."
                 >
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-white">
-                    <BaseballLogo className="h-5 w-5" />
-                  </span>
-                  <span className="font-serif text-[1.05rem] font-semibold tracking-tight text-ink">
-                    Catcher Intel
-                  </span>
+                  <BrandMark />
                 </LoadingLink>
                 <div className="flex items-center gap-2">
                   <AppNav />

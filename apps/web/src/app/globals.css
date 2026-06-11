@@ -466,12 +466,46 @@ select.field option {
   content: none;
 }
 
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--nav-surface);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid #1d2945;
+}
+
+.site-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(59, 130, 246, 0.65) 18%,
+    rgba(99, 102, 241, 0.4) 50%,
+    rgba(59, 130, 246, 0.65) 82%,
+    transparent 100%
+  );
+}
+
+.brand-spin {
+  animation: brand-loader-spin 14s linear infinite;
+}
+
+.brand-spin--fast {
+  animation-duration: 0.85s;
+}
+
 .brand-loader-ring {
   animation: brand-loader-spin 1.05s linear infinite;
 }
 
 .brand-loader-mark {
-  animation: brand-loader-pulse 1.6s ease-in-out infinite;
+  animation: brand-loader-spin 1.4s linear infinite;
   transform-origin: center;
 }
 
@@ -498,7 +532,8 @@ select.field option {
 
 @media (prefers-reduced-motion: reduce) {
   .brand-loader-ring,
-  .brand-loader-mark {
+  .brand-loader-mark,
+  .brand-spin {
     animation: none;
   }
 }

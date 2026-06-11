@@ -26,7 +26,7 @@ export function AppNav() {
             <LoadingLink
               key={item.href}
               href={item.href}
-              loadingMessage="Loading catcher intelligence..."
+              loadingMessage="Loading backstop.ai..."
               loadingSubtitle={`Opening ${item.label.toLowerCase()}.`}
               className={[
                 "rounded-md px-3 py-1.5 text-sm font-semibold transition",

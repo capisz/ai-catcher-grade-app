@@ -1,8 +1,8 @@
-# catcher-intel
+# backstop.ai
 
 ![CI](https://github.com/capisz/ai-catcher-grade-app/actions/workflows/ci.yml/badge.svg)
 
-`catcher-intel` is a public-data baseball decision product for catcher evaluation and live matchup support. It scores observed MLB pitch decisions from Statcast, compares them to realistic pitcher-specific alternatives, and layers in public catcher defense signals such as framing, blocking, pop time, and arm strength.
+**backstop.ai** (repo: `catcher-intel`) is a public-data baseball decision product for catcher evaluation and live matchup support. It scores observed MLB pitch decisions from Statcast, compares them to realistic pitcher-specific alternatives, and layers in public catcher defense signals such as framing, blocking, pop time, and arm strength.
 
 ## Screenshots
 

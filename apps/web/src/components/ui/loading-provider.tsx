@@ -25,7 +25,7 @@ type LoadingContextValue = {
   stopLoading: () => void;
 };
 
-const DEFAULT_MESSAGE = "Loading catcher intelligence...";
+const DEFAULT_MESSAGE = "Loading backstop.ai...";
 const DEFAULT_SUBTITLE = "Preparing the live scouting view.";
 
 const LoadingContext = createContext<LoadingContextValue | null>(null);

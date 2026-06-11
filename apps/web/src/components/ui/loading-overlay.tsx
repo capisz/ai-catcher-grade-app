@@ -10,7 +10,7 @@ type LoadingOverlayProps = {
 
 export function LoadingOverlay({
   open,
-  message = "Loading catcher intelligence...",
+  message = "Loading backstop.ai...",
   subtitle = "Preparing the live scouting view.",
 }: LoadingOverlayProps) {
   if (!open) {
