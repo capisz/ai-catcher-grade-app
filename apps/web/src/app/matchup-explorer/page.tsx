@@ -150,16 +150,16 @@ export default async function MatchupExplorerPage({
       }),
     }));
     return (
-      <div className="space-y-8">
-        <section className="card relative overflow-hidden rounded-xl px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
+      <div className="space-y-5">
+        <section className="card relative overflow-hidden rounded-xl p-5 sm:p-6">
           <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
           <div className="relative space-y-5">
             <div>
               <div className="label-kicker">Game Mode | Live</div>
-              <h1 className="mt-4 max-w-3xl font-serif text-2xl leading-tight text-ink sm:text-3xl">
+              <h1 className="mt-3 max-w-3xl font-serif text-2xl leading-tight text-ink">
                 Live pitch-by-pitch feed straight from today&apos;s MLB games.
               </h1>
-              <p className="mt-4 max-w-3xl text-sm leading-6 text-muted">
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
                 Pick a game to watch the pitch stream — count, pitch type, velocity, zone — plus both rosters' catchers. Refreshes automatically.
               </p>
             </div>
@@ -416,17 +416,17 @@ export default async function MatchupExplorerPage({
     });
 
   return (
-    <div className="space-y-8">
-      <section className="card relative overflow-hidden rounded-xl px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
+    <div className="space-y-5">
+      <section className="card relative overflow-hidden rounded-xl p-5 sm:p-6">
         <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
-        <div className="relative grid gap-6 xl:grid-cols-[1.02fr_0.98fr]">
-          <div className="space-y-6">
+        <div className="relative grid gap-5 xl:grid-cols-[1.02fr_0.98fr]">
+          <div className="space-y-4">
             <div>
               <div className="label-kicker">Game Mode</div>
-              <h1 className="mt-4 max-w-3xl font-serif text-2xl leading-tight text-ink sm:text-3xl">
+              <h1 className="mt-3 max-w-3xl font-serif text-2xl leading-tight text-ink">
                 Live-context recommendation support from real public baseball data.
               </h1>
-              <p className="mt-4 max-w-3xl text-sm leading-6 text-muted">
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
                 Pitcher-specific recommendation options for the current matchup context, built from observed expected run value.
               </p>
             </div>
@@ -775,7 +775,7 @@ export default async function MatchupExplorerPage({
                   className={[
                     "rounded-lg border p-4 transition",
                     active
-                      ? "border-accent/30 bg-surface-strong text-white shadow-[0_14px_24px_rgba(15,23,42,0.18)]"
+                      ? "border-accent/30 bg-surface-strong text-black shadow-[0_14px_24px_rgba(15,23,42,0.18)]"
                       : "surface-panel hover:-translate-y-0.5 hover:border-accent/24",
                   ].join(" ")}
                 >

@@ -30,7 +30,7 @@ export function AppNav() {
               className={[
                 "rounded-md px-3 py-1.5 text-sm font-semibold transition",
                 active
-                  ? "bg-surface-strong text-white"
+                  ? "bg-surface-strong text-black"
                   : "text-muted hover:text-ink",
               ].join(" ")}
             >

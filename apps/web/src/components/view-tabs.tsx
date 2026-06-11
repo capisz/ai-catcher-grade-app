@@ -31,7 +31,7 @@ export function ViewTabs({ items, active }: ViewTabsProps) {
               className={[
                 "rounded-md px-3 py-1.5 text-sm font-semibold transition",
                 isActive
-                  ? "bg-surface-strong text-white"
+                  ? "bg-surface-strong text-black"
                   : "text-muted hover:text-ink",
               ].join(" ")}
             >

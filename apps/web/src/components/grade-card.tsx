@@ -24,7 +24,7 @@ function pillTone(score: number | null | undefined) {
     return "meta-pill text-muted";
   }
   if (score >= 65) {
-    return "border-[1.5px] border-ink bg-surface-strong text-white";
+    return "border-[1.5px] border-ink bg-surface-strong text-black";
   }
   if (score >= 55) {
     return "border-[1.5px] border-ink bg-surface text-ink";

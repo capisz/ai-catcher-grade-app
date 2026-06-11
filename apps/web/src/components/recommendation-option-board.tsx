@@ -40,7 +40,7 @@ export function RecommendationOptionBoard({
           key={`${option.pitch_type}-${option.zone_bucket_25}-${index}`}
           className="surface-panel grid gap-4 rounded-xl p-4 lg:grid-cols-[4rem_1.25fr_0.95fr_0.95fr]"
         >
-          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-surface-strong text-sm font-semibold text-white">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-surface-strong text-sm font-semibold text-black">
             {index + 1}
           </div>
           <div>

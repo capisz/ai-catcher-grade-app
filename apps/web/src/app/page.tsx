@@ -566,17 +566,17 @@ export default async function HomePage({
   const sampleWarning = metadata.sparse_season || !detail.diagnostics.qualified_for_grades;
 
   return (
-    <div className="space-y-8">
-      <section className="card relative overflow-hidden rounded-xl px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
+    <div className="space-y-5">
+      <section className="card relative overflow-hidden rounded-xl p-5 sm:p-6">
         <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
-        <div className="relative grid gap-6 xl:grid-cols-[1.04fr_0.96fr]">
-          <div className="space-y-6">
+        <div className="relative grid gap-5 xl:grid-cols-[1.04fr_0.96fr]">
+          <div className="space-y-4">
             <div>
               <div className="label-kicker">Scouting Mode</div>
-              <h1 className="mt-4 max-w-3xl font-serif text-2xl leading-tight text-ink sm:text-3xl">
+              <h1 className="mt-3 max-w-3xl font-serif text-2xl leading-tight text-ink">
                 Season-long catcher evaluation for real scouting decisions.
               </h1>
-              <p className="mt-4 max-w-3xl text-sm leading-6 text-muted sm:text-[0.98rem]">
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted sm:text-[0.98rem]">
                 Who grades well, why, in which counts, with which pitchers — and with how much confidence.
               </p>
             </div>
@@ -757,7 +757,7 @@ export default async function HomePage({
             </div>
           </div>
 
-          <aside className="panel-dark overflow-hidden rounded-xl p-5 text-white sm:p-6">
+          <aside className="panel-dark flex flex-col overflow-hidden rounded-xl p-5 text-white">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-4">
                 {detail.identity.headshot_url ? (
@@ -828,7 +828,7 @@ export default async function HomePage({
               />
             </div>
 
-            <p className="mt-5 text-sm leading-6 text-white/74">
+            <p className="mt-auto pt-5 text-sm leading-6 text-white/74">
               {metadata.season_coverage_note}
             </p>
             <p className="mt-3 text-sm leading-6 text-white/74">
@@ -1147,7 +1147,7 @@ export default async function HomePage({
                     loadingSubtitle={`Opening ${entry.catcher_name}.`}
                     className="surface-panel grid gap-3 rounded-xl p-4 md:grid-cols-[3rem_1fr_auto]"
                   >
-                    <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-surface-strong text-sm font-semibold text-white">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-surface-strong text-sm font-semibold text-black">
                       {index + 1}
                     </div>
                     <div>

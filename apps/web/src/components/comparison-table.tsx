@@ -19,7 +19,7 @@ function leadTone(lead: ComparisonRow["lead"], side: "a" | "b") {
     return "bg-surface-elevated/72 text-ink";
   }
   if (lead === side) {
-    return "bg-brand-primary text-white";
+    return "bg-brand-primary text-black";
   }
   return "bg-surface-quiet text-muted";
 }

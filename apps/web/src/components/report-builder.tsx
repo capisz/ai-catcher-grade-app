@@ -279,7 +279,7 @@ export function ReportBuilder({
                                 className={[
                                   "rounded-xl border p-4 text-left transition",
                                   active
-                                    ? "border-accent/28 bg-surface-strong text-white shadow-[0_16px_26px_rgba(15,23,42,0.18)]"
+                                    ? "border-accent/28 bg-surface-strong text-black shadow-[0_16px_26px_rgba(15,23,42,0.18)]"
                                     : format.available
                                       ? "surface-panel hover:border-accent/24"
                                       : "border-line/40 bg-surface-soft/70 text-muted opacity-70",

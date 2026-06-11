@@ -27,7 +27,7 @@ export function PairingIntelTable({ rows }: PairingIntelTableProps) {
           key={row.pitcher_id}
           className="surface-panel grid min-h-[7.9rem] gap-3 rounded-lg p-4 md:grid-cols-[3rem_1.4fr_.8fr_.8fr_.8fr]"
         >
-          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-surface-strong text-sm font-semibold text-white">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-surface-strong text-sm font-semibold text-black">
             {index + 1}
           </div>
           <div>

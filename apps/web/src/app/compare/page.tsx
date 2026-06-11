@@ -634,17 +634,17 @@ export default async function ComparePage({
   ];
 
   return (
-    <div className="space-y-8">
-      <section className="card relative overflow-hidden rounded-xl px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
+    <div className="space-y-5">
+      <section className="card relative overflow-hidden rounded-xl p-5 sm:p-6">
         <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
-        <div className="relative grid gap-6 xl:grid-cols-[1.06fr_0.94fr]">
-          <div className="space-y-6">
+        <div className="relative grid gap-5 xl:grid-cols-[1.06fr_0.94fr]">
+          <div className="space-y-4">
             <div>
               <div className="label-kicker">Compare Mode</div>
-              <h1 className="mt-4 max-w-4xl font-serif text-2xl leading-tight text-ink sm:text-3xl">
+              <h1 className="mt-3 max-w-4xl font-serif text-2xl leading-tight text-ink">
                 Side-by-side catcher evaluation built for real scouting decisions.
               </h1>
-              <p className="mt-4 max-w-3xl text-sm leading-6 text-muted">
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
                 Two catchers under the same scored context: value, count-state performance, pitch mix, pairing fit, and sample stability.
               </p>
             </div>

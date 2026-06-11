@@ -12,7 +12,7 @@ export function SampleStabilityBadge({
   const value = label ?? "Low sample";
   const classes =
     value === "High stability"
-      ? "border-brand-primary/24 bg-brand-primary text-white"
+      ? "border-brand-primary/24 bg-brand-primary text-black"
       : value === "Stable"
         ? "border-brand-sage/30 bg-brand-sage/35 text-ink"
         : value === "Limited sample"

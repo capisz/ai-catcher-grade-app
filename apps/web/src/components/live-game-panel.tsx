@@ -89,7 +89,7 @@ function CatcherChip({ catcher }: { catcher: LiveCatcher }) {
           className="h-12 w-12 rounded-full border border-line/60 object-cover"
         />
       ) : (
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-strong text-sm font-semibold text-white">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-strong text-sm font-semibold text-black">
           {(catcher.name ?? "?")[0]}
         </div>
       )}

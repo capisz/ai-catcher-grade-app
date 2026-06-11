@@ -282,17 +282,17 @@ export default async function ResearchPage({
     : "";
 
   return (
-    <div className="space-y-8">
-      <section className="card relative overflow-hidden rounded-xl px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
+    <div className="space-y-5">
+      <section className="card relative overflow-hidden rounded-xl p-5 sm:p-6">
         <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
-        <div className="relative grid gap-6 xl:grid-cols-[1.04fr_0.96fr]">
-          <div className="space-y-6">
+        <div className="relative grid gap-5 xl:grid-cols-[1.04fr_0.96fr]">
+          <div className="space-y-4">
             <div>
               <div className="label-kicker">Research Mode</div>
-              <h1 className="mt-4 max-w-4xl font-serif text-2xl leading-tight text-ink sm:text-3xl">
+              <h1 className="mt-3 max-w-4xl font-serif text-2xl leading-tight text-ink">
                 Advanced filtering, comparison, and export for deeper catcher analysis.
               </h1>
-              <p className="mt-5 max-w-3xl text-sm leading-6 text-muted">
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
                 Slice the board, compare catchers, and export reports — filter state lives in the URL so every view is shareable.
               </p>
             </div>
@@ -604,7 +604,7 @@ export default async function ResearchPage({
                 ].join(" ")}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-strong text-sm font-semibold text-white">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-strong text-sm font-semibold text-black">
                     {index + 1}
                   </div>
                   <SampleStabilityBadge
@@ -660,7 +660,7 @@ export default async function ResearchPage({
                 loadingSubtitle={`Focusing research mode on ${entry.catcher_name}.`}
                 className="surface-panel grid gap-4 rounded-xl p-4 transition hover:-translate-y-0.5 hover:border-accent/24 md:grid-cols-[4rem_1.6fr_.95fr_.9fr_.9fr_1.1fr]"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-strong text-sm font-semibold text-white">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-strong text-sm font-semibold text-black">
                   {index + 1}
                 </div>
                 <div>
