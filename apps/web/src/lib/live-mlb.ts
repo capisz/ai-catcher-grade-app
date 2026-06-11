@@ -137,7 +137,7 @@ async function liveGameCatchers(gamePk: string) {
   return result;
 }
 
-async function liveGamePitches(gamePk: string, limit: number) {
+export async function liveGamePitches(gamePk: string, limit: number) {
   const payload = await fetchJson(`/v1.1/game/${gamePk}/feed/live`, {}, TTL_LIVE_MS);
   const allPlays = arr(rec(rec(rec(payload.liveData)).plays).allPlays);
 
@@ -291,7 +291,7 @@ function scoreSide(
   };
 }
 
-async function liveGameZoneReport(gamePk: string) {
+export async function liveGameZoneReport(gamePk: string) {
   const payload = await fetchJson(`/v1.1/game/${gamePk}/feed/live`, {}, TTL_LIVE_MS);
   const gameData = rec(payload.gameData);
   const season = String(rec(gameData.game).season ?? new Date().getFullYear());

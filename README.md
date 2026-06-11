@@ -14,6 +14,19 @@ The home page is a live dashboard that grades each catcher's pitch calls against
 
 ![Live game mode](docs/screenshots/live-game-mode.png)
 
+### AI analyst
+
+The live dashboard includes an optional AI analyst: one click streams a Claude-written read of
+the selected catcher's zone report (which batter hot zones are being avoided or fed, and what the
+recent sequence suggests). The analysis is strictly grounded in the zone-report JSON shown on the
+page — the prompt forbids invented stats — and responses are cached per pitch-count so live
+polling never re-bills.
+
+- Model: Claude Opus 4.8 via the official `@anthropic-ai/sdk`, streamed token-by-token from a
+  Next.js route handler (`/api/ai/live-analysis`).
+- Enable it by setting `ANTHROPIC_API_KEY` (local `.env` or Vercel project env var). Without the
+  key the feature is hidden entirely.
+
 ## Product modes
 
 - `Scouting mode`
@@ -36,6 +49,7 @@ The home page is a live dashboard that grades each catcher's pitch calls against
 ## Public data sources
 
 - `pybaseball.statcast()` for pitch-level Statcast rows
+- Anthropic Claude API (optional) for the live AI analyst commentary layer
 - Chadwick Register `data/people-*.csv` shards for stable player identity keyed by MLBAM
 - MLB Stats API for player metadata, active rosters, handedness, teams, and headshots
 - Baseball Savant public leaderboards for catcher framing, blocking, pop time, and arm strength

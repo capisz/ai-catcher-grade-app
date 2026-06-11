@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.104.1",
     "@catcher-intel/contracts": "workspace:*",
     "next": "16.1.6",
     "react": "19.2.3",

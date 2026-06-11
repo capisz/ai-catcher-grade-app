@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { AiAnalystCard } from "@/components/ai-analyst-card";
 import { LiveZoneGrid } from "@/components/live-zone-grid";
 
 const PITCH_POLL_MS = 20_000;
@@ -338,6 +339,15 @@ export function LiveDashboard() {
           <p className="mt-4 text-sm leading-6 text-muted">Building zone report...</p>
         )}
       </div>
+
+      {sideReport && selectedGamePk != null ? (
+        <AiAnalystCard
+          gamePk={selectedGamePk}
+          side={selectedSide}
+          catcherName={sideReport.catcher?.name ?? null}
+          pitchesLocated={sideReport.pitches_located}
+        />
+      ) : null}
 
       {sideReport ? (
         <div className="grid gap-5 xl:grid-cols-[1fr_0.9fr]">
