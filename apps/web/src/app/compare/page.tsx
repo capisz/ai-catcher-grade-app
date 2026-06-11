@@ -774,7 +774,7 @@ export default async function ComparePage({
                 <div className="flex items-end">
                   <LoadingLink
                     href={swapHref}
-                    className="button-secondary w-full px-4 py-3 text-sm"
+                    className="button-secondary w-full px-4 py-2.5 text-sm"
                     loadingMessage="Swapping catchers..."
                     loadingSubtitle="Reversing catcher A and catcher B."
                   >
@@ -785,7 +785,7 @@ export default async function ComparePage({
                   {compareLeaderHref ? (
                     <LoadingLink
                       href={compareLeaderHref}
-                      className="button-secondary w-full px-4 py-3 text-sm"
+                      className="button-secondary w-full px-4 py-2.5 text-sm"
                       loadingMessage="Loading leaderboard leader..."
                       loadingSubtitle={`Comparing against ${leaderboardLeader?.catcher_name}.`}
                     >

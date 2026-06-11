@@ -6,12 +6,12 @@ type CatcherSummaryInsightsProps = {
 
 function toneClasses(tone: CatcherSummaryInsight["tone"]) {
   if (tone === "positive") {
-    return "border-brand-secondary/24 bg-[linear-gradient(180deg,rgba(200,148,106,0.12),rgba(255,251,246,0.92))]";
+    return "border-[#a7f3d0] bg-[linear-gradient(180deg,#ecfdf5,#ffffff)]";
   }
   if (tone === "caution") {
-    return "border-accent-clay/20 bg-[linear-gradient(180deg,rgba(162,95,73,0.1),rgba(255,251,246,0.92))]";
+    return "border-[#fde68a] bg-[linear-gradient(180deg,#fffbeb,#ffffff)]";
   }
-  return "border-line/70 bg-[linear-gradient(180deg,rgba(68,83,95,0.05),rgba(255,251,246,0.94))]";
+  return "border-line bg-[linear-gradient(180deg,#f8fafc,#ffffff)]";
 }
 
 export function CatcherSummaryInsights({ insights }: CatcherSummaryInsightsProps) {

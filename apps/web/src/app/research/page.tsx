@@ -366,7 +366,7 @@ export default async function ResearchPage({
                   <option value="total_dva">Sort by total DVA</option>
                   <option value="avg_dva">Sort by avg DVA</option>
                 </select>
-                <button className="button-primary px-5 py-3 text-sm md:col-span-2 xl:col-span-3">
+                <button className="button-primary px-4 py-2.5 text-sm md:col-span-2 xl:col-span-3">
                   Refresh board
                 </button>
               </div>
@@ -509,7 +509,7 @@ export default async function ResearchPage({
                 <div className="mt-5 flex flex-wrap gap-3">
                   <LoadingLink
                     href={`/?catcher_id=${detail!.identity.catcher_id}&season=${metadata.selected_season}&team=${requestedTeam || ""}`}
-                    className="button-secondary px-4 py-3 text-sm"
+                    className="button-secondary px-4 py-2.5 text-sm"
                     loadingMessage="Opening scouting mode..."
                     loadingSubtitle={`Loading ${detail!.identity.catcher_name}.`}
                   >
@@ -580,7 +580,7 @@ export default async function ResearchPage({
                 catcher_a: orderedLeaderboard[0]?.catcher_id,
                 catcher_b: orderedLeaderboard[1]?.catcher_id,
               })}
-              className="button-secondary inline-flex px-4 py-3 text-sm"
+              className="button-secondary inline-flex px-4 py-2.5 text-sm"
               loadingMessage="Opening compare mode..."
               loadingSubtitle="Comparing the top two catchers from the filtered leaderboard."
             >

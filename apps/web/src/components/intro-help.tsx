@@ -77,7 +77,7 @@ export function IntroHelp() {
       <button
         type="button"
         aria-label="Open dashboard guide"
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-line/70 bg-surface-elevated/88 text-sm font-semibold text-ink shadow-[0_10px_20px_rgba(68,83,95,0.08)] transition hover:border-accent/30 hover:bg-surface-soft hover:text-accent-clay"
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-line/70 bg-surface-elevated/88 text-sm font-semibold text-ink shadow-[0_10px_20px_rgba(15,23,42,0.08)] transition hover:border-accent/30 hover:bg-surface-soft hover:text-accent-clay"
         onClick={() => setOpen(true)}
       >
         ?

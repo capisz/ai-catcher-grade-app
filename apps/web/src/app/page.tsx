@@ -333,7 +333,7 @@ export default async function HomePage({
                   season: metadata.selected_season,
                   min_pitches: minPitches,
                 })}
-                className="button-secondary inline-flex px-4 py-3 text-sm"
+                className="button-secondary inline-flex px-4 py-2.5 text-sm"
                 loadingMessage="Clearing team filter..."
                 loadingSubtitle="Loading all catchers for the selected season."
               >
@@ -662,7 +662,7 @@ export default async function HomePage({
                   />
                 </label>
                 <div className="flex items-end md:col-span-2 xl:col-span-4 2xl:col-span-1">
-                  <button className="button-primary w-full px-5 py-3 text-sm">
+                  <button className="button-primary w-full px-4 py-2.5 text-sm">
                     Refresh live board
                   </button>
                 </div>
@@ -670,7 +670,7 @@ export default async function HomePage({
               <div className="mt-3 flex flex-wrap items-center gap-3">
                 <LoadingLink
                   href={`/matchup-explorer?season=${metadata.selected_season}&catcher_id=${detail.identity.catcher_id}`}
-                  className="button-secondary px-4 py-3 text-sm"
+                  className="button-secondary px-4 py-2.5 text-sm"
                   loadingMessage="Opening game mode..."
                   loadingSubtitle="Loading live matchup decision support."
                 >
@@ -678,7 +678,7 @@ export default async function HomePage({
                 </LoadingLink>
                 <LoadingLink
                   href={`/research?season=${metadata.selected_season}&team=${requestedTeam || ""}&min_pitches=${minPitches}&catcher_id=${detail.identity.catcher_id}`}
-                  className="button-secondary px-4 py-3 text-sm"
+                  className="button-secondary px-4 py-2.5 text-sm"
                   loadingMessage="Opening research mode..."
                   loadingSubtitle="Loading export and comparison tools."
                 >
@@ -686,7 +686,7 @@ export default async function HomePage({
                 </LoadingLink>
                 <LoadingLink
                   href={`/compare?season=${metadata.selected_season}&team=${requestedTeam || ""}&min_pitches=${minPitches}&catcher_a=${detail.identity.catcher_id}`}
-                  className="button-secondary px-4 py-3 text-sm"
+                  className="button-secondary px-4 py-2.5 text-sm"
                   loadingMessage="Opening compare mode..."
                   loadingSubtitle="Choosing a second catcher for side-by-side evaluation."
                 >
@@ -932,7 +932,7 @@ export default async function HomePage({
               </p>
               <LoadingLink
                 href={`/research?season=${metadata.selected_season}&team=${requestedTeam || ""}&min_pitches=${minPitches}&catcher_id=${detail.identity.catcher_id}`}
-                className="button-secondary mt-4 inline-flex px-4 py-3 text-sm"
+                className="button-secondary mt-4 inline-flex px-4 py-2.5 text-sm"
                 loadingMessage="Opening research mode..."
                 loadingSubtitle="Preparing comparison and export tools."
               >
@@ -1122,7 +1122,7 @@ export default async function HomePage({
               {bestPairing ? (
                 <LoadingLink
                   href={`/matchup-explorer?season=${metadata.selected_season}&catcher_id=${detail.identity.catcher_id}&pitcher_id=${bestPairing.pitcher_id}`}
-                  className="button-secondary mt-4 inline-flex px-4 py-3 text-sm"
+                  className="button-secondary mt-4 inline-flex px-4 py-2.5 text-sm"
                   loadingMessage="Opening game mode..."
                   loadingSubtitle={`Loading pairing context for ${bestPairing.pitcher_name}.`}
                 >

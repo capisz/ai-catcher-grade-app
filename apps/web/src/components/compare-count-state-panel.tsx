@@ -74,7 +74,7 @@ export function CompareCountStatePanel({
             className={[
               "rounded-full border px-4 py-2 text-[0.66rem] font-semibold uppercase tracking-[0.06em] transition",
               mode === option.key
-                ? "border-accent/28 bg-surface-strong text-white shadow-[0_12px_20px_rgba(68,83,95,0.16)]"
+                ? "border-accent/28 bg-surface-strong text-white shadow-[0_12px_20px_rgba(15,23,42,0.16)]"
                 : "border-line/60 bg-surface-elevated/72 text-muted hover:border-accent/24 hover:text-ink",
             ].join(" ")}
           >

@@ -68,7 +68,7 @@ export function RecommendationRvChart({ options }: RecommendationRvChartProps) {
               borderRadius: "18px",
               border: "1px solid var(--line)",
               background: "var(--chart-tooltip-bg)",
-              boxShadow: "0 18px 40px rgba(68,83,95,0.12)",
+              boxShadow: "0 18px 40px rgba(15,23,42,0.12)",
             }}
           />
           <Bar dataKey="expected_rv" radius={[0, 12, 12, 0]} barSize={22}>

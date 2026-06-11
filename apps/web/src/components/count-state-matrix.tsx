@@ -41,7 +41,7 @@ function cellClasses(row: CountSummary, selected: boolean) {
   return [
     base,
     row.low_sample ? "border-dashed opacity-80 saturate-[0.82]" : "",
-    selected ? "ring-2 ring-accent/35 shadow-[0_18px_32px_rgba(68,83,95,0.12)]" : "",
+    selected ? "ring-2 ring-accent/35 shadow-[0_18px_32px_rgba(15,23,42,0.12)]" : "",
   ].join(" ");
 }
 

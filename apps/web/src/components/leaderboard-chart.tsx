@@ -43,7 +43,7 @@ export function LeaderboardChart({ entries }: { entries: LeaderboardEntry[] }) {
           />
           <ReferenceLine x={0} stroke="var(--chart-reference)" />
           <Tooltip
-            cursor={{ fill: "rgba(68,83,95,0.05)" }}
+            cursor={{ fill: "rgba(15,23,42,0.05)" }}
             formatter={(value: number, name: string) => [
               name === "total_dva" ? value.toFixed(3) : value.toString(),
               name === "total_dva" ? "Total DVA" : name,
@@ -52,7 +52,7 @@ export function LeaderboardChart({ entries }: { entries: LeaderboardEntry[] }) {
               borderRadius: "18px",
               border: "1px solid var(--line)",
               background: "var(--chart-tooltip-bg)",
-              boxShadow: "0 18px 40px rgba(68,83,95,0.12)",
+              boxShadow: "0 18px 40px rgba(15,23,42,0.12)",
             }}
           />
           <Bar dataKey="total_dva" radius={[0, 12, 12, 0]} barSize={22}>

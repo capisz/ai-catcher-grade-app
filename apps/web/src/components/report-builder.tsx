@@ -156,7 +156,7 @@ export function ReportBuilder({
     <>
       <button
         type="button"
-        className="button-secondary px-4 py-3 text-sm"
+        className="button-secondary px-4 py-2.5 text-sm"
         disabled={disabled}
         onClick={() => {
           setSelectedSeason(season);
@@ -279,7 +279,7 @@ export function ReportBuilder({
                                 className={[
                                   "rounded-xl border p-4 text-left transition",
                                   active
-                                    ? "border-accent/28 bg-surface-strong text-white shadow-[0_16px_26px_rgba(68,83,95,0.18)]"
+                                    ? "border-accent/28 bg-surface-strong text-white shadow-[0_16px_26px_rgba(15,23,42,0.18)]"
                                     : format.available
                                       ? "surface-panel hover:border-accent/24"
                                       : "border-line/40 bg-surface-soft/70 text-muted opacity-70",
@@ -374,7 +374,7 @@ export function ReportBuilder({
                     </div>
                     <button
                       type="button"
-                      className="button-primary px-5 py-3 text-sm"
+                      className="button-primary px-4 py-2.5 text-sm"
                       disabled={loadingOptions || submitting || !options || selectedSections.length === 0}
                       onClick={handleDownload}
                     >

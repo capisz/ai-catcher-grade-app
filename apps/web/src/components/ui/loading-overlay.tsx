@@ -25,7 +25,7 @@ export function LoadingOverlay({
       aria-busy="true"
     >
       <div className="loading-overlay__backdrop absolute inset-0" />
-      <div className="loading-overlay__panel card relative w-full max-w-md overflow-hidden rounded-xl px-7 py-8 text-center shadow-[0_28px_80px_rgba(68,83,95,0.18)]">
+      <div className="loading-overlay__panel card relative w-full max-w-md overflow-hidden rounded-xl px-7 py-8 text-center shadow-[0_28px_80px_rgba(15,23,42,0.18)]">
         <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-28 opacity-90" />
         <div className="relative flex flex-col items-center">
           <div className="loading-emblem relative flex h-28 w-28 items-center justify-center">

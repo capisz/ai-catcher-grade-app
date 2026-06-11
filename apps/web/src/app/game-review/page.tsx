@@ -21,10 +21,10 @@ export default function GameReviewPage() {
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/" className="button-primary px-5 py-3 text-sm">
+              <Link href="/" className="button-primary px-4 py-2.5 text-sm">
                 Open catcher dashboard
               </Link>
-              <Link href="/matchup-explorer" className="button-secondary px-5 py-3 text-sm">
+              <Link href="/matchup-explorer" className="button-secondary px-4 py-2.5 text-sm">
                 Open matchup explorer
               </Link>
             </div>

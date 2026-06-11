@@ -509,7 +509,7 @@ export default async function MatchupExplorerPage({
                   </select>
                 </label>
                 <div className="flex items-end md:col-span-2 xl:col-span-3 2xl:col-span-1">
-                  <button className="button-secondary w-full px-4 py-3 text-sm">
+                  <button className="button-secondary w-full px-4 py-2.5 text-sm">
                     Refresh context
                   </button>
                 </div>
@@ -625,10 +625,10 @@ export default async function MatchupExplorerPage({
               </div>
 
               <div className="mt-3 flex flex-wrap items-center gap-3">
-                <button className="button-primary px-5 py-3 text-sm">Run recommendation</button>
+                <button className="button-primary px-4 py-2.5 text-sm">Run recommendation</button>
                 <LoadingLink
                   href={`/?catcher_id=${selectedCatcherId}&season=${selectedSeason}&team=${requestedTeam || ""}`}
-                  className="button-secondary px-4 py-3 text-sm"
+                  className="button-secondary px-4 py-2.5 text-sm"
                   loadingMessage="Opening scouting mode..."
                   loadingSubtitle={`Loading ${catcherDetail.identity.catcher_name}.`}
                 >
@@ -636,7 +636,7 @@ export default async function MatchupExplorerPage({
                 </LoadingLink>
                 <LoadingLink
                   href={`/research?season=${selectedSeason}&team=${requestedTeam || ""}&catcher_id=${selectedCatcherId}`}
-                  className="button-secondary px-4 py-3 text-sm"
+                  className="button-secondary px-4 py-2.5 text-sm"
                   loadingMessage="Opening research mode..."
                   loadingSubtitle="Loading export and comparison tools."
                 >
@@ -775,7 +775,7 @@ export default async function MatchupExplorerPage({
                   className={[
                     "rounded-lg border p-4 transition",
                     active
-                      ? "border-accent/30 bg-surface-strong text-white shadow-[0_14px_24px_rgba(68,83,95,0.18)]"
+                      ? "border-accent/30 bg-surface-strong text-white shadow-[0_14px_24px_rgba(15,23,42,0.18)]"
                       : "surface-panel hover:-translate-y-0.5 hover:border-accent/24",
                   ].join(" ")}
                 >

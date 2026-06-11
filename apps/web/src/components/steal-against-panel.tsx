@@ -56,9 +56,9 @@ function cellClasses(row: StealAgainstCountSummary) {
             : "surface-panel";
   const volume =
     row.attempt_share != null && row.attempt_share >= 0.2
-      ? "shadow-[0_18px_34px_rgba(68,83,95,0.12)]"
+      ? "shadow-[0_18px_34px_rgba(15,23,42,0.12)]"
       : row.attempt_share != null && row.attempt_share >= 0.1
-        ? "shadow-[0_12px_24px_rgba(68,83,95,0.08)]"
+        ? "shadow-[0_12px_24px_rgba(15,23,42,0.08)]"
         : "";
 
   return [
