@@ -59,7 +59,7 @@ def load_scored_pitch_frame(database_url: str, season: int) -> pd.DataFrame:
             COALESCE(
                 pitcher_identity.full_name,
                 pitcher_meta.full_name,
-                'Pitcher ' || COALESCE(scores.pitcher_id, scores.pitcher, raw.pitcher)::text
+                'Pitcher ' || CAST(COALESCE(scores.pitcher_id, scores.pitcher, raw.pitcher) AS TEXT)
             ) AS pitcher_name,
             COALESCE(scores.batter_id, scores.batter, raw.batter) AS batter_id,
             COALESCE(scores.game_year, raw.game_year) AS season,

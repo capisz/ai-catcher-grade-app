@@ -1,6 +1,18 @@
 # catcher-intel
 
+![CI](https://github.com/capisz/ai-catcher-grade-app/actions/workflows/ci.yml/badge.svg)
+
 `catcher-intel` is a public-data baseball decision product for catcher evaluation and live matchup support. It scores observed MLB pitch decisions from Statcast, compares them to realistic pitcher-specific alternatives, and layers in public catcher defense signals such as framing, blocking, pop time, and arm strength.
+
+## Screenshots
+
+| Scouting mode | Game mode | Compare mode |
+| --- | --- | --- |
+| ![Scouting dashboard](docs/screenshots/scouting-dashboard.png) | ![Game mode](docs/screenshots/game-mode.png) | ![Compare mode](docs/screenshots/compare-mode.png) |
+
+Game mode also has a Live tab that streams pitch-by-pitch data for today's MLB games from the public MLB Stats API:
+
+![Live game mode](docs/screenshots/live-game-mode.png)
 
 ## Product modes
 
@@ -335,6 +347,19 @@ The frontend no longer silently falls back to shared demo values. If the API or 
 - `GET /catchers/{catcher_id}/pitch-types`
   - query params: `season`
 
+Live MLB Stats API layer (no key required, in-memory TTL cache):
+
+- `GET /live/schedule`
+  - query params: `date` (YYYY-MM-DD, defaults to today)
+- `GET /live/games/{game_pk}/catchers`
+  - catchers on both boxscore rosters with headshot URLs
+- `GET /live/games/{game_pk}/pitches`
+  - pitch-by-pitch event stream, most recent first; query params: `limit`
+- `GET /live/players/{player_id}/gamelog`
+  - query params: `season`, `stat_group` (`fielding|hitting|catching`)
+- `GET /live/cache-status`
+  - cache diagnostics
+
 Example:
 
 ```bash
@@ -364,6 +389,14 @@ pnpm rebuild:summaries -- --db-url postgresql://postgres:postgres@localhost:5433
 pnpm validate:dashboard -- --db-url postgresql://postgres:postgres@localhost:5433/catcher_intel --season 2025
 pnpm dev:api
 pnpm dev:web
+```
+
+Regenerate the production demo snapshot (served with a "Demo data" badge when the
+backend is unreachable in production) against a running, scored API:
+
+```bash
+cd apps/web
+SNAPSHOT_API_URL=http://127.0.0.1:8000 node scripts/generate-demo-snapshot.mjs
 ```
 
 ## Public-data limitations

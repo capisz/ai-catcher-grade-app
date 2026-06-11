@@ -29,6 +29,18 @@ async function proxy(request: NextRequest, path: string[]) {
 
   try {
     const backend = getBackendApiConfig();
+    if (backend.usingDefault && process.env.NODE_ENV === "production") {
+      // Never fall back to localhost outside development; the deployment must
+      // set API_BASE_URL / INTERNAL_API_URL / NEXT_PUBLIC_API_URL explicitly.
+      return NextResponse.json(
+        {
+          error: "backend_not_configured",
+          detail:
+            "No backend API URL is configured. Set API_BASE_URL (or INTERNAL_API_URL / NEXT_PUBLIC_API_URL) for this deployment.",
+        },
+        { status: 503 },
+      );
+    }
     backendBaseUrl = backend.baseUrl;
     configuredFrom = formatBackendConfigSource(backend);
     usingDefault = backend.usingDefault;

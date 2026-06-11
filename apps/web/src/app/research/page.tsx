@@ -1,6 +1,7 @@
 import type { CatcherDetailResponse, LeaderboardResponse } from "@catcher-intel/contracts";
 
 import { ApiDebugPanel } from "@/components/api-debug-panel";
+import { DemoDataBadge } from "@/components/demo-data-badge";
 import { DataFreshnessPanel } from "@/components/data-freshness-panel";
 import { EmptyStatePanel } from "@/components/empty-state-panel";
 import { LeaderboardChart } from "@/components/leaderboard-chart";
@@ -20,6 +21,7 @@ import {
   getCatcherDetail,
   getCatchers,
   getLeaderboard,
+  describeBackendTarget,
 } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
@@ -145,7 +147,7 @@ export default async function ResearchPage({
         eyebrow="Research Offline"
         title="Research mode cannot load app metadata"
         description={errorMessage(error)}
-        detail={`Targeted backend: ${apiTransport.backendBaseUrl} (${apiTransport.configuredFrom}). Start the API there or update API_BASE_URL / NEXT_PUBLIC_API_URL before retrying.`}
+        detail={describeBackendTarget(apiTransport, "Start the API there or update API_BASE_URL / NEXT_PUBLIC_API_URL before retrying.")}
         tone="caution"
       />
     );
@@ -166,7 +168,7 @@ export default async function ResearchPage({
         eyebrow="Research Offline"
         title="The filtered leaderboard could not be loaded"
         description={errorMessage(error)}
-        detail={`Targeted backend: ${apiTransport.backendBaseUrl} (${apiTransport.configuredFrom}). Restart the API there or update API_BASE_URL before retrying.`}
+        detail={describeBackendTarget(apiTransport, "Restart the API there or update API_BASE_URL before retrying.")}
         tone="caution"
         action={
           <ApiDebugPanel
@@ -689,6 +691,7 @@ export default async function ResearchPage({
       </SectionCard>
 
       <ApiDebugPanel transport={apiTransport} items={debugItems} />
+      <DemoDataBadge />
     </div>
   );
 }

@@ -23,12 +23,14 @@ import {
   type RecommendationResponse,
 } from "@catcher-intel/contracts";
 import {
+  describeBackendTarget,
   formatApiTransportLabel,
   getApiTransportInfo,
   getBackendApiConfig,
   resolveProxyApiBaseUrl,
   trimTrailingSlash,
 } from "@/lib/api-transport";
+import { getDemoResponse, markDemoDataServed } from "@/lib/demo-snapshot";
 
 const healthSchema = {
   parse(value: unknown) {
@@ -99,6 +101,10 @@ function buildErrorDetail(status: number, payload: unknown, fallbackUrl: string)
     parts.push(`Request failed: ${status}`);
   }
 
+  if (process.env.NODE_ENV !== "development") {
+    return parts.join(" ");
+  }
+
   if (isRecord(payload)) {
     if (typeof payload.backendBaseUrl === "string") {
       parts.push(`Backend base URL: ${payload.backendBaseUrl}`);
@@ -122,6 +128,28 @@ function buildErrorDetail(status: number, payload: unknown, fallbackUrl: string)
   return parts.join(" ");
 }
 
+/**
+ * In production, a backend outage (network error) or an unconfigured backend
+ * (proxy 503) falls back to the build-time demo snapshot so visitors see a
+ * working dashboard with a "Demo data" badge instead of an error page.
+ */
+function demoFallback<T>(path: string, schema: { parse: (value: unknown) => T }): T | undefined {
+  if (process.env.NODE_ENV !== "production") {
+    return undefined;
+  }
+  const payload = getDemoResponse(path);
+  if (payload === undefined) {
+    return undefined;
+  }
+  try {
+    const parsed = schema.parse(payload);
+    markDemoDataServed();
+    return parsed;
+  } catch {
+    return undefined;
+  }
+}
+
 async function fetchJson<T>(path: string, schema: { parse: (value: unknown) => T }): Promise<T> {
   const apiBaseUrl = trimTrailingSlash(await resolveApiBaseUrl());
   const url = `${apiBaseUrl}${path}`;
@@ -131,6 +159,10 @@ async function fetchJson<T>(path: string, schema: { parse: (value: unknown) => T
       cache: "no-store",
     });
   } catch (error) {
+    const demo = demoFallback(path, schema);
+    if (demo !== undefined) {
+      return demo;
+    }
     throw new ApiRequestError(
       error instanceof Error ? `Network error calling ${url}: ${error.message}` : `Network error calling ${url}`,
       path,
@@ -140,6 +172,12 @@ async function fetchJson<T>(path: string, schema: { parse: (value: unknown) => T
   }
 
   if (!response.ok) {
+    if (response.status === 503) {
+      const demo = demoFallback(path, schema);
+      if (demo !== undefined) {
+        return demo;
+      }
+    }
     const payload = await readErrorPayload(response);
     throw new ApiRequestError(buildErrorDetail(response.status, payload, url), path, response.status, url);
   }
@@ -490,5 +528,5 @@ export async function downloadCatcherReport(
   };
 }
 
-export { formatApiTransportLabel };
+export { describeBackendTarget, formatApiTransportLabel };
 export type { ApiTransportInfo } from "@/lib/api-transport";

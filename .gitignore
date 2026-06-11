@@ -10,3 +10,5 @@ artifacts
 data
 .env
 
+.ipynb_checkpoints/
+*.egg-info/

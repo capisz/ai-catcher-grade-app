@@ -7,6 +7,7 @@ import type {
 import Image from "next/image";
 
 import { ApiDebugPanel } from "@/components/api-debug-panel";
+import { DemoDataBadge } from "@/components/demo-data-badge";
 import { CompareCountStatePanel } from "@/components/compare-count-state-panel";
 import { ComparisonTable } from "@/components/comparison-table";
 import { DataFreshnessPanel } from "@/components/data-freshness-panel";
@@ -26,6 +27,7 @@ import {
   getCatcherComparison,
   getCatchers,
   getLeaderboard,
+  describeBackendTarget,
 } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
@@ -230,7 +232,7 @@ export default async function ComparePage({
         eyebrow="Compare Offline"
         title="Comparison mode cannot load app metadata"
         description={errorMessage(error)}
-        detail={`Targeted backend: ${apiTransport.backendBaseUrl} (${apiTransport.configuredFrom}). Start the API there or update API_BASE_URL before retrying.`}
+        detail={describeBackendTarget(apiTransport, "Start the API there or update API_BASE_URL before retrying.")}
         tone="caution"
       />
     );
@@ -248,7 +250,7 @@ export default async function ComparePage({
         eyebrow="Compare Offline"
         title="Comparison mode cannot load catcher options"
         description={errorMessage(error)}
-        detail={`Targeted backend: ${apiTransport.backendBaseUrl} (${apiTransport.configuredFrom}). Start the API there or update API_BASE_URL before retrying.`}
+        detail={describeBackendTarget(apiTransport, "Start the API there or update API_BASE_URL before retrying.")}
         tone="caution"
       />
     );
@@ -318,7 +320,7 @@ export default async function ComparePage({
         eyebrow="Compare Unavailable"
         title="The catcher comparison payload could not be loaded"
         description={errorMessage(error)}
-        detail={`Targeted backend: ${apiTransport.backendBaseUrl} (${apiTransport.configuredFrom}). Comparison mode requires real scored rows for both catchers under the same filter context.`}
+        detail={describeBackendTarget(apiTransport, "Comparison mode requires real scored rows for both catchers under the same filter context.")}
         tone="caution"
         action={
           <ApiDebugPanel
@@ -1029,6 +1031,7 @@ export default async function ComparePage({
       </SectionCard>
 
       <ApiDebugPanel transport={apiTransport} items={debugItems} />
+      <DemoDataBadge />
     </div>
   );
 }

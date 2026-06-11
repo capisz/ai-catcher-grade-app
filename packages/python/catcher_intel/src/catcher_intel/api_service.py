@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from datetime import datetime, timezone
 from datetime import date
 from functools import lru_cache
@@ -40,10 +41,12 @@ from catcher_intel.api_models import (
     ReportSectionOption,
     RecommendationOption,
     RecommendationResponse,
+    StealAgainstCountSummary,
+    StealAgainstSummary,
     TeamFilterOption,
 )
 from catcher_intel.config import get_settings
-from catcher_intel.db import read_dataframe
+from catcher_intel.db import get_engine, read_dataframe
 from catcher_intel.feature_engineering import (
     count_bucket_from_values,
     pitch_type_group,
@@ -78,6 +81,18 @@ COUNT_SPLIT_STABLE_MIN = 60
 COUNT_STATE_INSIGHT_MIN_PITCHES = 18
 PITCH_TYPE_INSIGHT_MIN_PITCHES = 25
 PAIRING_INSIGHT_MIN_PITCHES = 45
+STEAL_SPLIT_LOW_SAMPLE_MAX = 2
+STEAL_SPLIT_STABLE_MIN = 6
+STEAL_DESCRIPTION_PATTERN = re.compile(r"steals|caught stealing", re.IGNORECASE)
+STEAL_SUCCESS_PATTERN = re.compile(
+    r"\bsteals(?:\s+\(\d+\))?\s+(?:2nd|3rd|home)\s+base\b",
+    re.IGNORECASE,
+)
+CAUGHT_STEALING_PATTERN = re.compile(
+    r"\bcaught stealing\s+(?:2nd|3rd|home)(?:\s+base)?\b",
+    re.IGNORECASE,
+)
+COUNT_STATES = [f"{balls}-{strikes}" for balls in range(4) for strikes in range(3)]
 
 
 @lru_cache(maxsize=2)
@@ -100,16 +115,16 @@ class IntelService:
             """
             SELECT
                 summary.catcher_id,
-                COALESCE(identity.full_name, meta.full_name, 'Catcher ' || summary.catcher_id::text) AS catcher_name,
+                COALESCE(identity.full_name, meta.full_name, 'Catcher ' || CAST(summary.catcher_id AS TEXT)) AS catcher_name,
                 COALESCE(meta.team_abbr, metrics.team_abbr, metrics.team_name) AS team,
                 summary.season,
                 COALESCE(
                     meta.dropdown_label,
-                    COALESCE(identity.full_name, meta.full_name, 'Catcher ' || summary.catcher_id::text)
+                    COALESCE(identity.full_name, meta.full_name, 'Catcher ' || CAST(summary.catcher_id AS TEXT))
                         || ' | '
                         || COALESCE(meta.team_abbr, metrics.team_abbr, metrics.team_name, 'FA')
                         || ' | '
-                        || summary.season::text
+                        || CAST(summary.season AS TEXT)
                 ) AS dropdown_label,
                 meta.headshot_url,
                 meta.bats,
@@ -245,7 +260,7 @@ class IntelService:
             )
             SELECT
                 filtered.catcher_id,
-                COALESCE(identity.full_name, meta.full_name, 'Catcher ' || filtered.catcher_id::text) AS catcher_name,
+                COALESCE(identity.full_name, meta.full_name, 'Catcher ' || CAST(filtered.catcher_id AS TEXT)) AS catcher_name,
                 COALESCE(meta.team_abbr, metrics.team_abbr, metrics.team_name) AS team,
                 :season AS season,
                 meta.headshot_url,
@@ -370,7 +385,7 @@ class IntelService:
                 summary.dropped_sparse_context_pct,
                 summary.fallback_context_pct,
                 summary.model_version,
-                COALESCE(identity.full_name, meta.full_name, 'Catcher ' || summary.catcher_id::text) AS catcher_name,
+                COALESCE(identity.full_name, meta.full_name, 'Catcher ' || CAST(summary.catcher_id AS TEXT)) AS catcher_name,
                 COALESCE(meta.team_abbr, metrics.team_abbr, metrics.team_name) AS team,
                 meta.headshot_url,
                 meta.bats,
@@ -399,6 +414,9 @@ class IntelService:
                 metrics.blocking_runs,
                 metrics.blocks_above_average,
                 metrics.pop_time_2b,
+                metrics.pop_time_2b_cs,
+                metrics.pop_time_2b_sb,
+                metrics.pop_2b_attempts,
                 metrics.arm_overall,
                 metrics.max_arm_strength,
                 metrics.source_note
@@ -438,6 +456,7 @@ class IntelService:
         pitch_type_summaries = self._get_pitch_type_summaries(catcher_id, resolved_season)
         pairings = self._get_pairings(catcher_id, resolved_season)
         matchup_summaries = self._get_matchup_summaries(catcher_id, resolved_season)
+        steal_against_summary = self._get_steal_against_summary(catcher_id, resolved_season)
         grades = self._build_grades(summary_row, formula_notes=formula_notes)
         diagnostics = CatcherDiagnostics(
             games_scored=self._optional_int(summary_row.get("games_scored")) or 0,
@@ -486,6 +505,7 @@ class IntelService:
             diagnostics=diagnostics,
             grade_formula_notes=formula_notes,
             summary_insights=summary_insights,
+            steal_against_summary=steal_against_summary,
             count_state_summaries=count_state_summaries,
             count_bucket_summaries=count_bucket_summaries,
             pitch_type_summaries=pitch_type_summaries,
@@ -1361,7 +1381,7 @@ class IntelService:
                 COALESCE(
                     pitcher_identity.full_name,
                     pitcher_meta.full_name,
-                    'Pitcher ' || COALESCE(scores.pitcher_id, scores.pitcher, raw.pitcher)::text
+                    'Pitcher ' || CAST(COALESCE(scores.pitcher_id, scores.pitcher, raw.pitcher) AS TEXT)
                 ) AS pitcher_name,
                 COALESCE(scores.batter_id, scores.batter, raw.batter) AS batter_id,
                 COALESCE(scores.game_year, raw.game_year) AS season,
@@ -1471,7 +1491,7 @@ class IntelService:
             SELECT
                 summary.catcher_id,
                 summary.season,
-                COALESCE(identity.full_name, meta.full_name, 'Catcher ' || summary.catcher_id::text) AS catcher_name,
+                COALESCE(identity.full_name, meta.full_name, 'Catcher ' || CAST(summary.catcher_id AS TEXT)) AS catcher_name,
                 COALESCE(meta.team_abbr, metrics.team_abbr, metrics.team_name) AS team,
                 meta.headshot_url,
                 meta.bats,
@@ -1487,6 +1507,9 @@ class IntelService:
                 metrics.blocking_runs,
                 metrics.blocks_above_average,
                 metrics.pop_time_2b,
+                metrics.pop_time_2b_cs,
+                metrics.pop_time_2b_sb,
+                metrics.pop_2b_attempts,
                 metrics.arm_overall,
                 metrics.max_arm_strength,
                 metrics.source_note
@@ -1705,7 +1728,7 @@ class IntelService:
             """
             SELECT
                 pairings.pitcher_id,
-                COALESCE(identity.full_name, meta.full_name, 'Pitcher ' || pairings.pitcher_id::text) AS pitcher_name,
+                COALESCE(identity.full_name, meta.full_name, 'Pitcher ' || CAST(pairings.pitcher_id AS TEXT)) AS pitcher_name,
                 pairings.pitches,
                 pairings.total_dva,
                 pairings.avg_dva,
@@ -1794,6 +1817,9 @@ class IntelService:
             blocking_runs=self._optional_float(row.get("blocking_runs")),
             blocks_above_average=self._optional_float(row.get("blocks_above_average")),
             pop_time_2b=self._optional_float(row.get("pop_time_2b")),
+            pop_time_2b_cs=self._optional_float(row.get("pop_time_2b_cs")),
+            pop_time_2b_sb=self._optional_float(row.get("pop_time_2b_sb")),
+            pop_2b_attempts=self._optional_int(row.get("pop_2b_attempts")),
             arm_overall=self._optional_float(row.get("arm_overall")),
             max_arm_strength=self._optional_float(row.get("max_arm_strength")),
             source_note=self._optional_str(row.get("source_note")),
@@ -1843,6 +1869,262 @@ class IntelService:
         if row.hitter_friendly_flag:
             return "hitter-friendly count"
         return "neutral count"
+
+    def _steal_split_sample_quality(self, attempts: int) -> dict[str, object]:
+        if attempts >= STEAL_SPLIT_STABLE_MIN:
+            return {"label": "Stable running-game split", "low_sample": False}
+        if attempts > STEAL_SPLIT_LOW_SAMPLE_MAX:
+            return {"label": "Moderate running-game split", "low_sample": False}
+        if attempts > 0:
+            return {"label": "Low running-game sample", "low_sample": True}
+        return {"label": "No attempts", "low_sample": True}
+
+    def _count_state_flags(self, count_state: str) -> dict[str, bool]:
+        return {
+            "hitter_friendly_flag": count_state in {"2-0", "2-1", "3-0", "3-1", "3-2"},
+            "pitcher_friendly_flag": count_state in {"0-1", "0-2", "1-2", "2-2"},
+            "putaway_flag": count_state in {"0-2", "1-2", "2-2"},
+        }
+
+    def _pitch_descriptions_available(self) -> bool:
+        from sqlalchemy import inspect
+
+        engine = get_engine(self.settings.database_url)
+        columns = inspect(engine).get_columns("pitches_raw")
+        return any(column["name"] == "des" for column in columns)
+
+    def _get_public_running_game_metrics(self, catcher_id: int, season: int) -> dict[str, object]:
+        frame = read_dataframe(
+            """
+            SELECT
+                pop_time_2b,
+                pop_time_2b_cs,
+                pop_time_2b_sb,
+                pop_2b_attempts
+            FROM catcher_public_metrics
+            WHERE catcher_id = :catcher_id
+              AND season = :season
+            """,
+            self.settings.database_url,
+            params={"catcher_id": catcher_id, "season": season},
+        )
+        if frame.empty:
+            return {}
+        row = frame.iloc[0]
+        return {
+            "pop_time_2b": self._optional_float(row.get("pop_time_2b")),
+            "pop_time_2b_cs": self._optional_float(row.get("pop_time_2b_cs")),
+            "pop_time_2b_sb": self._optional_float(row.get("pop_time_2b_sb")),
+            "pop_2b_attempts": self._optional_int(row.get("pop_2b_attempts")),
+        }
+
+    def _get_steal_against_summary(self, catcher_id: int, season: int) -> StealAgainstSummary:
+        public_metrics = self._get_public_running_game_metrics(catcher_id, season)
+
+        if not self._pitch_descriptions_available():
+            return StealAgainstSummary(
+                available=False,
+                note=(
+                    "Count-level steal-against analysis is unavailable until Statcast long "
+                    "descriptions are backfilled into pitches_raw.des for this environment."
+                ),
+                **public_metrics,
+            )
+
+        coverage_frame = read_dataframe(
+            """
+            SELECT
+                COUNT(*) AS total_pitches,
+                COUNT(des) AS described_pitches
+            FROM pitches_raw
+            WHERE game_year = :season
+            """,
+            self.settings.database_url,
+            params={"season": season},
+        )
+        coverage_row = coverage_frame.iloc[0] if not coverage_frame.empty else pd.Series(dtype=object)
+        total_pitches = self._optional_int(coverage_row.get("total_pitches")) or 0
+        described_pitches = self._optional_int(coverage_row.get("described_pitches")) or 0
+        coverage_pct = described_pitches / total_pitches if total_pitches else None
+
+        if described_pitches == 0:
+            return StealAgainstSummary(
+                available=False,
+                note=(
+                    "This season has no long Statcast pitch descriptions stored yet, so exact-count "
+                    "steal outcomes cannot be derived honestly. Re-run Statcast ingestion for the season "
+                    "after adding pitches_raw.des."
+                ),
+                description_pitch_coverage=coverage_pct,
+                **public_metrics,
+            )
+
+        steal_rows = read_dataframe(
+            """
+            SELECT
+                catcher_id,
+                (CAST(balls AS TEXT) || '-' || CAST(strikes AS TEXT)) AS count_state,
+                des
+            FROM pitches_raw
+            WHERE game_year = :season
+              AND catcher_id IS NOT NULL
+              AND des IS NOT NULL
+              AND des ~* '(steals|caught stealing)'
+            """,
+            self.settings.database_url,
+            params={"season": season},
+        )
+        if steal_rows.empty:
+            return StealAgainstSummary(
+                available=True,
+                note=(
+                    "Pitch descriptions are available, but no steal or caught-stealing text was "
+                    "found in this season slice."
+                ),
+                description_pitch_coverage=coverage_pct,
+                **public_metrics,
+            )
+
+        parsed_rows: list[dict[str, object]] = []
+        for _, row in steal_rows.iterrows():
+            des = self._optional_str(row.get("des"))
+            count_state = self._optional_str(row.get("count_state"))
+            catcher_value = self._optional_int(row.get("catcher_id"))
+            if not des or not count_state or catcher_value is None:
+                continue
+            if not STEAL_DESCRIPTION_PATTERN.search(des):
+                continue
+
+            stolen_bases = len(STEAL_SUCCESS_PATTERN.findall(des))
+            caught_stealing = len(CAUGHT_STEALING_PATTERN.findall(des))
+            attempts = stolen_bases + caught_stealing
+            if attempts == 0:
+                continue
+
+            parsed_rows.append(
+                {
+                    "catcher_id": catcher_value,
+                    "count_state": count_state,
+                    "attempts": attempts,
+                    "stolen_bases": stolen_bases,
+                    "caught_stealing": caught_stealing,
+                }
+            )
+
+        if not parsed_rows:
+            return StealAgainstSummary(
+                available=True,
+                note=(
+                    "Pitch descriptions are present, but the current steal parser did not find usable "
+                    "running-game outcomes in this season slice."
+                ),
+                description_pitch_coverage=coverage_pct,
+                **public_metrics,
+            )
+
+        parsed_frame = pd.DataFrame(parsed_rows)
+        baseline = (
+            parsed_frame.groupby("count_state", dropna=False)[["attempts", "stolen_bases", "caught_stealing"]]
+            .sum()
+            .reset_index()
+        )
+        catcher_frame = parsed_frame[parsed_frame["catcher_id"] == catcher_id].copy()
+
+        baseline_total_attempts = int(parsed_frame["attempts"].sum())
+        baseline_total_caught = int(parsed_frame["caught_stealing"].sum())
+        catcher_attempts = int(catcher_frame["attempts"].sum()) if not catcher_frame.empty else 0
+        catcher_caught = int(catcher_frame["caught_stealing"].sum()) if not catcher_frame.empty else 0
+        catcher_stolen = int(catcher_frame["stolen_bases"].sum()) if not catcher_frame.empty else 0
+        throw_out_rate = catcher_caught / catcher_attempts if catcher_attempts else None
+        baseline_throw_out_rate = (
+            baseline_total_caught / baseline_total_attempts if baseline_total_attempts else None
+        )
+        throw_out_delta = (
+            throw_out_rate - baseline_throw_out_rate
+            if throw_out_rate is not None and baseline_throw_out_rate is not None
+            else None
+        )
+
+        catcher_by_count = (
+            catcher_frame.groupby("count_state", dropna=False)[["attempts", "stolen_bases", "caught_stealing"]]
+            .sum()
+            .reset_index()
+            if not catcher_frame.empty
+            else pd.DataFrame(columns=["count_state", "attempts", "stolen_bases", "caught_stealing"])
+        )
+        catcher_lookup = {
+            str(row["count_state"]): row
+            for _, row in catcher_by_count.iterrows()
+        }
+        baseline_lookup = {
+            str(row["count_state"]): row
+            for _, row in baseline.iterrows()
+        }
+
+        count_summaries: list[StealAgainstCountSummary] = []
+        for count_state in COUNT_STATES:
+            catcher_row = catcher_lookup.get(count_state)
+            baseline_row = baseline_lookup.get(count_state)
+            attempts = int(catcher_row["attempts"]) if catcher_row is not None else 0
+            caught_count = int(catcher_row["caught_stealing"]) if catcher_row is not None else 0
+            stolen_count = int(catcher_row["stolen_bases"]) if catcher_row is not None else 0
+            baseline_attempts = int(baseline_row["attempts"]) if baseline_row is not None else 0
+            baseline_caught_count = (
+                int(baseline_row["caught_stealing"]) if baseline_row is not None else 0
+            )
+            split_quality = self._steal_split_sample_quality(attempts)
+            flags = self._count_state_flags(count_state)
+            count_throw_out_rate = caught_count / attempts if attempts else None
+            baseline_count_throw_out_rate = (
+                baseline_caught_count / baseline_attempts if baseline_attempts else None
+            )
+            count_summaries.append(
+                StealAgainstCountSummary(
+                    count_state=count_state,
+                    attempts=attempts,
+                    attempt_share=(attempts / catcher_attempts) if catcher_attempts else None,
+                    caught_stealing=caught_count,
+                    stolen_bases=stolen_count,
+                    throw_out_rate=count_throw_out_rate,
+                    baseline_throw_out_rate=baseline_count_throw_out_rate,
+                    throw_out_rate_delta=(
+                        count_throw_out_rate - baseline_count_throw_out_rate
+                        if count_throw_out_rate is not None and baseline_count_throw_out_rate is not None
+                        else None
+                    ),
+                    hitter_friendly_flag=flags["hitter_friendly_flag"],
+                    pitcher_friendly_flag=flags["pitcher_friendly_flag"],
+                    putaway_flag=flags["putaway_flag"],
+                    sample_label=str(split_quality["label"]),
+                    low_sample=bool(split_quality["low_sample"]),
+                )
+            )
+
+        note = (
+            "Derived from public Statcast long pitch descriptions. These are running-game outcomes on "
+            "that pitch and can reflect the full battery context, not isolated catcher arm value."
+        )
+        if coverage_pct is not None and coverage_pct < 0.98:
+            note += (
+                f" Description coverage is partial for this season slice ({coverage_pct:.0%} of pitches), "
+                "so steal counts should be treated as partial."
+            )
+        elif catcher_attempts == 0:
+            note += " No steal attempts were recorded against this catcher in the described pitch sample."
+
+        return StealAgainstSummary(
+            available=True,
+            note=note,
+            description_pitch_coverage=coverage_pct,
+            attempts=catcher_attempts,
+            caught_stealing=catcher_caught,
+            stolen_bases=catcher_stolen,
+            throw_out_rate=throw_out_rate,
+            baseline_throw_out_rate=baseline_throw_out_rate,
+            throw_out_rate_delta=throw_out_delta,
+            count_summaries=count_summaries,
+            **public_metrics,
+        )
 
     def _build_summary_insights(
         self,

@@ -27,6 +27,10 @@ export function ApiDebugPanel({
   items,
   defaultOpen = false,
 }: ApiDebugPanelProps) {
+  if (process.env.NODE_ENV !== "development") {
+    return null;
+  }
+
   return (
     <details
       className="rounded-[1.2rem] border border-line/60 bg-surface-raised/76 shadow-[inset_0_1px_0_rgba(255,255,255,0.34)]"

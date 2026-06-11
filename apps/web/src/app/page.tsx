@@ -9,6 +9,7 @@ import type {
 import Image from "next/image";
 
 import { ApiDebugPanel } from "@/components/api-debug-panel";
+import { DemoDataBadge } from "@/components/demo-data-badge";
 import { CatcherSummaryInsights } from "@/components/catcher-summary-insights";
 import { CountStateMatrix } from "@/components/count-state-matrix";
 import { DataFreshnessPanel } from "@/components/data-freshness-panel";
@@ -24,10 +25,12 @@ import { ReportBuilder } from "@/components/report-builder";
 import { SampleStabilityBadge } from "@/components/sample-stability-badge";
 import { SectionCard } from "@/components/section-card";
 import { StrikeZoneCard } from "@/components/strike-zone-card";
+import { StealAgainstPanel } from "@/components/steal-against-panel";
 import { LoadingForm } from "@/components/ui/loading-form";
 import { LoadingLink } from "@/components/ui/loading-link";
 import {
   ApiRequestError,
+  describeBackendTarget,
   formatApiTransportLabel,
   getApiHealth,
   getApiTransport,
@@ -124,8 +127,10 @@ function errorStateCopy(
       eyebrow: "API Unreachable",
       title: "The catcher data service is offline",
       description: error.message,
-      detail:
-        `Targeted backend: ${transport.backendBaseUrl} (${transport.configuredFrom}). Start the FastAPI server there or update API_BASE_URL / NEXT_PUBLIC_API_URL.`,
+      detail: describeBackendTarget(
+        transport,
+        "Start the FastAPI server there or update API_BASE_URL / NEXT_PUBLIC_API_URL.",
+      ),
       tone: "caution" as const,
     };
   }
@@ -145,7 +150,10 @@ function errorStateCopy(
     eyebrow: context === "metadata" ? "Metadata Unavailable" : "API Request Failed",
     title: "Scouting mode",
     description: errorMessage(error),
-    detail: `API transport: ${formatApiTransportLabel(transport)} | source: ${transport.configuredFrom}`,
+    detail:
+      process.env.NODE_ENV === "development"
+        ? `API transport: ${formatApiTransportLabel(transport)} | source: ${transport.configuredFrom}`
+        : undefined,
     tone: "default" as const,
   };
 }
@@ -1072,6 +1080,14 @@ export default async function HomePage({
       </SectionCard>
 
       <SectionCard
+        eyebrow="Running Game"
+        title="Where runners challenge this catcher"
+        subtitle="Exact-count steal pressure from public Statcast pitch descriptions, showing which counts runners go on and how often this catcher turns those attempts into outs versus the season baseline."
+      >
+        <StealAgainstPanel summary={detail.steal_against_summary} />
+      </SectionCard>
+
+      <SectionCard
         eyebrow="Pairing Intelligence"
         title="Pitcher-catcher synergy and who else is good"
         subtitle="Pairings answer the battery-fit question, while the peer board tells you how this catcher stacks up against the live filtered leaderboard."
@@ -1228,6 +1244,7 @@ export default async function HomePage({
       </SectionCard>
 
       <ApiDebugPanel transport={apiTransport} items={debugItems} />
+      <DemoDataBadge />
     </div>
   );
 }

@@ -94,6 +94,9 @@ export const publicCatcherMetricsSchema = z.object({
   blocking_runs: z.number().nullable().optional(),
   blocks_above_average: z.number().nullable().optional(),
   pop_time_2b: z.number().nullable().optional(),
+  pop_time_2b_cs: z.number().nullable().optional(),
+  pop_time_2b_sb: z.number().nullable().optional(),
+  pop_2b_attempts: z.number().nullable().optional(),
   arm_overall: z.number().nullable().optional(),
   max_arm_strength: z.number().nullable().optional(),
   source_note: z.string().nullable().optional(),
@@ -223,6 +226,39 @@ export const catcherSummaryInsightSchema = z.object({
   tone: z.enum(["positive", "neutral", "caution"]).default("neutral"),
 });
 
+export const stealAgainstCountSummarySchema = z.object({
+  count_state: z.string(),
+  attempts: z.number().default(0),
+  attempt_share: z.number().nullable().optional(),
+  caught_stealing: z.number().default(0),
+  stolen_bases: z.number().default(0),
+  throw_out_rate: z.number().nullable().optional(),
+  baseline_throw_out_rate: z.number().nullable().optional(),
+  throw_out_rate_delta: z.number().nullable().optional(),
+  hitter_friendly_flag: z.boolean().default(false),
+  pitcher_friendly_flag: z.boolean().default(false),
+  putaway_flag: z.boolean().default(false),
+  sample_label: z.string().nullable().optional(),
+  low_sample: z.boolean().default(false),
+});
+
+export const stealAgainstSummarySchema = z.object({
+  available: z.boolean().default(false),
+  note: z.string().nullable().optional(),
+  description_pitch_coverage: z.number().nullable().optional(),
+  attempts: z.number().default(0),
+  caught_stealing: z.number().default(0),
+  stolen_bases: z.number().default(0),
+  throw_out_rate: z.number().nullable().optional(),
+  baseline_throw_out_rate: z.number().nullable().optional(),
+  throw_out_rate_delta: z.number().nullable().optional(),
+  pop_time_2b: z.number().nullable().optional(),
+  pop_time_2b_cs: z.number().nullable().optional(),
+  pop_time_2b_sb: z.number().nullable().optional(),
+  pop_2b_attempts: z.number().nullable().optional(),
+  count_summaries: z.array(stealAgainstCountSummarySchema).default([]),
+});
+
 export const catcherDetailResponseSchema = z.object({
   identity: catcherIdentitySchema,
   total_pitches: z.number(),
@@ -234,6 +270,7 @@ export const catcherDetailResponseSchema = z.object({
   diagnostics: catcherDiagnosticsSchema,
   grade_formula_notes: z.record(z.string(), z.record(z.string(), z.any())),
   summary_insights: z.array(catcherSummaryInsightSchema).default([]),
+  steal_against_summary: stealAgainstSummarySchema.nullable().optional(),
   count_state_summaries: z.array(countSummarySchema),
   count_bucket_summaries: z.array(countSummarySchema),
   pitch_type_summaries: z.array(pitchTypeSummarySchema),
@@ -375,6 +412,8 @@ export type MatchupSummary = z.infer<typeof matchupSummarySchema>;
 export type CatcherIdentity = z.infer<typeof catcherIdentitySchema>;
 export type CatcherDiagnostics = z.infer<typeof catcherDiagnosticsSchema>;
 export type CatcherSummaryInsight = z.infer<typeof catcherSummaryInsightSchema>;
+export type StealAgainstCountSummary = z.infer<typeof stealAgainstCountSummarySchema>;
+export type StealAgainstSummary = z.infer<typeof stealAgainstSummarySchema>;
 export type CatcherDetailResponse = z.infer<typeof catcherDetailResponseSchema>;
 export type CatcherComparisonFilters = z.infer<typeof catcherComparisonFiltersSchema>;
 export type CatcherComparisonResponse = z.infer<typeof catcherComparisonResponseSchema>;

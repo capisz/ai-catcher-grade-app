@@ -92,6 +92,9 @@ class PublicCatcherMetrics(BaseModel):
     blocking_runs: Optional[float] = None
     blocks_above_average: Optional[float] = None
     pop_time_2b: Optional[float] = None
+    pop_time_2b_cs: Optional[float] = None
+    pop_time_2b_sb: Optional[float] = None
+    pop_2b_attempts: Optional[int] = None
     arm_overall: Optional[float] = None
     max_arm_strength: Optional[float] = None
     source_note: Optional[str] = None
@@ -221,6 +224,39 @@ class CatcherSummaryInsight(BaseModel):
     tone: Literal["positive", "neutral", "caution"] = "neutral"
 
 
+class StealAgainstCountSummary(BaseModel):
+    count_state: str
+    attempts: int = 0
+    attempt_share: Optional[float] = None
+    caught_stealing: int = 0
+    stolen_bases: int = 0
+    throw_out_rate: Optional[float] = None
+    baseline_throw_out_rate: Optional[float] = None
+    throw_out_rate_delta: Optional[float] = None
+    hitter_friendly_flag: bool = False
+    pitcher_friendly_flag: bool = False
+    putaway_flag: bool = False
+    sample_label: Optional[str] = None
+    low_sample: bool = False
+
+
+class StealAgainstSummary(BaseModel):
+    available: bool = False
+    note: Optional[str] = None
+    description_pitch_coverage: Optional[float] = None
+    attempts: int = 0
+    caught_stealing: int = 0
+    stolen_bases: int = 0
+    throw_out_rate: Optional[float] = None
+    baseline_throw_out_rate: Optional[float] = None
+    throw_out_rate_delta: Optional[float] = None
+    pop_time_2b: Optional[float] = None
+    pop_time_2b_cs: Optional[float] = None
+    pop_time_2b_sb: Optional[float] = None
+    pop_2b_attempts: Optional[int] = None
+    count_summaries: list[StealAgainstCountSummary] = Field(default_factory=list)
+
+
 class CatcherDetailResponse(BaseModel):
     identity: CatcherIdentity
     total_pitches: int
@@ -232,6 +268,7 @@ class CatcherDetailResponse(BaseModel):
     diagnostics: CatcherDiagnostics = Field(default_factory=CatcherDiagnostics)
     grade_formula_notes: Dict[str, Dict[str, Any]] = Field(default_factory=dict)
     summary_insights: list[CatcherSummaryInsight] = Field(default_factory=list)
+    steal_against_summary: Optional[StealAgainstSummary] = None
     count_state_summaries: list[CountSummary]
     count_bucket_summaries: list[CountSummary]
     pitch_type_summaries: list[PitchTypeSummary]

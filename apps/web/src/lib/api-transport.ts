@@ -105,3 +105,15 @@ export async function getApiTransportInfo(): Promise<ApiTransportInfo> {
 export function formatApiTransportLabel(transport: ApiTransportInfo) {
   return `${transport.proxyBaseUrl} -> ${transport.backendBaseUrl}`;
 }
+
+/**
+ * Backend-target details (URLs, env var names) are developer-facing; outside
+ * development they are omitted entirely so production error states never
+ * leak infrastructure details.
+ */
+export function describeBackendTarget(transport: ApiTransportInfo, instruction: string) {
+  if (process.env.NODE_ENV !== "development") {
+    return undefined;
+  }
+  return `Targeted backend: ${transport.backendBaseUrl} (${transport.configuredFrom}). ${instruction}`;
+}

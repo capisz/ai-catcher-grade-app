@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Dict, Optional, Sequence
 
@@ -8,6 +9,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
 
 SCHEMA_MIGRATIONS = [
+    "ALTER TABLE pitches_raw ADD COLUMN IF NOT EXISTS des TEXT",
     "ALTER TABLE catcher_pitch_scores ADD COLUMN IF NOT EXISTS pitcher_id BIGINT",
     "ALTER TABLE catcher_pitch_scores ADD COLUMN IF NOT EXISTS batter_id BIGINT",
     "ALTER TABLE catcher_pitch_scores ADD COLUMN IF NOT EXISTS game_year INT",
@@ -16,6 +18,7 @@ SCHEMA_MIGRATIONS = [
     "ALTER TABLE catcher_pitch_scores ADD COLUMN IF NOT EXISTS fallback_tier TEXT",
     "ALTER TABLE catcher_pitch_scores ADD COLUMN IF NOT EXISTS outperformed_baseline BOOLEAN",
     "ALTER TABLE catcher_game_scores ADD COLUMN IF NOT EXISTS game_year INT",
+    "ALTER TABLE catcher_pairing_summaries ADD COLUMN IF NOT EXISTS pitcher_name TEXT",
     "ALTER TABLE catcher_season_summary ADD COLUMN IF NOT EXISTS games_scored INT DEFAULT 0",
     "ALTER TABLE catcher_season_summary ADD COLUMN IF NOT EXISTS fallback_context_pct DOUBLE PRECISION",
     "ALTER TABLE catcher_grade_outputs ALTER COLUMN overall_game_calling_score DROP NOT NULL",
@@ -39,15 +42,40 @@ def get_engine(database_url: str) -> Engine:
     return create_engine(database_url, future=True)
 
 
+_ADD_COLUMN_RE = re.compile(
+    r"ALTER TABLE (\w+) ADD COLUMN IF NOT EXISTS (\w+) (.+)", re.IGNORECASE
+)
+
+
 def ensure_schema(database_url: str) -> None:
     schema_path = Path(__file__).resolve().parents[5] / "sql" / "schema.sql"
     schema = schema_path.read_text()
     engine = get_engine(database_url)
+    is_sqlite = engine.dialect.name == "sqlite"
     with engine.begin() as connection:
         for statement in [chunk.strip() for chunk in schema.split(";") if chunk.strip()]:
             connection.execute(text(statement))
         for statement in SCHEMA_MIGRATIONS:
-            connection.execute(text(statement))
+            if not is_sqlite:
+                connection.execute(text(statement))
+                continue
+            # SQLite lacks ADD COLUMN IF NOT EXISTS and cannot alter
+            # constraints; emulate the former and skip the latter (schema.sql
+            # already creates fresh tables with the final shape).
+            match = _ADD_COLUMN_RE.fullmatch(statement)
+            if match is None:
+                continue
+            table, column, column_def = match.groups()
+            exists = connection.execute(
+                text(
+                    "SELECT COUNT(*) FROM pragma_table_info(:table) WHERE name = :column"
+                ),
+                {"table": table, "column": column},
+            ).scalar()
+            if not exists:
+                connection.execute(
+                    text(f"ALTER TABLE {table} ADD COLUMN {column} {column_def}")
+                )
 
 
 def read_dataframe(
@@ -108,6 +136,7 @@ def upsert_dataframe(
     INSERT INTO {quoted_table_name} ({", ".join(quoted_columns)})
     SELECT {", ".join(quoted_columns)}
     FROM {quoted_staging_table}
+    WHERE true
     ON CONFLICT ({", ".join(quoted_conflict_columns)}) DO UPDATE SET
         {update_assignments}
     """

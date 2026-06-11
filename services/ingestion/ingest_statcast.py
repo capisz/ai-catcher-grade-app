@@ -41,6 +41,7 @@ RAW_COLUMNS = [
     "pfx_z",
     "effective_speed",
     "description",
+    "des",
     "events",
     "estimated_woba_using_speedangle",
     "delta_run_exp",
@@ -132,6 +133,7 @@ def normalize_dataframe(df: pd.DataFrame) -> pd.DataFrame:
         "pfx_z",
         "effective_speed",
         "description",
+        "des",
         "events",
         "estimated_woba_using_speedangle",
         "delta_run_exp",
@@ -155,7 +157,7 @@ def upsert_dataframe(df: pd.DataFrame, db_url: str, table_name: str = "pitches_r
             pitcher, batter, catcher_id, pitch_type, pitch_name, stand, p_throws,
             balls, strikes, outs_when_up, on_1b, on_2b, on_3b, inning, inning_topbot,
             plate_x, plate_z, zone, sz_top, sz_bot, release_speed, release_spin,
-            pfx_x, pfx_z, effective_speed, description, events,
+            pfx_x, pfx_z, effective_speed, description, des, events,
             estimated_woba_using_speedangle, delta_run_exp
         )
         SELECT
@@ -163,7 +165,7 @@ def upsert_dataframe(df: pd.DataFrame, db_url: str, table_name: str = "pitches_r
             pitcher, batter, catcher_id, pitch_type, pitch_name, stand, p_throws,
             balls, strikes, outs_when_up, on_1b, on_2b, on_3b, inning, inning_topbot,
             plate_x, plate_z, zone, sz_top, sz_bot, release_speed, release_spin,
-            pfx_x, pfx_z, effective_speed, description, events,
+            pfx_x, pfx_z, effective_speed, description, des, events,
             estimated_woba_using_speedangle, delta_run_exp
         FROM {temp_table}
         ON CONFLICT (pitch_uid) DO UPDATE SET
@@ -198,6 +200,7 @@ def upsert_dataframe(df: pd.DataFrame, db_url: str, table_name: str = "pitches_r
             pfx_z = EXCLUDED.pfx_z,
             effective_speed = EXCLUDED.effective_speed,
             description = EXCLUDED.description,
+            des = EXCLUDED.des,
             events = EXCLUDED.events,
             estimated_woba_using_speedangle = EXCLUDED.estimated_woba_using_speedangle,
             delta_run_exp = EXCLUDED.delta_run_exp;

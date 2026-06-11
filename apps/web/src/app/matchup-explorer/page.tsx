@@ -7,8 +7,10 @@ import type {
 import Image from "next/image";
 
 import { ApiDebugPanel } from "@/components/api-debug-panel";
+import { DemoDataBadge } from "@/components/demo-data-badge";
 import { DataFreshnessPanel } from "@/components/data-freshness-panel";
 import { EmptyStatePanel } from "@/components/empty-state-panel";
+import { LiveGamePanel } from "@/components/live-game-panel";
 import { PairingDvaChart } from "@/components/pairing-dva-chart";
 import { ProductStatusStrip } from "@/components/product-status-strip";
 import { RecommendationOptionBoard } from "@/components/recommendation-option-board";
@@ -26,6 +28,7 @@ import {
   getCatcherDetail,
   getCatcherPairings,
   getCatchers,
+  describeBackendTarget,
 } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
@@ -122,6 +125,48 @@ export default async function MatchupExplorerPage({
   searchParams: SearchParams;
 }) {
   const params = await searchParams;
+  const requestedTab = readString(params.tab, "matchup");
+
+  if (requestedTab === "live") {
+    const matchupHref = buildHref("/matchup-explorer", {
+      season: readNumber(params.season),
+      team: readString(params.team, "").toUpperCase() || undefined,
+      catcher_id: readNumber(params.catcher_id),
+    });
+    return (
+      <div className="space-y-8">
+        <section className="card relative overflow-hidden rounded-[1.6rem] px-5 py-5 sm:px-6 sm:py-6 lg:px-7">
+          <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
+          <div className="relative space-y-5">
+            <div>
+              <div className="label-kicker">Game Mode | Live</div>
+              <h1 className="mt-4 max-w-3xl font-serif text-[2.45rem] leading-[0.98] text-ink sm:text-[3.05rem]">
+                Live pitch-by-pitch feed straight from today&apos;s MLB games.
+              </h1>
+              <p className="mt-4 max-w-3xl text-sm leading-8 text-muted">
+                Pick an in-progress game to watch the pitch stream with count, pitch type,
+                velocity, and zone, plus the catchers on both rosters. Data comes from the public
+                MLB Stats API and refreshes automatically.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <LoadingLink
+                href={matchupHref}
+                className="button-secondary px-4 py-2.5 text-sm"
+                loadingMessage="Opening season matchup mode..."
+                loadingSubtitle="Loading the recommendation workbench."
+              >
+                Season matchup
+              </LoadingLink>
+              <span className="button-primary px-4 py-2.5 text-sm">Live</span>
+            </div>
+          </div>
+        </section>
+        <LiveGamePanel />
+      </div>
+    );
+  }
+
   const requestedSeason = readNumber(params.season);
   const requestedTeam = readString(params.team, "").toUpperCase();
   const stand = readString(params.stand, "R").toUpperCase();
@@ -157,7 +202,7 @@ export default async function MatchupExplorerPage({
         eyebrow="Game Mode Offline"
         title="The matchup explorer cannot load metadata"
         description={errorMessage(error)}
-        detail={`Targeted backend: ${apiTransport.backendBaseUrl} (${apiTransport.configuredFrom}). Start the API there or update API_BASE_URL / NEXT_PUBLIC_API_URL before retrying.`}
+        detail={describeBackendTarget(apiTransport, "Start the API there or update API_BASE_URL / NEXT_PUBLIC_API_URL before retrying.")}
         tone="caution"
         action={
           <ApiDebugPanel
@@ -189,7 +234,7 @@ export default async function MatchupExplorerPage({
         eyebrow="Game Mode Offline"
         title="Matchup explorer cannot reach the catcher list"
         description={errorMessage(error)}
-        detail={`Targeted backend: ${apiTransport.backendBaseUrl} (${apiTransport.configuredFrom}). Start the API there or update API_BASE_URL / NEXT_PUBLIC_API_URL before retrying.`}
+        detail={describeBackendTarget(apiTransport, "Start the API there or update API_BASE_URL / NEXT_PUBLIC_API_URL before retrying.")}
         tone="caution"
         action={
           <ApiDebugPanel
@@ -382,6 +427,18 @@ export default async function MatchupExplorerPage({
                 pitcher-specific candidate options, public context filters, and observed expected
                 run value. It does not know private PitchCom or hidden sign intent.
               </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <span className="button-primary px-4 py-2.5 text-sm">Season matchup</span>
+              <LoadingLink
+                href={`${buildQueryHref({})}&tab=live`}
+                className="button-secondary px-4 py-2.5 text-sm"
+                loadingMessage="Opening live game mode..."
+                loadingSubtitle="Loading today's MLB schedule."
+              >
+                Live
+              </LoadingLink>
             </div>
 
             <ProductStatusStrip
@@ -854,6 +911,7 @@ export default async function MatchupExplorerPage({
       </SectionCard>
 
       <ApiDebugPanel transport={apiTransport} items={debugItems} />
+      <DemoDataBadge />
     </div>
   );
 }
