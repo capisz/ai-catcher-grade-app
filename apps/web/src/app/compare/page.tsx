@@ -14,7 +14,6 @@ import { DataFreshnessPanel } from "@/components/data-freshness-panel";
 import { EmptyStatePanel } from "@/components/empty-state-panel";
 import { PairingDvaChart } from "@/components/pairing-dva-chart";
 import { PitchTypeDvaChart } from "@/components/pitch-type-dva-chart";
-import { ProductStatusStrip } from "@/components/product-status-strip";
 import { SampleStabilityBadge } from "@/components/sample-stability-badge";
 import { SectionCard } from "@/components/section-card";
 import { LoadingForm } from "@/components/ui/loading-form";
@@ -106,7 +105,6 @@ function debugErrorDetail(error: unknown) {
 
 const COMPARE_VIEWS = [
   { key: "overview", label: "Overview" },
-  { key: "grades", label: "Grades" },
   { key: "counts", label: "Counts" },
   { key: "pitch-mix", label: "Pitch Mix" },
   { key: "batteries", label: "Batteries" },
@@ -649,8 +647,6 @@ export default async function ComparePage({
               </p>
             </div>
 
-            <ProductStatusStrip metadata={metadata} />
-
             <LoadingForm
               action="/compare"
               className="shell-panel rounded-xl p-4"
@@ -913,7 +909,7 @@ export default async function ComparePage({
       </SectionCard>
       ) : null}
 
-      {view === "grades" ? (
+      {view === "overview" ? (
       <SectionCard
         eyebrow="Grades"
         title="20-80 game-calling grade sheet"

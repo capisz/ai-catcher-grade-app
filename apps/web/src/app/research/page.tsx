@@ -7,7 +7,6 @@ import { EmptyStatePanel } from "@/components/empty-state-panel";
 import { LeaderboardChart } from "@/components/leaderboard-chart";
 import { MetricCard } from "@/components/metric-card";
 import { PitchTypeDvaChart } from "@/components/pitch-type-dva-chart";
-import { ProductStatusStrip } from "@/components/product-status-strip";
 import { ReportBuilder } from "@/components/report-builder";
 import { SampleStabilityBadge } from "@/components/sample-stability-badge";
 import { SectionCard } from "@/components/section-card";
@@ -297,16 +296,6 @@ export default async function ResearchPage({
               </p>
             </div>
 
-            {primaryDetail ? (
-              <ProductStatusStrip
-                metadata={metadata}
-                sampleLabel={primaryDetail.diagnostics.stability_label}
-                qualified={primaryDetail.diagnostics.qualified_for_grades}
-              />
-            ) : (
-              <ProductStatusStrip metadata={metadata} />
-            )}
-
             <LoadingForm
               action="/research"
               className="shell-panel rounded-xl p-4"
@@ -466,6 +455,13 @@ export default async function ResearchPage({
         }))}
         active={view}
       />
+
+      {view === "compare" && !primaryDetail ? (
+        <div className="surface-panel rounded-xl p-6 text-sm leading-6 text-muted">
+          Pick a catcher on the Board tab first — the comparison view renders season-level cards
+          for the selected catcher and an optional second catcher.
+        </div>
+      ) : null}
 
       {view === "compare" && primaryDetail ? (
         <SectionCard

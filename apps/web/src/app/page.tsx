@@ -20,7 +20,6 @@ import { PairingDvaChart } from "@/components/pairing-dva-chart";
 import { PairingIntelTable } from "@/components/pairing-intel-table";
 import { PitchTypeDvaChart } from "@/components/pitch-type-dva-chart";
 import { PitchTypePerformanceBoard } from "@/components/pitch-type-performance-board";
-import { ProductStatusStrip } from "@/components/product-status-strip";
 import { ReportBuilder } from "@/components/report-builder";
 import { SampleStabilityBadge } from "@/components/sample-stability-badge";
 import { SectionCard } from "@/components/section-card";
@@ -190,7 +189,6 @@ function buildHref(params: Record<string, string | number | undefined>) {
 
 const HOME_VIEWS = [
   { key: "overview", label: "Overview" },
-  { key: "grades", label: "Grades" },
   { key: "counts", label: "Counts" },
   { key: "pitch-mix", label: "Pitch Mix" },
   { key: "batteries", label: "Batteries" },
@@ -581,12 +579,6 @@ export default async function HomePage({
               </p>
             </div>
 
-            <ProductStatusStrip
-              metadata={metadata}
-              sampleLabel={detail.diagnostics.stability_label}
-              qualified={detail.diagnostics.qualified_for_grades}
-            />
-
             <LoadingForm
               action="/"
               className="shell-panel rounded-xl p-4"
@@ -661,43 +653,15 @@ export default async function HomePage({
                     data-auto-submit="true"
                   />
                 </label>
-                <div className="flex items-end md:col-span-2 xl:col-span-4 2xl:col-span-1">
-                  <button className="button-primary w-full px-4 py-2.5 text-sm">
-                    Refresh live board
-                  </button>
+                <div className="flex items-end gap-2 md:col-span-2 xl:col-span-4 2xl:col-span-1">
+                  <button className="button-primary px-4 py-2.5 text-sm">Apply</button>
+                  <ReportBuilder
+                    catcherId={detail.identity.catcher_id}
+                    catcherName={detail.identity.catcher_name}
+                    team={detail.identity.team}
+                    season={metadata.selected_season}
+                  />
                 </div>
-              </div>
-              <div className="mt-3 flex flex-wrap items-center gap-3">
-                <LoadingLink
-                  href={`/matchup-explorer?season=${metadata.selected_season}&catcher_id=${detail.identity.catcher_id}`}
-                  className="button-secondary px-4 py-2.5 text-sm"
-                  loadingMessage="Opening game mode..."
-                  loadingSubtitle="Loading live matchup decision support."
-                >
-                  Open game mode
-                </LoadingLink>
-                <LoadingLink
-                  href={`/research?season=${metadata.selected_season}&team=${requestedTeam || ""}&min_pitches=${minPitches}&catcher_id=${detail.identity.catcher_id}`}
-                  className="button-secondary px-4 py-2.5 text-sm"
-                  loadingMessage="Opening research mode..."
-                  loadingSubtitle="Loading export and comparison tools."
-                >
-                  Open research mode
-                </LoadingLink>
-                <LoadingLink
-                  href={`/compare?season=${metadata.selected_season}&team=${requestedTeam || ""}&min_pitches=${minPitches}&catcher_a=${detail.identity.catcher_id}`}
-                  className="button-secondary px-4 py-2.5 text-sm"
-                  loadingMessage="Opening compare mode..."
-                  loadingSubtitle="Choosing a second catcher for side-by-side evaluation."
-                >
-                  Compare catcher
-                </LoadingLink>
-                <ReportBuilder
-                  catcherId={detail.identity.catcher_id}
-                  catcherName={detail.identity.catcher_name}
-                  team={detail.identity.team}
-                  season={metadata.selected_season}
-                />
               </div>
             </LoadingForm>
 
@@ -842,27 +806,20 @@ export default async function HomePage({
       <ViewTabs items={viewTabs} active={view} />
 
       {sampleWarning ? (
-        <section className="warning-panel rounded-xl p-5">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-            <div>
-              <div className="text-[0.66rem] font-semibold uppercase tracking-[0.06em] text-warning">
-                Season Trust Note
-              </div>
-              <div className="mt-2 font-serif text-xl leading-none text-ink">
-                {metadata.sparse_season ? "Sparse season selected" : "Limited-sample catcher read"}
-              </div>
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">
-                {metadata.sparse_season
-                  ? metadata.season_coverage_note
-                  : "This catcher-season is using real scored rows, but the sample has not yet cleared the stronger stability threshold. Treat exact-count and pairing signals as directional scouting evidence rather than settled truth."}
-              </p>
-            </div>
-            <SampleStabilityBadge
-              label={detail.diagnostics.stability_label}
-              qualified={detail.diagnostics.qualified_for_grades}
-            />
-          </div>
-        </section>
+        <div className="warning-panel flex flex-wrap items-center justify-between gap-3 rounded-xl px-4 py-3">
+          <p className="text-sm leading-6 text-muted">
+            <span className="font-bold text-ink">
+              {metadata.sparse_season ? "Sparse season:" : "Limited sample:"}
+            </span>{" "}
+            {metadata.sparse_season
+              ? metadata.season_coverage_note
+              : "Below the stability threshold — treat splits as directional."}
+          </p>
+          <SampleStabilityBadge
+            label={detail.diagnostics.stability_label}
+            qualified={detail.diagnostics.qualified_for_grades}
+          />
+        </div>
       ) : null}
 
       {view === "overview" ? (
@@ -881,7 +838,7 @@ export default async function HomePage({
       </SectionCard>
       ) : null}
 
-      {view === "grades" ? (
+      {view === "overview" ? (
       <SectionCard
         eyebrow="Scouting Summary"
         title="Game-calling grade sheet"

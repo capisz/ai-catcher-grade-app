@@ -12,7 +12,6 @@ import { DataFreshnessPanel } from "@/components/data-freshness-panel";
 import { EmptyStatePanel } from "@/components/empty-state-panel";
 import { LiveGamePanel } from "@/components/live-game-panel";
 import { PairingDvaChart } from "@/components/pairing-dva-chart";
-import { ProductStatusStrip } from "@/components/product-status-strip";
 import { RecommendationOptionBoard } from "@/components/recommendation-option-board";
 import { RecommendationRvChart } from "@/components/recommendation-rv-chart";
 import { SampleStabilityBadge } from "@/components/sample-stability-badge";
@@ -431,12 +430,6 @@ export default async function MatchupExplorerPage({
               </p>
             </div>
 
-            <ProductStatusStrip
-              metadata={metadata}
-              sampleLabel={catcherDetail.diagnostics.stability_label}
-              qualified={catcherDetail.diagnostics.qualified_for_grades}
-            />
-
             <LoadingForm
               action="/matchup-explorer"
               className="shell-panel rounded-xl p-4"
@@ -530,14 +523,13 @@ export default async function MatchupExplorerPage({
                   <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Pitcher
                   </span>
-                  <input
-                    className="field"
-                    type="number"
-                    min="1"
-                    name="pitcher_id"
-                    defaultValue={selectedPitcherId}
-                    placeholder="Pitcher MLBAM ID"
-                  />
+                  <select className="field" name="pitcher_id" defaultValue={String(selectedPitcherId)}>
+                    {pairings.pairings.map((row) => (
+                      <option key={row.pitcher_id} value={row.pitcher_id}>
+                        {row.pitcher_name}
+                      </option>
+                    ))}
+                  </select>
                 </label>
                 <label className="space-y-2">
                   <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
@@ -626,22 +618,6 @@ export default async function MatchupExplorerPage({
 
               <div className="mt-3 flex flex-wrap items-center gap-3">
                 <button className="button-primary px-4 py-2.5 text-sm">Run recommendation</button>
-                <LoadingLink
-                  href={`/?catcher_id=${selectedCatcherId}&season=${selectedSeason}&team=${requestedTeam || ""}`}
-                  className="button-secondary px-4 py-2.5 text-sm"
-                  loadingMessage="Opening scouting mode..."
-                  loadingSubtitle={`Loading ${catcherDetail.identity.catcher_name}.`}
-                >
-                  Open scouting mode
-                </LoadingLink>
-                <LoadingLink
-                  href={`/research?season=${selectedSeason}&team=${requestedTeam || ""}&catcher_id=${selectedCatcherId}`}
-                  className="button-secondary px-4 py-2.5 text-sm"
-                  loadingMessage="Opening research mode..."
-                  loadingSubtitle="Loading export and comparison tools."
-                >
-                  Open research mode
-                </LoadingLink>
               </div>
             </LoadingForm>
           </div>
