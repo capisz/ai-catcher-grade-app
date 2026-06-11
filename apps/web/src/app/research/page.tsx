@@ -1,5 +1,7 @@
 import type { CatcherDetailResponse, LeaderboardResponse } from "@catcher-intel/contracts";
 
+import Image from "next/image";
+
 import { ApiDebugPanel } from "@/components/api-debug-panel";
 import { DemoDataBadge } from "@/components/demo-data-badge";
 import { DataFreshnessPanel } from "@/components/data-freshness-panel";
@@ -600,8 +602,23 @@ export default async function ResearchPage({
                 ].join(" ")}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-strong text-sm font-semibold text-black">
-                    {index + 1}
+                  <div className="relative">
+                    {entry.headshot_url ? (
+                      <Image
+                        src={entry.headshot_url}
+                        alt={entry.catcher_name}
+                        width={48}
+                        height={48}
+                        className="h-12 w-12 rounded-full border border-line object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-strong text-sm font-semibold text-black">
+                        {entry.catcher_name[0]}
+                      </div>
+                    )}
+                    <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border border-background bg-accent text-[0.6rem] font-bold text-white">
+                      {index + 1}
+                    </span>
                   </div>
                   <SampleStabilityBadge
                     label={entry.stability_label}
@@ -656,8 +673,23 @@ export default async function ResearchPage({
                 loadingSubtitle={`Focusing research mode on ${entry.catcher_name}.`}
                 className="surface-panel grid gap-4 rounded-xl p-4 transition hover:-translate-y-0.5 hover:border-accent/24 md:grid-cols-[4rem_1.6fr_.95fr_.9fr_.9fr_1.1fr]"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-strong text-sm font-semibold text-black">
-                  {index + 1}
+                <div className="relative h-12 w-12">
+                  {entry.headshot_url ? (
+                    <Image
+                      src={entry.headshot_url}
+                      alt={entry.catcher_name}
+                      width={48}
+                      height={48}
+                      className="h-12 w-12 rounded-full border border-line object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-strong text-sm font-semibold text-black">
+                      {entry.catcher_name[0]}
+                    </div>
+                  )}
+                  <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border border-background bg-accent text-[0.6rem] font-bold text-white">
+                    {index + 1}
+                  </span>
                 </div>
                 <div>
                   <div className="font-semibold text-ink">{entry.catcher_name}</div>
