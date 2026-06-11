@@ -4,6 +4,7 @@ import {
   getBackendApiConfig,
   trimTrailingSlash,
 } from "@/lib/api-transport";
+import { handleLiveFallback, isLivePath } from "@/lib/live-mlb";
 
 function buildUpstreamUrl(request: NextRequest, backendBaseUrl: string, path: string[]) {
   const target = new URL(`${trimTrailingSlash(backendBaseUrl)}/${path.join("/")}`);
@@ -30,6 +31,11 @@ async function proxy(request: NextRequest, path: string[]) {
   try {
     const backend = getBackendApiConfig();
     if (backend.usingDefault && process.env.NODE_ENV === "production") {
+      // The /live routes only relay the public MLB Stats API, so a
+      // frontend-only deployment can serve them without a backend.
+      if (isLivePath(path)) {
+        return handleLiveFallback(request, path);
+      }
       // Never fall back to localhost outside development; the deployment must
       // set API_BASE_URL / INTERNAL_API_URL / NEXT_PUBLIC_API_URL explicitly.
       return NextResponse.json(
@@ -101,6 +107,11 @@ async function proxy(request: NextRequest, path: string[]) {
       headers,
     });
   } catch (error) {
+    // Backend unreachable: live routes can still be served straight from the
+    // public MLB Stats API.
+    if (isLivePath(path)) {
+      return handleLiveFallback(request, path);
+    }
     return NextResponse.json(
       {
         detail: "Proxy could not reach configured backend target.",
