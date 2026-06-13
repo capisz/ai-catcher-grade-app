@@ -107,7 +107,7 @@ export function GameSelect({ games, value, onChange }: GameSelectProps) {
       {open ? (
         <div
           role="listbox"
-          className="absolute left-0 right-0 z-30 mt-2 max-h-80 overflow-y-auto rounded-lg border border-line-strong/0 bg-surface-elevated p-1.5 shadow-[0_0_0_1px_#243355,0_24px_48px_-16px_rgba(2,6,16,0.9)]"
+          className="absolute left-0 right-0 z-30 mt-2 max-h-80 overflow-y-auto rounded-lg bg-surface-elevated p-1.5 shadow-[0_0_0_1px_var(--panel-border),0_24px_48px_-16px_rgba(2,6,16,0.45)]"
         >
           {games.map((game) => {
             const isSelected = game.game_pk === value;
@@ -125,7 +125,7 @@ export function GameSelect({ games, value, onChange }: GameSelectProps) {
                   "flex w-full items-center justify-between gap-3 rounded-md px-3 py-2.5 text-left text-sm transition",
                   isSelected
                     ? "bg-accent/15 text-ink"
-                    : "text-secondary hover:bg-accent/8 hover:text-ink",
+                    : "text-muted-strong hover:bg-accent/8 hover:text-ink",
                 ].join(" ")}
               >
                 <span className="min-w-0">

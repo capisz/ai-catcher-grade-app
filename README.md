@@ -27,6 +27,8 @@ polling never re-bills.
 - Enable it by setting `ANTHROPIC_API_KEY` (local `.env` or Vercel project env var). Without the
   key the feature is hidden entirely.
 
+The UI ships light and dark themes and follows the system `prefers-color-scheme` setting automatically; the signature zone-report panels stay dark in both modes.
+
 ## Product modes
 
 - `Scouting mode`

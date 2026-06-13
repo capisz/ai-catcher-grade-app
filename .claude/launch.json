@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dk-optimizer",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd /Users/admin/Downloads/draftkings-optimizer-main && npx next start -p 3456"],
+      "port": 3456
+    }
+  ]
+}

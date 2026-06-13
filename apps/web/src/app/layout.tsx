@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 
 import { AppNav } from "@/components/app-nav";
@@ -21,6 +21,13 @@ const displayFont = Space_Grotesk({
 export const metadata: Metadata = {
   title: "backstop.ai",
   description: "backstop.ai — live MLB catcher game-calling intelligence from public data.",
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#eef2f9" },
+    { media: "(prefers-color-scheme: dark)", color: "#060a14" },
+  ],
 };
 
 export default function RootLayout({

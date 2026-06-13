@@ -1,49 +1,95 @@
 @import "tailwindcss";
 
-:root {
-  --palette-slate: #0a0a0a;
-  --palette-sand: #0a0a0a;
-  --palette-clay: #0a0a0a;
-  --palette-sage: #0a0a0a;
+/* ---------------------------------------------------------------------------
+   Theme tokens. Light is the default; dark applies via prefers-color-scheme.
+   The signature elements (.panel-dark, .scorebug, .dark-pill, zone grid)
+   intentionally stay dark in both modes. Green/red stay reserved for data
+   up/down signals.
+--------------------------------------------------------------------------- */
 
-  /* semantic tokens — deep navy dark theme; green/red reserved for data signals */
-  --background: #060a14;
-  --background-subtle: #0e1526;
-  --surface: #0b1120;
-  --surface-elevated: #111a30;
-  --surface-soft: #131c33;
-  --border: #1d2945;
-  --border-strong: #eef2fb;
-  --text-primary: #eef2fb;
-  --text-secondary: #c9d3ea;
-  --text-muted: #8294b8;
-  --brand-primary: #f5f5f5;
-  --brand-secondary: #3b82f6;
-  --accent: #3b82f6;
-  --highlight: rgba(59, 130, 246, 0.22);
-  --positive: #2fbf63;
-  --positive-soft: rgba(47, 191, 99, 0.14);
-  --negative: #f0473e;
-  --negative-soft: rgba(240, 71, 62, 0.14);
-  --warning: #eef2fb;
-  --warning-soft: #131c33;
-  --nav-background: rgba(6, 10, 20, 0.88);
-  --active-tab: #3b82f6;
+:root {
+  color-scheme: light;
+
+  --palette-slate: #0d1426;
+  --palette-sand: #2563eb;
+  --palette-clay: #2563eb;
+  --palette-sage: #2563eb;
+
+  /* semantic tokens — light */
+  --background: #eef2f9;
+  --background-subtle: #e3e9f4;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --surface-soft: #edf2fa;
+  --border: #d8e1f0;
+  --border-strong: #0d1426;
+  --text-primary: #0d1426;
+  --text-secondary: #3b4763;
+  --text-muted: #5f6e8d;
+  --brand-primary: #dbe6f9;
+  --brand-secondary: #2563eb;
+  --accent: #2563eb;
+  --highlight: rgba(37, 99, 235, 0.16);
+  --positive: #13803d;
+  --positive-soft: rgba(19, 128, 61, 0.12);
+  --negative: #d63131;
+  --negative-soft: rgba(214, 49, 49, 0.1);
+  --warning: #0d1426;
+  --warning-soft: #edf2fa;
+  --nav-background: rgba(255, 255, 255, 0.82);
+  --active-tab: #2563eb;
   --active-tab-text: #ffffff;
   --inactive-tab: transparent;
-  --inactive-tab-hover: #16203a;
+  --inactive-tab-hover: #e3e9f4;
   --button-primary: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
-  --button-secondary: #141414;
-  --badge-neutral: #131c33;
-  --badge-emphasis: #f5f5f5;
-  --badge-accent: #f5f5f5;
-  --chart-primary: #60a5fa;
-  --chart-secondary: #93b4e8;
-  --chart-tertiary: #51618c;
-  --chart-muted: #2a3a5e;
-  --chart-grid: #16203a;
-  --chart-reference: #51618c;
-  --chart-tooltip-bg: rgba(11, 17, 32, 0.98);
+  --button-secondary: #ffffff;
+  --badge-neutral: #e9eef9;
+  --badge-emphasis: #dbe6f9;
+  --badge-accent: #dbe6f9;
+  --chart-primary: #2563eb;
+  --chart-secondary: #6487c2;
+  --chart-tertiary: #9fb2d4;
+  --chart-muted: #d4dff0;
+  --chart-grid: #e2e9f5;
+  --chart-reference: #8fa5cc;
+  --chart-tooltip-bg: rgba(255, 255, 255, 0.98);
+
+  /* component tokens — light */
+  --card-from: #ffffff;
+  --card-to: #f7faff;
+  --card-border: #d9e2f2;
+  --card-glow: rgba(37, 99, 235, 0.05);
+  --card-shadow: 0 12px 32px -18px rgba(13, 20, 38, 0.25);
+  --panel-bg: #f4f8fd;
+  --panel-border: #d8e2f1;
+  --panel-quiet-bg: #eef3fa;
+  --panel-quiet-border: #dde6f3;
+  --shell-bg: #f4f8fd;
+  --field-bg: #ffffff;
+  --field-border: #c4d2e8;
+  --field-hover: #94abd3;
+  --select-arrow: #5f6e8d;
+  --scrollbar-thumb: #c6d3e8;
+  --scrollbar-thumb-hover: #a9bede;
+  --btn2-border: #b9cbe9;
+  --btn2-bg: rgba(37, 99, 235, 0.05);
+  --btn2-text: #1d4ed8;
+  --kicker: #2563eb;
+  --pill-border: #b9c9e6;
+  --pill-text: #33476f;
+  --pill-hi-bg: rgba(37, 99, 235, 0.1);
+  --pill-hi-border: rgba(37, 99, 235, 0.35);
+  --pill-hi-text: #1d4ed8;
+  --tile-from: #f7faff;
+  --tile-to: #ffffff;
+  --warning-bg: #f1f6fd;
+  --warning-bar: #2563eb;
+  --header-border: #d9e2f1;
+  --overlay-backdrop: rgba(238, 242, 249, 0.88);
+  --body-glow-a: rgba(37, 99, 235, 0.07);
+  --body-glow-b: rgba(99, 102, 241, 0.05);
+  --hero-glow-a: rgba(37, 99, 235, 0.07);
+  --hero-glow-b: rgba(99, 102, 241, 0.05);
 
   /* palette-derived aliases for existing components */
   --brand-slate: var(--palette-slate);
@@ -53,17 +99,17 @@
   --background-alt: var(--background-subtle);
   --surface-raised: var(--surface-elevated);
   --surface-quiet: var(--background-subtle);
-  --surface-strong: #eef2fb;
-  --surface-deep: #ffffff;
-  --surface-sage: #131c33;
+  --surface-strong: #dbe6f9;
+  --surface-deep: #cdd9ee;
+  --surface-sage: #edf2fa;
   --ink: var(--text-primary);
-  --ink-strong: #ffffff;
+  --ink-strong: #000000;
   --muted: var(--text-muted);
-  --muted-strong: #aebbd9;
-  --accent-soft: rgba(59, 130, 246, 0.16);
-  --accent-clay: #60a5fa;
-  --accent-clay-soft: rgba(59, 130, 246, 0.24);
-  --sage-soft: #1f1f1f;
+  --muted-strong: #46546f;
+  --accent-soft: rgba(37, 99, 235, 0.1);
+  --accent-clay: #2563eb;
+  --accent-clay-soft: rgba(37, 99, 235, 0.18);
+  --sage-soft: #edf2fa;
   --line: var(--border);
   --line-strong: var(--border-strong);
   --success: var(--positive);
@@ -79,6 +125,94 @@
   --chart-accent: var(--chart-tertiary);
   --chart-positive: var(--positive);
   --chart-negative: var(--negative);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    /* semantic tokens — deep navy dark */
+    --background: #060a14;
+    --background-subtle: #0e1526;
+    --surface: #0b1120;
+    --surface-elevated: #111a30;
+    --surface-soft: #131c33;
+    --border: #1d2945;
+    --border-strong: #eef2fb;
+    --text-primary: #eef2fb;
+    --text-secondary: #c9d3ea;
+    --text-muted: #8294b8;
+    --brand-primary: #eef2fb;
+    --brand-secondary: #3b82f6;
+    --accent: #3b82f6;
+    --highlight: rgba(59, 130, 246, 0.22);
+    --positive: #2fbf63;
+    --positive-soft: rgba(47, 191, 99, 0.14);
+    --negative: #f0473e;
+    --negative-soft: rgba(240, 71, 62, 0.14);
+    --warning: #eef2fb;
+    --warning-soft: #131c33;
+    --nav-background: rgba(6, 10, 20, 0.88);
+    --inactive-tab-hover: #16203a;
+    --button-secondary: #141414;
+    --badge-neutral: #131c33;
+    --badge-emphasis: #eef2fb;
+    --badge-accent: #eef2fb;
+    --chart-primary: #60a5fa;
+    --chart-secondary: #93b4e8;
+    --chart-tertiary: #51618c;
+    --chart-muted: #2a3a5e;
+    --chart-grid: #16203a;
+    --chart-reference: #51618c;
+    --chart-tooltip-bg: rgba(11, 17, 32, 0.98);
+
+    /* component tokens — dark */
+    --card-from: #0e1628;
+    --card-to: #0b1120;
+    --card-border: #22304f;
+    --card-glow: rgba(96, 165, 250, 0.07);
+    --card-shadow: 0 12px 36px -14px rgba(2, 6, 16, 0.9);
+    --panel-bg: #111a30;
+    --panel-border: #243355;
+    --panel-quiet-bg: #0e1526;
+    --panel-quiet-border: #1d2945;
+    --shell-bg: #0f1729;
+    --field-bg: #0e1729;
+    --field-border: #2b3b61;
+    --field-hover: #3f5587;
+    --select-arrow: #93b4e8;
+    --scrollbar-thumb: #243355;
+    --scrollbar-thumb-hover: #33486f;
+    --btn2-border: #33486f;
+    --btn2-bg: rgba(59, 130, 246, 0.06);
+    --btn2-text: #dbe7ff;
+    --kicker: #60a5fa;
+    --pill-border: #3f5587;
+    --pill-text: #dbe7ff;
+    --pill-hi-bg: rgba(59, 130, 246, 0.18);
+    --pill-hi-border: rgba(96, 165, 250, 0.55);
+    --pill-hi-text: #93c5fd;
+    --tile-from: #121c34;
+    --tile-to: #0e1628;
+    --warning-bg: #101a30;
+    --warning-bar: #60a5fa;
+    --header-border: #1d2945;
+    --overlay-backdrop: rgba(6, 10, 20, 0.88);
+    --body-glow-a: rgba(37, 99, 235, 0.13);
+    --body-glow-b: rgba(99, 102, 241, 0.08);
+    --hero-glow-a: rgba(59, 130, 246, 0.14);
+    --hero-glow-b: rgba(99, 102, 241, 0.1);
+
+    --surface-strong: #eef2fb;
+    --surface-deep: #ffffff;
+    --surface-sage: #131c33;
+    --ink-strong: #ffffff;
+    --muted-strong: #aebbd9;
+    --accent-soft: rgba(59, 130, 246, 0.16);
+    --accent-clay: #60a5fa;
+    --accent-clay-soft: rgba(59, 130, 246, 0.24);
+    --sage-soft: #1f1f1f;
+  }
 }
 
 @theme inline {
@@ -140,13 +274,12 @@
 html {
   background: var(--background);
   color: var(--ink);
-  color-scheme: dark;
 }
 
 body {
   background:
-    radial-gradient(60rem 24rem at 18% -8rem, rgba(37, 99, 235, 0.13), transparent 65%),
-    radial-gradient(50rem 22rem at 85% -10rem, rgba(99, 102, 241, 0.08), transparent 60%),
+    radial-gradient(60rem 24rem at 18% -8rem, var(--body-glow-a), transparent 65%),
+    radial-gradient(50rem 22rem at 85% -10rem, var(--body-glow-b), transparent 60%),
     var(--background);
   background-attachment: fixed;
   color: var(--ink);
@@ -170,31 +303,32 @@ a {
 }
 
 .card {
-  background: linear-gradient(180deg, #0e1628 0%, #0b1120 100%);
-  border: 1px solid #22304f;
+  background: linear-gradient(180deg, var(--card-from) 0%, var(--card-to) 100%);
+  border: 1px solid var(--card-border);
   box-shadow:
-    inset 0 1px 0 rgba(96, 165, 250, 0.07),
-    0 12px 36px -14px rgba(2, 6, 16, 0.9);
+    inset 0 1px 0 var(--card-glow),
+    var(--card-shadow);
 }
 
 .card-quiet {
-  background: #0a101e;
-  border: 1px solid #1b2742;
+  background: var(--panel-quiet-bg);
+  border: 1px solid var(--panel-quiet-border);
   box-shadow: none;
 }
 
 .surface-panel {
-  background: #111a30;
-  border: 1px solid #243355;
-  box-shadow: inset 0 1px 0 rgba(96, 165, 250, 0.05);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  box-shadow: inset 0 1px 0 var(--card-glow);
 }
 
 .surface-panel-quiet {
-  background: #0e1526;
-  border: 1px solid #1d2945;
+  background: var(--panel-quiet-bg);
+  border: 1px solid var(--panel-quiet-border);
   box-shadow: none;
 }
 
+/* Signature element: stays dark in both color schemes */
 .panel-dark {
   background:
     radial-gradient(42rem 22rem at 112% -24%, rgba(59, 130, 246, 0.22), transparent 60%),
@@ -203,12 +337,12 @@ a {
   border: 2px solid #3b82f6;
   box-shadow:
     0 0 32px -6px rgba(59, 130, 246, 0.4),
-    0 18px 44px -12px rgba(2, 6, 16, 0.9);
+    0 18px 44px -12px rgba(2, 6, 16, 0.55);
 }
 
 .field {
-  border: 1px solid #2b3b61;
-  background: #0e1729;
+  border: 1px solid var(--field-border);
+  background: var(--field-bg);
   color: var(--ink);
   border-radius: 0.5rem;
   width: 100%;
@@ -226,8 +360,8 @@ a {
 select.field {
   appearance: none;
   background-image:
-    linear-gradient(45deg, transparent 50%, #93b4e8 50%),
-    linear-gradient(135deg, #93b4e8 50%, transparent 50%);
+    linear-gradient(45deg, transparent 50%, var(--select-arrow) 50%),
+    linear-gradient(135deg, var(--select-arrow) 50%, transparent 50%);
   background-position:
     calc(100% - 1.05rem) calc(50% - 0.1rem),
     calc(100% - 0.75rem) calc(50% - 0.1rem);
@@ -240,20 +374,23 @@ select.field {
 }
 
 select.field option {
-  background-color: #0e1729;
+  background-color: var(--field-bg);
   color: var(--ink);
 }
 
-/* Native date inputs: tint the calendar glyph toward the theme */
-input[type="date"].field::-webkit-calendar-picker-indicator {
-  filter: invert(0.75) sepia(0.3) saturate(4) hue-rotate(195deg);
-  opacity: 0.85;
+/* Native date inputs: tint the calendar glyph toward the theme (dark only —
+   the default dark glyph already suits the light theme) */
+@media (prefers-color-scheme: dark) {
+  input[type="date"].field::-webkit-calendar-picker-indicator {
+    filter: invert(0.75) sepia(0.3) saturate(4) hue-rotate(195deg);
+    opacity: 0.85;
+  }
 }
 
 /* Themed scrollbars */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2b3b61 transparent;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
 ::-webkit-scrollbar {
@@ -262,13 +399,13 @@ input[type="date"].field::-webkit-calendar-picker-indicator {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #243355;
+  background: var(--scrollbar-thumb);
   border: 2px solid var(--background);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #33486f;
+  background: var(--scrollbar-thumb-hover);
 }
 
 ::-webkit-scrollbar-track {
@@ -276,7 +413,7 @@ input[type="date"].field::-webkit-calendar-picker-indicator {
 }
 
 .field:hover {
-  border-color: #3f5587;
+  border-color: var(--field-hover);
 }
 
 .field:focus,
@@ -316,9 +453,9 @@ input[type="date"].field::-webkit-calendar-picker-indicator {
 
 .button-secondary {
   border-radius: 0.5rem;
-  border: 2px solid #33486f;
-  background: rgba(59, 130, 246, 0.06);
-  color: #dbe7ff;
+  border: 2px solid var(--btn2-border);
+  background: var(--btn2-bg);
+  color: var(--btn2-text);
   font-weight: 700;
   box-shadow: none;
   transition:
@@ -335,11 +472,11 @@ input[type="date"].field::-webkit-calendar-picker-indicator {
 
 .button-secondary:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(245, 245, 245, 0.2);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
 }
 
 .label-kicker {
-  color: #60a5fa;
+  color: var(--kicker);
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -347,8 +484,8 @@ input[type="date"].field::-webkit-calendar-picker-indicator {
 }
 
 .shell-panel {
-  background: #0f1729;
-  border: 1px solid #243355;
+  background: var(--shell-bg);
+  border: 1px solid var(--panel-border);
   box-shadow: none;
 }
 
@@ -358,35 +495,26 @@ input[type="date"].field::-webkit-calendar-picker-indicator {
 }
 
 .meta-pill {
-  background: #131c33;
-  border: 1px solid #243355;
+  background: var(--badge-neutral);
+  border: 1px solid var(--panel-border);
   color: var(--muted-strong);
 }
 
-.pill-slate {
+.pill-slate,
+.pill-clay,
+.pill-sage {
   background: transparent;
-  border: 1.5px solid #3f5587;
-  color: #dbe7ff;
+  border: 1.5px solid var(--pill-border);
+  color: var(--pill-text);
 }
 
 .pill-sand {
-  background: rgba(59, 130, 246, 0.18);
-  border: 1.5px solid rgba(96, 165, 250, 0.55);
-  color: #93c5fd;
+  background: var(--pill-hi-bg);
+  border: 1.5px solid var(--pill-hi-border);
+  color: var(--pill-hi-text);
 }
 
-.pill-clay {
-  background: transparent;
-  border: 1.5px solid #3f5587;
-  color: #dbe7ff;
-}
-
-.pill-sage {
-  background: transparent;
-  border: 1.5px solid #3f5587;
-  color: #dbe7ff;
-}
-
+/* Lives inside .panel-dark — constant */
 .dark-pill {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.22);
@@ -397,22 +525,22 @@ input[type="date"].field::-webkit-calendar-picker-indicator {
 .card-tone-sand,
 .card-tone-clay,
 .card-tone-sage {
-  background: linear-gradient(180deg, #121c34 0%, #0e1628 100%);
-  border: 1px solid #243355;
+  background: linear-gradient(180deg, var(--tile-from) 0%, var(--tile-to) 100%);
+  border: 1px solid var(--panel-border);
   border-top: 4px solid #3b82f6;
-  box-shadow: inset 0 1px 0 rgba(96, 165, 250, 0.08);
+  box-shadow: inset 0 1px 0 var(--card-glow);
 }
 
 .hero-wash {
   background:
-    radial-gradient(46rem 12rem at 16% -50%, rgba(59, 130, 246, 0.14), transparent 70%),
-    radial-gradient(38rem 12rem at 88% -55%, rgba(99, 102, 241, 0.1), transparent 70%);
+    radial-gradient(46rem 12rem at 16% -50%, var(--hero-glow-a), transparent 70%),
+    radial-gradient(38rem 12rem at 88% -55%, var(--hero-glow-b), transparent 70%);
 }
 
 .warning-panel {
-  background: #101a30;
-  border: 1px solid #243355;
-  border-left: 8px solid #60a5fa;
+  background: var(--warning-bg);
+  border: 1px solid var(--panel-border);
+  border-left: 8px solid var(--warning-bar);
   box-shadow: none;
 }
 
@@ -420,6 +548,7 @@ input[type="date"].field::-webkit-calendar-picker-indicator {
   position: relative;
 }
 
+/* Lives inside .panel-dark — constant */
 .scouting-seam::before {
   background: rgba(255, 255, 255, 0.14);
   content: "";
@@ -428,6 +557,7 @@ input[type="date"].field::-webkit-calendar-picker-indicator {
   width: 100%;
 }
 
+/* Lives inside .panel-dark — constant */
 .scorebug {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -439,7 +569,7 @@ input[type="date"].field::-webkit-calendar-picker-indicator {
 
 .loading-overlay__backdrop {
   backdrop-filter: blur(8px);
-  background: rgba(6, 10, 20, 0.88);
+  background: var(--overlay-backdrop);
 }
 
 .app-modal {
@@ -452,7 +582,7 @@ input[type="date"].field::-webkit-calendar-picker-indicator {
   position: fixed;
   inset: 0;
   border: 0;
-  background: rgba(2, 6, 16, 0.74);
+  background: rgba(2, 6, 16, 0.6);
   backdrop-filter: blur(6px);
 }
 
@@ -504,7 +634,7 @@ input[type="date"].field::-webkit-calendar-picker-indicator {
   z-index: 40;
   background: var(--nav-surface);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid #1d2945;
+  border-bottom: 1px solid var(--header-border);
 }
 
 .site-header::after {

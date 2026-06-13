@@ -72,7 +72,7 @@ export function LiveZoneGrid({ zones }: LiveZoneGridProps) {
           })}
         </div>
       </div>
-      <div className="mt-3 flex items-center justify-center gap-4 text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
+      <div className="mt-3 flex items-center justify-center gap-4 text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-white/55">
         <span className="flex items-center gap-1.5">
           <span className="h-2.5 w-2.5 rounded-sm bg-[rgba(240,71,62,0.8)]" /> Batter hot zone
         </span>
