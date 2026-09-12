@@ -287,6 +287,61 @@ body {
   min-height: 100vh;
 }
 
+/* Figma desktop shell: the rail is intentionally fixed, while application
+   screens keep their existing responsive content behavior below it. */
+.site-header {
+  display: block;
+}
+
+.figma-workspace {
+  --background: #181a29;
+  --background-subtle: #202337;
+  --surface: #202337;
+  --surface-elevated: #202337;
+  --surface-soft: #202337;
+  --border: #303652;
+  --border-strong: #f7f8ff;
+  --text-primary: #f7f8ff;
+  --text-secondary: #c6cbe0;
+  --text-muted: #969dba;
+  --accent: #5688ff;
+  --highlight: rgba(86, 136, 255, 0.18);
+  --brand-primary: #f7f8ff;
+  --brand-secondary: #5688ff;
+  --card-from: #202337;
+  --card-to: #202337;
+  --card-border: #303652;
+  --panel-bg: #202337;
+  --panel-border: #303652;
+  --panel-quiet-bg: #171a2a;
+  --panel-quiet-border: #303652;
+  --shell-bg: #202337;
+  --field-bg: #171a2a;
+  --field-border: #303652;
+  --field-hover: #5688ff;
+  --select-arrow: #969dba;
+  --btn2-border: #303652;
+  --btn2-bg: transparent;
+  --btn2-text: #f7f8ff;
+  --kicker: #969dba;
+  --badge-neutral: #202337;
+  --badge-emphasis: #202337;
+  --badge-accent: #202337;
+  --ink: #f7f8ff;
+  --muted: #969dba;
+  --muted-strong: #c6cbe0;
+  --line: #303652;
+  --line-strong: #f7f8ff;
+  --nav-surface: #111321;
+  background: #181a29;
+}
+
+@media (min-width: 1024px) {
+  .site-header {
+    display: none;
+  }
+}
+
 /* Display face carries the bold identity */
 .font-serif {
   font-weight: 700;

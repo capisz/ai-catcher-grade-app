@@ -8,7 +8,7 @@ import { useGlobalLoading } from "@/components/ui/loading-provider";
  * to a fast spin whenever a route transition is in flight, doubling as a
  * lightweight loading indicator in the header.
  */
-export function BrandMark() {
+export function BrandMark({ inverse = false }: { inverse?: boolean }) {
   const { isLoading } = useGlobalLoading();
 
   return (
@@ -16,7 +16,12 @@ export function BrandMark() {
       <BaseballLogo
         className={["h-7 w-7 brand-spin", isLoading ? "brand-spin--fast" : ""].join(" ")}
       />
-      <span className="font-serif text-[1.15rem] font-bold tracking-tight text-ink">
+      <span
+        className={[
+          "font-serif text-[1.15rem] font-bold tracking-tight",
+          inverse ? "text-[#f7f8ff]" : "text-ink",
+        ].join(" ")}
+      >
         backstop<span className="text-accent">.ai</span>
       </span>
     </span>

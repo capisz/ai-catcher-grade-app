@@ -16,8 +16,8 @@ export function AppNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="overflow-x-auto">
-      <div className="flex min-w-max items-center gap-1 rounded-lg bg-background-subtle p-1">
+    <nav aria-label="Primary navigation">
+      <div className="flex gap-1 overflow-x-auto lg:flex-col lg:gap-2">
         {NAV_ITEMS.map((item) => {
           const active =
             pathname === item.href ||
@@ -26,13 +26,14 @@ export function AppNav() {
             <LoadingLink
               key={item.href}
               href={item.href}
+              aria-current={active ? "page" : undefined}
               loadingMessage="Loading backstop.ai..."
               loadingSubtitle={`Opening ${item.label.toLowerCase()}.`}
               className={[
-                "rounded-md px-3 py-1.5 text-sm font-semibold transition",
+                "shrink-0 rounded-[10px] px-3 py-3 text-xs font-semibold transition lg:px-3.5 lg:text-sm",
                 active
-                  ? "bg-accent text-white"
-                  : "text-muted hover:text-ink",
+                  ? "bg-white/[0.07] text-white"
+                  : "text-[#969dba] hover:bg-white/[0.04] hover:text-white",
               ].join(" ")}
             >
               {item.label}

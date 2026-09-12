@@ -24,6 +24,8 @@ from datetime import date as date_cls
 from typing import Any, Optional
 
 from fastapi import APIRouter, HTTPException, Query
+from catcher_intel.live_context import game_context, mlb_date
+from concurrent.futures import ThreadPoolExecutor
 
 router = APIRouter(prefix="/live", tags=["live"])
 
@@ -90,7 +92,7 @@ def headshot_for(player_id: int | str) -> str:
 @router.get("/schedule")
 def live_schedule(date: Optional[str] = Query(default=None, description="YYYY-MM-DD; defaults to today")) -> dict:
     """All MLB games for a date with status and team info."""
-    target = date or date_cls.today().isoformat()
+    target = date or mlb_date()
     payload = _fetch_json("/v1/schedule", {"sportId": 1, "date": target}, ttl=TTL_SCHEDULE_SECONDS)
 
     games = []
@@ -198,6 +200,7 @@ def live_game_pitches(game_pk: int, limit: int = Query(default=200, le=1000)) ->
         "state": status.get("abstractGameState"),
         "detailed_state": status.get("detailedState"),
         "pitch_count": len(pitches),
+        "context": game_context(payload),
         "pitches": list(reversed(pitches))[:limit],
     }
 
@@ -335,8 +338,7 @@ def live_game_zone_report(game_pk: int) -> dict:
             if batter_id is not None:
                 batter_ids[side].add(batter_id)
 
-    zones_by_batter: dict = {}
-    for batter_id in batter_ids["home"] | batter_ids["away"]:
+    def load_batter_zones(batter_id):
         try:
             stats_payload = _fetch_json(
                 f"/v1/people/{batter_id}/stats",
@@ -344,10 +346,17 @@ def live_game_zone_report(game_pk: int) -> dict:
                 ttl=TTL_SLOW_SECONDS,
             )
         except HTTPException:
-            continue
+            return batter_id, None
         parsed = _parse_hot_zones(stats_payload)
-        if parsed:
-            zones_by_batter[batter_id] = parsed
+        return batter_id, parsed
+
+    # Independent lookups must not serialize an entire lineup before rendering.
+    with ThreadPoolExecutor(max_workers=6) as executor:
+        zones_by_batter = {
+            batter_id: parsed for batter_id, parsed in executor.map(
+                load_batter_zones, batter_ids["home"] | batter_ids["away"]
+            ) if parsed
+        }
 
     catchers = live_game_catchers(game_pk)
     status = game_data.get("status", {}) or {}

@@ -23,7 +23,9 @@ from catcher_intel.api_models import (
 )
 from catcher_intel.api_service import IntelService
 from catcher_intel.config import get_settings
-from catcher_intel.db import ensure_schema
+from catcher_intel.db import ensure_schema, get_engine
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 
 settings = get_settings()
 ensure_schema(settings.database_url)
@@ -45,6 +47,11 @@ app.add_middleware(
 
 @app.get("/health")
 def health() -> dict[str, str]:
+    try:
+        with get_engine(settings.database_url).connect() as connection:
+            connection.execute(text("SELECT 1"))
+    except SQLAlchemyError as exc:
+        raise HTTPException(status_code=503, detail="Database is unavailable") from exc
     return {"status": "ok"}
 
 

@@ -5,18 +5,15 @@ export const dynamic = "force-dynamic";
 export default function HomePage() {
   return (
     <div className="space-y-5">
-      <section className="card relative overflow-hidden rounded-xl p-5 sm:p-6">
-        <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
-        <div className="relative">
-          <div className="label-kicker">Live</div>
-          <h1 className="mt-3 max-w-3xl font-serif text-2xl leading-tight text-ink">
-            Real-time catcher game-calling, straight from today&apos;s games.
-          </h1>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-            Pick a game and a catcher to see how their pitch calls track against each batter&apos;s
-            hottest zones — graded live on the 20-80 scale, refreshed every 20 seconds.
-          </p>
+      <section>
+        <p className="text-[11px] text-muted">Dashboard&nbsp;&nbsp;›&nbsp;&nbsp;Live</p>
+        <div className="mt-3 flex items-center gap-3">
+          <span className="h-6 w-1 rounded-sm bg-accent" />
+          <h1 className="text-lg font-medium tracking-[0.02em] text-ink">LIVE GAME MODE</h1>
         </div>
+        <p className="mt-3 text-[11px] leading-5 text-muted">
+          Real-time catcher game-calling, matched against batter hot zones from public MLB data.
+        </p>
       </section>
       <LiveDashboard />
     </div>

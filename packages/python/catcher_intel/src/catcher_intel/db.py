@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
+from functools import lru_cache
 from typing import Dict, Optional, Sequence
 
 import pandas as pd
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, JSON, inspect
 from sqlalchemy.engine import Engine
 
 SCHEMA_MIGRATIONS = [
@@ -36,10 +37,14 @@ SCHEMA_MIGRATIONS = [
 ]
 
 
+@lru_cache(maxsize=8)
 def get_engine(database_url: str) -> Engine:
+    # Hosting providers commonly supply these aliases; use our installed psycopg 3 driver.
+    if database_url.startswith(("postgres://", "postgresql://")):
+        database_url = "postgresql+psycopg://" + database_url.split("://", 1)[1]
     if database_url.startswith("sqlite:///"):
         Path(database_url.replace("sqlite:///", "")).parent.mkdir(parents=True, exist_ok=True)
-    return create_engine(database_url, future=True)
+    return create_engine(database_url, future=True, pool_pre_ping=True)
 
 
 _ADD_COLUMN_RE = re.compile(
@@ -92,7 +97,15 @@ def write_dataframe(
     if_exists: str = "append",
 ) -> None:
     engine = get_engine(database_url)
-    frame.to_sql(table_name, engine, if_exists=if_exists, index=False)
+    dtype = None
+    if table_name == "model_registry" and "feature_list" in frame:
+        import json
+        frame = frame.copy()
+        frame["feature_list"] = frame["feature_list"].map(
+            lambda value: json.loads(value) if isinstance(value, str) else value
+        )
+        dtype = {"feature_list": JSON}
+    frame.to_sql(table_name, engine, if_exists=if_exists, index=False, dtype=dtype)
 
 
 def execute_sql(
@@ -143,7 +156,14 @@ def upsert_dataframe(
 
     engine = get_engine(database_url)
     with engine.begin() as connection:
-        frame.to_sql(staging_table, connection, if_exists="replace", index=False)
+        # All-null columns otherwise become TEXT, which Postgres cannot merge
+        # into numeric/date columns. Preserve the destination schema types.
+        column_types = {
+            column["name"]: column["type"]
+            for column in inspect(connection).get_columns(table_name)
+            if column["name"] in frame_columns
+        }
+        frame.to_sql(staging_table, connection, if_exists="replace", index=False, dtype=column_types)
         connection.execute(text(insert_sql))
         connection.execute(text(f"DROP TABLE IF EXISTS {quoted_staging_table}"))
     return len(frame)

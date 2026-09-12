@@ -1,6 +1,6 @@
 import type { CatcherDetailResponse, LeaderboardResponse } from "@catcher-intel/contracts";
 
-import Image from "next/image";
+import { PlayerHeadshot } from "@/components/player-headshot";
 
 import { ApiDebugPanel } from "@/components/api-debug-panel";
 import { DemoDataBadge } from "@/components/demo-data-badge";
@@ -286,7 +286,7 @@ export default async function ResearchPage({
     <div className="space-y-5">
       <section className="card relative overflow-hidden rounded-xl p-5 sm:p-6">
         <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
-        <div className="relative grid gap-5 xl:grid-cols-[1.04fr_0.96fr]">
+        <div className="relative grid min-w-0 grid-cols-1 gap-5">
           <div className="space-y-4">
             <div>
               <div className="label-kicker">Research Mode</div>
@@ -603,19 +603,7 @@ export default async function ResearchPage({
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="relative">
-                    {entry.headshot_url ? (
-                      <Image
-                        src={entry.headshot_url}
-                        alt={entry.catcher_name}
-                        width={48}
-                        height={48}
-                        className="h-12 w-12 rounded-full border border-line object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-strong text-sm font-semibold text-black">
-                        {entry.catcher_name[0]}
-                      </div>
-                    )}
+                    <PlayerHeadshot playerId={entry.catcher_id} name={entry.catcher_name} src={entry.headshot_url} size={48} className="rounded-full" />
                     <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border border-background bg-accent text-[0.6rem] font-bold text-white">
                       {index + 1}
                     </span>
@@ -674,19 +662,7 @@ export default async function ResearchPage({
                 className="surface-panel grid gap-4 rounded-xl p-4 transition hover:-translate-y-0.5 hover:border-accent/24 md:grid-cols-[4rem_1.6fr_.95fr_.9fr_.9fr_1.1fr]"
               >
                 <div className="relative h-12 w-12">
-                  {entry.headshot_url ? (
-                    <Image
-                      src={entry.headshot_url}
-                      alt={entry.catcher_name}
-                      width={48}
-                      height={48}
-                      className="h-12 w-12 rounded-full border border-line object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-strong text-sm font-semibold text-black">
-                      {entry.catcher_name[0]}
-                    </div>
-                  )}
+                  <PlayerHeadshot playerId={entry.catcher_id} name={entry.catcher_name} src={entry.headshot_url} size={48} className="rounded-full" />
                   <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border border-background bg-accent text-[0.6rem] font-bold text-white">
                     {index + 1}
                   </span>

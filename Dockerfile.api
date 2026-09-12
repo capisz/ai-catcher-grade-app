@@ -1,0 +1,15 @@
+FROM python:3.11-slim
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+COPY pyproject.toml README.md ./
+COPY packages/python packages/python
+RUN pip install --no-cache-dir .
+COPY apps/api apps/api
+COPY services services
+COPY sql sql
+# The shared package resolves schema/config relative to this source tree.
+ENV PYTHONPATH=/app/packages/python/catcher_intel/src
+ENV PYTHONUNBUFFERED=1
+EXPOSE 8000
+CMD ["sh", "-c", "exec python -m uvicorn apps.api.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

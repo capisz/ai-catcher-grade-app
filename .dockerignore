@@ -1,0 +1,10 @@
+.env*
+.venv
+node_modules
+**/node_modules
+**/.next
+data
+artifacts
+.pnpm-store
+.git
+**/__pycache__

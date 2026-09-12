@@ -4,7 +4,7 @@ import type {
   PairingsResponse,
   RecommendationResponse,
 } from "@catcher-intel/contracts";
-import Image from "next/image";
+import { PlayerHeadshot } from "@/components/player-headshot";
 import { redirect } from "next/navigation";
 
 import { ApiDebugPanel } from "@/components/api-debug-panel";
@@ -390,7 +390,7 @@ export default async function MatchupExplorerPage({
     <div className="space-y-5">
       <section className="card relative overflow-hidden rounded-xl p-5 sm:p-6">
         <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
-        <div className="relative grid gap-5 xl:grid-cols-[1.02fr_0.98fr]">
+        <div className="relative grid min-w-0 grid-cols-1 gap-5">
           <div className="space-y-4">
             <div>
               <div className="label-kicker">Game Mode</div>
@@ -420,7 +420,7 @@ export default async function MatchupExplorerPage({
               <input type="hidden" name="leverage_bucket" value={leverageBucket} />
               <input type="hidden" name="prev_pitch_type_1" value={prevPitchType1} />
               <input type="hidden" name="prev_pitch_type_2" value={prevPitchType2} />
-              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-[minmax(0,1.2fr)_11rem_11rem_auto]">
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 <label className="min-w-0 space-y-2">
                   <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Catcher
@@ -597,19 +597,7 @@ export default async function MatchupExplorerPage({
           <aside className="panel-dark overflow-hidden rounded-xl p-5 text-white sm:p-6">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-4">
-                {catcherDetail.identity.headshot_url ? (
-                  <Image
-                    src={catcherDetail.identity.headshot_url}
-                    alt={catcherDetail.identity.catcher_name}
-                    width={96}
-                    height={96}
-                    className="h-24 w-24 rounded-lg border border-white/12 object-cover"
-                  />
-                ) : (
-                  <div className="dark-pill flex h-24 w-24 items-center justify-center rounded-lg text-3xl font-semibold">
-                    {catcherDetail.identity.catcher_name[0]}
-                  </div>
-                )}
+                <PlayerHeadshot playerId={catcherDetail.identity.catcher_id} name={catcherDetail.identity.catcher_name} src={catcherDetail.identity.headshot_url} size={96} className="rounded-lg" />
                 <div>
                   <div className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-white/56">
                     Active game context

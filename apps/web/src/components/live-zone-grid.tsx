@@ -47,17 +47,17 @@ export function LiveZoneGrid({ zones }: LiveZoneGridProps) {
 
   return (
     <div>
-      <div className="mx-auto w-fit rounded-lg border-2 border-dashed border-white/40 p-2">
+      <div className="mx-auto w-full max-w-[316px] rounded-lg border-2 border-dashed border-white/40 p-2">
         <div className="grid grid-cols-3 gap-1">
           {rows.flat().map((zoneNumber) => {
             const cell = byZone.get(zoneNumber);
             if (!cell) {
-              return <div key={zoneNumber} className="h-20 w-20 sm:h-24 sm:w-24" />;
+              return <div key={zoneNumber} className="aspect-square min-w-0" />;
             }
             return (
               <div
                 key={zoneNumber}
-                className="flex h-20 w-20 flex-col items-center justify-center rounded-sm sm:h-24 sm:w-24"
+                className="flex aspect-square min-w-0 flex-col items-center justify-center rounded-sm"
                 style={{ background: cellBackground(cell) }}
                 title={`Zone ${cell.zone}: ${cell.pitches} pitches`}
               >

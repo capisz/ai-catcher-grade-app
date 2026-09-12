@@ -6,7 +6,7 @@
     "dev:web": "pnpm --filter web dev",
     "build:web": "pnpm --filter web build",
     "lint:web": "pnpm --filter web lint",
-    "dev:api": "python3 -m uvicorn apps.api.main:app --reload --app-dir .",
+    "dev:api": ".venv/bin/python -m uvicorn apps.api.main:app --reload --app-dir . --host 127.0.0.1 --port 8000",
     "ingest": "python3 services/ingestion/fetch_statcast.py",
     "load:chadwick": "python3 services/ingestion/load_chadwick_identity.py",
     "refresh:players": "python3 services/modeling/refresh_player_metadata.py",
