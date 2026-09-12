@@ -1,11 +1,13 @@
 "use client";
 
-import Image from "next/image";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { AiAnalystCard } from "@/components/ai-analyst-card";
 import { GameSelect } from "@/components/ui/game-select";
 import { LiveZoneGrid } from "@/components/live-zone-grid";
+import { LiveGameScoreboard } from "@/components/live-game-scoreboard";
+import { PlayerHeadshot } from "@/components/player-headshot";
+import { mlbDate, shiftDate, type LiveGameContext } from "@/lib/live-game-context";
 
 const PITCH_POLL_MS = 20_000;
 const STREAM_PREVIEW_COUNT = 12;
@@ -74,12 +76,14 @@ type LivePitch = {
 };
 
 type PitchFeed = {
+  game_pk: number;
+  context: LiveGameContext;
   pitch_count: number;
   pitches: LivePitch[];
 };
 
-async function fetchLiveJson<T>(url: string): Promise<T> {
-  const response = await fetch(url, { cache: "no-store" });
+async function fetchLiveJson<T>(url: string, signal?: AbortSignal): Promise<T> {
+  const response = await fetch(url, { cache: "no-store", signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(45_000)]) : AbortSignal.timeout(45_000) });
   if (!response.ok) {
     throw new Error(`Live data request failed (${response.status}).`);
   }
@@ -125,6 +129,9 @@ function defaultGame(games: LiveGame[]) {
 }
 
 export function LiveDashboard() {
+  const [selectedDate, setSelectedDate] = useState(() => mlbDate());
+  const initialSchedule = useRef(true);
+  const [feedError, setFeedError] = useState<string | null>(null);
   const [games, setGames] = useState<LiveGame[]>([]);
   const [scheduleError, setScheduleError] = useState<string | null>(null);
   const [scheduleLoaded, setScheduleLoaded] = useState(false);
@@ -137,201 +144,201 @@ export function LiveDashboard() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   useEffect(() => {
-    let cancelled = false;
+    const controller = new AbortController();
+    let timer: ReturnType<typeof setTimeout>;
     const load = async () => {
       try {
-        const today = await fetchLiveJson<{ games: LiveGame[] }>("/api/backend/live/schedule");
-        let allGames = today.games;
-        // Off-hours: nothing live or finished today yet, so offer yesterday's
-        // finals so the zone report has real pitches to grade.
-        if (!allGames.some((game) => game.state === "Live" || game.state === "Final")) {
-          const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000)
-            .toISOString()
-            .slice(0, 10);
+        const schedule = await fetchLiveJson<{ games: LiveGame[] }>(
+          `/api/backend/live/schedule?date=${selectedDate}`, controller.signal,
+        );
+        if (controller.signal.aborted) return;
+        // At first open, offer the previous completed slate without mixing dates.
+        if (initialSchedule.current && !schedule.games.some(game => game.state === "Live" || game.state === "Final")) {
+          initialSchedule.current = false;
+          const previousDate = shiftDate(selectedDate, -1);
           try {
-            const previous = await fetchLiveJson<{ games: LiveGame[] }>(
-              `/api/backend/live/schedule?date=${yesterday}`,
-            );
-            allGames = [...previous.games.filter((game) => game.state === "Final"), ...allGames];
+            const previous = await fetchLiveJson<{ games: LiveGame[] }>(`/api/backend/live/schedule?date=${previousDate}`, controller.signal);
+            if (controller.signal.aborted) return;
+            if (previous.games.some(game => game.state === "Final" || game.state === "Live")) {
+              setSelectedDate(previousDate);
+              return;
+            }
           } catch {
-            // Yesterday's slate is a nice-to-have; ignore failures.
+            if (controller.signal.aborted) return;
           }
         }
-        if (!cancelled) {
-          setGames(allGames);
-          setScheduleLoaded(true);
-          setSelectedGamePk((current) => current ?? defaultGame(allGames));
-        }
+        initialSchedule.current = false;
+        setGames(schedule.games);
+        setScheduleError(null);
+        setScheduleLoaded(true);
+        setSelectedGamePk(current => schedule.games.some(game => game.game_pk === current) ? current : defaultGame(schedule.games));
       } catch (error: unknown) {
-        if (!cancelled) {
+        if (!controller.signal.aborted) {
           setScheduleError(error instanceof Error ? error.message : "Schedule unavailable.");
           setScheduleLoaded(true);
         }
+      } finally {
+        if (!controller.signal.aborted) timer = setTimeout(load, 60_000);
       }
     };
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const refresh = useCallback((gamePk: number) => {
-    fetchLiveJson<ZoneReport>(`/api/backend/live/games/${gamePk}/zone-report`)
-      .then((payload) => {
-        setReport(payload);
-        setReportError(null);
-        setLastUpdated(new Date());
-      })
-      .catch((error: unknown) => {
-        setReportError(error instanceof Error ? error.message : "Zone report unavailable.");
-      });
-    fetchLiveJson<PitchFeed>(`/api/backend/live/games/${gamePk}/pitches?limit=300`)
-      .then(setFeed)
-      .catch(() => setFeed(null));
-  }, []);
+    void load();
+    return () => { controller.abort(); clearTimeout(timer); };
+  }, [selectedDate]);
 
   useEffect(() => {
-    if (selectedGamePk == null) {
-      return;
-    }
+    if (selectedGamePk == null) return;
+    const controller = new AbortController();
+    let feedTimer: ReturnType<typeof setTimeout>;
+    let reportTimer: ReturnType<typeof setTimeout>;
+    // Independent loops: a slow zone report cannot hold up the scoreboard.
+    // Schedule the next refresh after completion to avoid overlapping requests.
+    const loadFeed = async () => {
+      try {
+        const payload = await fetchLiveJson<PitchFeed>(`/api/backend/live/games/${selectedGamePk}/pitches?limit=1000`, controller.signal);
+        if (controller.signal.aborted) return;
+        setFeed(payload);
+        setFeedError(null);
+        setLastUpdated(new Date());
+      } catch (error) {
+        if (!controller.signal.aborted) setFeedError(error instanceof Error ? error.message : "Game feed unavailable.");
+      } finally {
+        if (!controller.signal.aborted) feedTimer = setTimeout(loadFeed, PITCH_POLL_MS);
+      }
+    };
+    const loadReport = async () => {
+      try {
+        const payload = await fetchLiveJson<ZoneReport>(`/api/backend/live/games/${selectedGamePk}/zone-report`, controller.signal);
+        if (controller.signal.aborted) return;
+        setReport(payload);
+        setReportError(null);
+      } catch (error) {
+        if (!controller.signal.aborted) setReportError(error instanceof Error ? error.message : "Zone report unavailable.");
+      } finally {
+        if (!controller.signal.aborted) reportTimer = setTimeout(loadReport, PITCH_POLL_MS);
+      }
+    };
+    void loadFeed();
+    void loadReport();
+    return () => { controller.abort(); clearTimeout(feedTimer); clearTimeout(reportTimer); };
+  }, [selectedGamePk]);
+
+  function selectGame(gamePk: number) {
+    setSelectedGamePk(gamePk);
     setReport(null);
     setFeed(null);
     setReportError(null);
-    refresh(selectedGamePk);
-    const interval = setInterval(() => refresh(selectedGamePk), PITCH_POLL_MS);
-    return () => clearInterval(interval);
-  }, [selectedGamePk, refresh]);
+    setFeedError(null);
+    setLastUpdated(null);
+    setShowAllPitches(false);
+  }
+
+  function selectDate(date: string) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
+    initialSchedule.current = false;
+    setSelectedDate(date);
+    setGames([]);
+    setSelectedGamePk(null);
+    setReport(null);
+    setFeed(null);
+    setLastUpdated(null);
+    setScheduleLoaded(false);
+    setScheduleError(null);
+    setFeedError(null);
+    setReportError(null);
+  }
 
   const selectedGame = useMemo(
     () => games.find((game) => game.game_pk === selectedGamePk),
     [games, selectedGamePk],
   );
 
-  if (!scheduleLoaded) {
-    return (
-      <div className="surface-panel rounded-xl p-6 text-sm leading-6 text-muted">
-        Loading today&apos;s MLB schedule...
-      </div>
-    );
-  }
-
-  if (scheduleError) {
-    return (
-      <div className="warning-panel rounded-xl p-6">
-        <div className="label-kicker">Live feed unavailable</div>
-        <p className="mt-3 text-sm leading-6 text-muted">{scheduleError}</p>
-      </div>
-    );
-  }
-
-  if (games.length === 0) {
-    return (
-      <div className="surface-panel rounded-xl p-6 text-sm leading-6 text-muted">
-        No MLB games are scheduled today.
-      </div>
-    );
-  }
-
-  const sideReport = report?.sides[selectedSide] ?? null;
+  const activeReport = report?.game_pk === selectedGamePk ? report : null;
+  const activeFeed = feed?.game_pk === selectedGamePk ? feed : null;
+  const sideReport = activeReport?.sides[selectedSide] ?? null;
   const sideTeam = selectedSide === "home" ? selectedGame?.home.name : selectedGame?.away.name;
-  const pitches = feed?.pitches ?? [];
+  const pitches = activeFeed?.pitches ?? [];
   const visiblePitches = showAllPitches ? pitches : pitches.slice(0, STREAM_PREVIEW_COUNT);
 
   return (
     <div className="space-y-5">
       <div className="surface-panel rounded-xl p-4">
+        <div className="mb-4 flex flex-wrap items-end gap-2">
+          <label className="min-w-0 flex-1 space-y-2 sm:max-w-52">
+            <span className="label-kicker" title="Eastern time">Game date · ET</span>
+            <input aria-label="Game date" type="date" value={selectedDate} onChange={event => selectDate(event.target.value)} className="field w-full" />
+          </label>
+          <button type="button" onClick={() => selectDate(shiftDate(selectedDate, -1))} className="button-secondary px-3 py-2.5 text-xs" aria-label="Previous day">←</button>
+          <button type="button" onClick={() => selectDate(mlbDate())} className="button-secondary px-3 py-2.5 text-xs">Today</button>
+          <button type="button" onClick={() => selectDate(shiftDate(selectedDate, 1))} className="button-secondary px-3 py-2.5 text-xs" aria-label="Next day">→</button>
+        </div>
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
           <label className="block min-w-0 flex-1 space-y-2">
             <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
-              Game ({games.length} today)
+              Game ({games.length} on selected date)
             </span>
-            <GameSelect games={games} value={selectedGamePk} onChange={setSelectedGamePk} />
+            <GameSelect games={games.map(game => activeFeed?.context && game.game_pk === activeFeed.game_pk ? { ...game, state: activeFeed.context.state, detailed_state: activeFeed.context.detailed_state, home: { ...game.home, score: activeFeed.context.teams.home.runs }, away: { ...game.away, score: activeFeed.context.teams.away.runs } } : game)} value={selectedGamePk} onChange={selectGame} />
           </label>
           <div className="flex flex-wrap items-center gap-2 text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
             <span className="pill-sand rounded-full px-3 py-1.5">
-              {selectedGame?.detailed_state ?? "Unknown"}
+              {activeFeed?.context?.detailed_state ?? selectedGame?.detailed_state ?? "Scheduled"}
             </span>
             {lastUpdated ? (
               <span className="meta-pill rounded-full px-3 py-1.5">
-                Updated {lastUpdated.toLocaleTimeString()}
+                Checked {lastUpdated.toLocaleTimeString()}
               </span>
             ) : null}
           </div>
         </div>
 
-        {report ? (
+        {!scheduleLoaded ? <p className="mt-3 text-sm text-muted">Loading schedule...</p> : null}
+        {scheduleError ? <p role="status" className="mt-3 text-sm text-negative">{scheduleError} Retrying automatically.</p> : null}
+        {scheduleLoaded && !scheduleError && games.length === 0 ? <p className="mt-3 text-sm text-muted">No MLB games on this date. Choose another day.</p> : null}
+        {activeReport ? (
           <div className="mt-4 flex gap-3 overflow-x-auto pb-1">
-            {(["away", "home"] as const).flatMap((side) =>
-              report.sides[side].catchers.map((catcher) => {
-                const active = side === selectedSide;
-                const grade = report.sides[side].grade;
-                return (
-                  <button
-                    key={`${side}-${catcher.player_id ?? catcher.name}`}
-                    onClick={() => setSelectedSide(side)}
-                    className={[
-                      "flex min-w-[15rem] items-center gap-3 rounded-lg border-2 p-3 text-left transition",
-                      active
-                        ? "border-accent bg-accent/10"
-                        : "border-line bg-surface hover:border-muted",
-                    ].join(" ")}
-                  >
-                    {catcher.headshot_url ? (
-                      <Image
-                        src={catcher.headshot_url}
-                        alt={catcher.name ?? "Catcher"}
-                        width={44}
-                        height={44}
-                        className="h-11 w-11 rounded-full border border-line object-cover"
-                      />
-                    ) : (
-                      <div className="dark-pill flex h-11 w-11 items-center justify-center rounded-full text-sm font-semibold">
-                        {(catcher.name ?? "?")[0]}
-                      </div>
-                    )}
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-sm font-semibold text-ink">
-                        {catcher.name ?? "Unknown"}
-                      </div>
-                      <div className="mt-0.5 truncate text-[0.62rem] font-semibold uppercase tracking-[0.06em] text-muted">
-                        {(side === "home" ? selectedGame?.home.name : selectedGame?.away.name) ?? side}
-                      </div>
+            {(["away", "home"] as const).map(side => {
+              const sideData = activeReport.sides[side];
+              const team = side === "home" ? selectedGame?.home.name : selectedGame?.away.name;
+              const active = side === selectedSide;
+              return (
+                <button key={side} type="button" onClick={() => setSelectedSide(side)} aria-pressed={active}
+                  className={`flex min-w-[15rem] flex-1 items-center gap-3 rounded-lg border-2 p-3 text-left transition ${active ? "border-accent bg-accent/10" : "border-line bg-surface hover:border-muted"}`}>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[0.6rem] font-semibold uppercase tracking-wider text-muted">{side} · Team zone grade</div>
+                    <div className="mt-1 truncate text-sm font-semibold text-ink">{team ?? side}</div>
+                    <div className="mt-3 flex flex-wrap gap-3">
+                      {sideData.catchers.length ? sideData.catchers.map(catcher => <span key={catcher.player_id ?? catcher.name} className="flex w-[72px] flex-col items-center gap-1.5 text-center">
+                        <PlayerHeadshot playerId={catcher.player_id} name={catcher.name} src={catcher.headshot_url} size={56} className="rounded-full" />
+                        <span className="text-[10px] leading-4 text-muted-strong">{catcher.name ?? "Catcher"}</span>
+                      </span>) : <span className="text-xs text-muted">Catcher lineup pending</span>}
                     </div>
-                    <div
-                      className={[
-                        "numeric rounded-md px-2.5 py-1.5 font-serif text-lg font-bold",
-                        grade != null && grade >= 50
-                          ? "bg-positive-soft text-positive"
-                          : grade != null
-                            ? "bg-negative-soft text-negative"
-                            : "meta-pill text-muted",
-                      ].join(" ")}
-                    >
-                      {grade ?? "--"}
-                    </div>
-                  </button>
-                );
-              }),
-            )}
+                  </div>
+                  <span className="numeric text-xl font-bold text-accent">{sideData.grade ?? "—"}</span>
+                </button>
+              );
+            })}
           </div>
         ) : reportError ? (
           <p className="mt-4 text-sm leading-6 text-muted">{reportError}</p>
-        ) : (
+        ) : selectedGamePk != null ? (
           <p className="mt-4 text-sm leading-6 text-muted">Building zone report...</p>
-        )}
+        ) : null}
       </div>
+
+      {reportError && activeReport ? <p role="status" className="warning-panel rounded-xl p-4 text-sm">Zone report could not refresh. Showing the last successful zone data.</p> : null}
+      {feedError ? <p role="status" className="warning-panel rounded-xl p-4 text-sm">{feedError} {activeFeed ? "Showing the last successful update." : "Retrying automatically."}</p> : null}
+      {activeFeed?.context ? <LiveGameScoreboard context={activeFeed.context} /> : selectedGamePk != null ? <div className="surface-panel rounded-xl p-5 text-sm text-muted">Loading scoreboard and game situation...</div> : null}
 
       {sideReport && selectedGamePk != null ? (
         <AiAnalystCard
           gamePk={selectedGamePk}
           side={selectedSide}
-          catcherName={sideReport.catcher?.name ?? null}
+          catcherName={null}
           pitchesLocated={sideReport.pitches_located}
         />
       ) : null}
 
       {sideReport ? (
-        <div className="grid gap-5 xl:grid-cols-[1fr_0.9fr]">
+        <div className="grid min-w-0 grid-cols-1 gap-5 min-[1440px]:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
           <section className="panel-dark rounded-xl p-5 text-white">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
@@ -339,8 +346,7 @@ export function LiveDashboard() {
                   Game-calling vs batter hot zones
                 </div>
                 <h2 className="mt-2 font-serif text-xl text-white">
-                  {sideReport.catcher?.name ?? "Catcher"}
-                  <span className="ml-2 text-sm font-medium text-white/60">{sideTeam}</span>
+                  {sideTeam ?? "Team"}
                 </h2>
               </div>
               <div className="text-right">
@@ -378,7 +384,7 @@ export function LiveDashboard() {
               </div>
               <div>
                 <div className="numeric font-serif text-xl font-bold text-white">
-                  {report?.batters_with_zone_data ?? 0}
+                  {activeReport?.batters_with_zone_data ?? 0}
                 </div>
                 <div className="mt-1 text-[0.6rem] font-semibold uppercase tracking-[0.06em] text-white/55">
                   Batters w/ zone data
@@ -387,7 +393,7 @@ export function LiveDashboard() {
             </div>
             <p className="mt-4 text-xs leading-5 text-white/55">
               20-80 grade for how often called pitches land away from each batter&apos;s hottest
-              season zones. In-zone pitches only; attributed to the side&apos;s current catcher.
+              season zones. This is a team-wide measure across all catchers who appeared, not an individual catcher grade. In-zone pitches only.
             </p>
           </section>
 
@@ -395,7 +401,7 @@ export function LiveDashboard() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="label-kicker">Pitch stream</div>
               <span className="meta-pill rounded-full px-3 py-1.5 text-[0.62rem] font-semibold uppercase tracking-[0.06em]">
-                {feed ? `${feed.pitch_count.toLocaleString()} pitches` : "Waiting"}
+                {activeFeed ? `${activeFeed.pitch_count.toLocaleString()} pitches` : "Waiting"}
               </span>
             </div>
             {visiblePitches.length > 0 ? (

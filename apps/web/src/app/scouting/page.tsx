@@ -6,7 +6,7 @@ import type {
   LocationSummaryResponse,
   PitchTypeSummary,
 } from "@catcher-intel/contracts";
-import Image from "next/image";
+import { PlayerHeadshot } from "@/components/player-headshot";
 
 import { ApiDebugPanel } from "@/components/api-debug-panel";
 import { DemoDataBadge } from "@/components/demo-data-badge";
@@ -567,7 +567,7 @@ export default async function HomePage({
     <div className="space-y-5">
       <section className="card relative overflow-hidden rounded-xl p-5 sm:p-6">
         <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
-        <div className="relative grid gap-5 xl:grid-cols-[1.04fr_0.96fr]">
+        <div className="relative grid min-w-0 grid-cols-1 gap-5">
           <div className="space-y-4">
             <div>
               <div className="label-kicker">Scouting Mode</div>
@@ -587,7 +587,7 @@ export default async function HomePage({
             >
               <input type="hidden" name="selected_count" value={selectedCount?.split_value ?? ""} />
               <input type="hidden" name="view" value={view} />
-              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-[minmax(0,1.2fr)_11rem_11rem_8.5rem_auto]">
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                 <label className="min-w-0 space-y-2">
                   <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Catcher
@@ -724,19 +724,7 @@ export default async function HomePage({
           <aside className="panel-dark flex flex-col overflow-hidden rounded-xl p-5 text-white">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-4">
-                {detail.identity.headshot_url ? (
-                  <Image
-                    src={detail.identity.headshot_url}
-                    alt={detail.identity.catcher_name}
-                    width={104}
-                    height={104}
-                    className="h-24 w-24 rounded-xl border border-white/12 object-cover"
-                  />
-                ) : (
-                  <div className="dark-pill flex h-24 w-24 items-center justify-center rounded-xl text-4xl font-semibold">
-                    {detail.identity.catcher_name[0]}
-                  </div>
-                )}
+                <PlayerHeadshot playerId={detail.identity.catcher_id} name={detail.identity.catcher_name} src={detail.identity.headshot_url} size={104} className="rounded-xl" />
                 <div>
                   <div className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-white/56">
                     Selected catcher

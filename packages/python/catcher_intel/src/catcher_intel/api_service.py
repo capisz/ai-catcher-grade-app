@@ -146,7 +146,7 @@ class IntelService:
               ON metrics.catcher_id = summary.catcher_id
              AND metrics.season = summary.season
             WHERE summary.season = :season
-              AND (:team IS NULL OR COALESCE(meta.team_abbr, metrics.team_abbr, metrics.team_name) = :team)
+              AND (CAST(:team AS TEXT) IS NULL OR COALESCE(meta.team_abbr, metrics.team_abbr, metrics.team_name) = :team)
             ORDER BY COALESCE(meta.active, FALSE) DESC, summary.pitches DESC, catcher_name ASC
             """,
             self.settings.database_url,
@@ -253,8 +253,8 @@ class IntelService:
                 FROM catcher_pitch_scores
                 WHERE catcher_id IS NOT NULL
                   AND game_year = :season
-                  AND (:date_from IS NULL OR game_date >= :date_from)
-                  AND (:date_to IS NULL OR game_date <= :date_to)
+                  AND (CAST(:date_from AS DATE) IS NULL OR game_date >= :date_from)
+                  AND (CAST(:date_to AS DATE) IS NULL OR game_date <= :date_to)
                 GROUP BY catcher_id
                 HAVING COUNT(*) >= :min_pitches
             )
@@ -312,7 +312,7 @@ class IntelService:
             LEFT JOIN catcher_public_metrics metrics
               ON metrics.catcher_id = filtered.catcher_id
              AND metrics.season = :season
-            WHERE (:team IS NULL OR COALESCE(meta.team_abbr, metrics.team_abbr, metrics.team_name) = :team)
+            WHERE (CAST(:team AS TEXT) IS NULL OR COALESCE(meta.team_abbr, metrics.team_abbr, metrics.team_name) = :team)
             ORDER BY filtered.total_dva DESC, filtered.avg_dva DESC, filtered.catcher_id ASC
             """,
             self.settings.database_url,
@@ -1351,9 +1351,9 @@ class IntelService:
               AND raw.pitch_type IS NOT NULL
               AND raw.delta_run_exp IS NOT NULL
               AND features.zone_bucket_25 IS NOT NULL
-              AND (:date_from IS NULL OR raw.game_date >= :date_from)
-              AND (:date_to IS NULL OR raw.game_date <= :date_to)
-              AND (:team IS NULL OR COALESCE(meta.team_abbr, metrics.team_abbr, metrics.team_name) = :team)
+              AND (CAST(:date_from AS DATE) IS NULL OR raw.game_date >= :date_from)
+              AND (CAST(:date_to AS DATE) IS NULL OR raw.game_date <= :date_to)
+              AND (CAST(:team AS TEXT) IS NULL OR COALESCE(meta.team_abbr, metrics.team_abbr, metrics.team_name) = :team)
             """,
             self.settings.database_url,
             params={
@@ -1419,9 +1419,9 @@ class IntelService:
              AND metrics.season = COALESCE(scores.game_year, raw.game_year)
             WHERE COALESCE(scores.game_year, raw.game_year) = :season
               AND scores.catcher_id IS NOT NULL
-              AND (:date_from IS NULL OR COALESCE(scores.game_date, raw.game_date) >= :date_from)
-              AND (:date_to IS NULL OR COALESCE(scores.game_date, raw.game_date) <= :date_to)
-              AND (:team IS NULL OR COALESCE(meta.team_abbr, metrics.team_abbr, metrics.team_name) = :team)
+              AND (CAST(:date_from AS DATE) IS NULL OR COALESCE(scores.game_date, raw.game_date) >= :date_from)
+              AND (CAST(:date_to AS DATE) IS NULL OR COALESCE(scores.game_date, raw.game_date) <= :date_to)
+              AND (CAST(:team AS TEXT) IS NULL OR COALESCE(meta.team_abbr, metrics.team_abbr, metrics.team_name) = :team)
             """,
             self.settings.database_url,
             params={

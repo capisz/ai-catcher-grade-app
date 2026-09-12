@@ -6,7 +6,7 @@ import { isDemoDataActive } from "@/lib/demo-snapshot";
  * fetches so the per-request demo flag is settled.
  */
 export function DemoDataBadge() {
-  if (!isDemoDataActive()) {
+  if (!isDemoDataActive() && process.env.BACKEND_DATA_MODE !== "demo") {
     return null;
   }
 

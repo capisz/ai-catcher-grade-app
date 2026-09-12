@@ -3,6 +3,13 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 from typing import Optional
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+# Resolve from the project, independent of the process working directory.
+# Deployment environment variables always take precedence over local values.
+load_dotenv(Path(__file__).resolve().parents[5] / ".env", override=False)
 
 
 @dataclass(frozen=True)

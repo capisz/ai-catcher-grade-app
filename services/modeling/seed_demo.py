@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from pathlib import Path
+import pandas as pd
 
 from catcher_intel.candidate_sets import build_candidate_pitch_sets
 from catcher_intel.config import get_settings
-from catcher_intel.db import clear_table, ensure_schema, write_dataframe
-from catcher_intel.demo import build_demo_pitch_frame
+from catcher_intel.db import clear_table, ensure_schema, write_dataframe, upsert_dataframe
+from catcher_intel.demo import build_demo_pitch_frame, DEMO_CATCHERS
+from rebuild_catcher_summaries import rebuild_season
 from catcher_intel.feature_engineering import derive_feature_frame
 from catcher_intel.modeling import (
     build_batter_zone_profiles,
@@ -55,8 +57,16 @@ def main() -> None:
     artifact_path.parent.mkdir(parents=True, exist_ok=True)
     save_model_artifacts(artifacts, artifact_path)
 
+    upsert_dataframe(pd.DataFrame([
+        {"player_id": player_id, "season": 2025, "full_name": name,
+         "team_abbr": team, "is_catcher": True, "is_selectable": True,
+         "active": True, "primary_position_abbr": "C"}
+        for player_id, name, team in DEMO_CATCHERS
+    ]), "player_metadata", ["player_id", "season"], settings.database_url)
+    rebuild_season(settings.database_url, 2025, model_version=artifacts.model_version)
+
     print(
-        f"Seeded demo data into {settings.database_url} and wrote model artifacts to {artifact_path}."
+        f"Seeded synthetic demo data and wrote model artifacts to {artifact_path}."
     )
 
 

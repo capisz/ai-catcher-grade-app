@@ -4,7 +4,7 @@ import type {
   CountSummary,
   PitchTypeSummary,
 } from "@catcher-intel/contracts";
-import Image from "next/image";
+import { PlayerHeadshot } from "@/components/player-headshot";
 
 import { ApiDebugPanel } from "@/components/api-debug-panel";
 import { DemoDataBadge } from "@/components/demo-data-badge";
@@ -635,7 +635,7 @@ export default async function ComparePage({
     <div className="space-y-5">
       <section className="card relative overflow-hidden rounded-xl p-5 sm:p-6">
         <div className="hero-wash pointer-events-none absolute inset-x-0 top-0 h-24" />
-        <div className="relative grid gap-5 xl:grid-cols-[1.06fr_0.94fr]">
+        <div className="relative grid min-w-0 grid-cols-1 gap-5">
           <div className="space-y-4">
             <div>
               <div className="label-kicker">Compare Mode</div>
@@ -654,7 +654,7 @@ export default async function ComparePage({
               loadingSubtitle="Refreshing both catchers under the same filter context."
             >
               <input type="hidden" name="view" value={view} />
-              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1.1fr)_11rem_8.5rem_11rem_11rem]">
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 <label className="min-w-0 space-y-2">
                   <span className="text-[0.64rem] font-semibold uppercase tracking-[0.06em] text-muted">
                     Catcher A
@@ -817,19 +817,7 @@ export default async function ComparePage({
                 <div key={detail.identity.catcher_id} className="scorebug rounded-xl border border-white/10 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3">
-                      {detail.identity.headshot_url ? (
-                        <Image
-                          src={detail.identity.headshot_url}
-                          alt={detail.identity.catcher_name}
-                          width={72}
-                          height={72}
-                          className="h-16 w-16 rounded-lg border border-white/12 object-cover"
-                        />
-                      ) : (
-                        <div className="dark-pill flex h-16 w-16 items-center justify-center rounded-lg text-2xl font-semibold">
-                          {detail.identity.catcher_name[0]}
-                        </div>
-                      )}
+                      <PlayerHeadshot playerId={detail.identity.catcher_id} name={detail.identity.catcher_name} src={detail.identity.headshot_url} size={72} className="rounded-lg" />
                       <div>
                         <div className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white/56">
                           Catcher {index === 0 ? "A" : "B"}

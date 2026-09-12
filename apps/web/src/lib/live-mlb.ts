@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { buildGameContext, mlbDate } from "./live-game-context";
 
 /**
  * Direct MLB Stats API fallback for the /live proxy paths.
@@ -35,6 +36,7 @@ async function fetchJson(path: string, params: Record<string, string>, ttlMs: nu
   const response = await fetch(url, {
     headers: { "user-agent": "catcher-intel/1.0" },
     cache: "no-store",
+    signal: AbortSignal.timeout(12_000),
   });
   if (!response.ok) {
     throw new LiveFallbackError(response.status, `MLB Stats API error for ${path}`);
@@ -75,7 +77,7 @@ function teamSummary(game: JsonRecord, side: "home" | "away") {
 }
 
 async function liveSchedule(date: string | null) {
-  const target = date ?? new Date().toISOString().slice(0, 10);
+  const target = date ?? mlbDate();
   const payload = await fetchJson("/v1/schedule", { sportId: "1", date: target }, TTL_SCHEDULE_MS);
 
   const games = arr(payload.dates).flatMap((day) =>
@@ -180,6 +182,7 @@ export async function liveGamePitches(gamePk: string, limit: number) {
     state: status.abstractGameState ?? null,
     detailed_state: status.detailedState ?? null,
     pitch_count: pitches.length,
+    context: buildGameContext(payload),
     pitches: pitches.reverse().slice(0, limit),
   };
 }

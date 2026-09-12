@@ -141,6 +141,10 @@ def score_pitch_decisions(
     scored["receiving_bonus"] = 0.0
     scored["final_pitch_score"] = scored["dva"] + scored["receiving_bonus"]
     scored["model_version"] = artifacts.model_version
+    scored["game_year"] = pd.to_datetime(scored["game_date"]).dt.year
+    scored["pitcher_id"] = scored["pitcher"]
+    scored["batter_id"] = scored["batter"]
+    scored["outperformed_baseline"] = scored["dva"] > 0
     return scored
 
 
@@ -193,8 +197,8 @@ def build_model_registry_frame(artifacts: ModelArtifacts) -> pd.DataFrame:
             {
                 "model_version": artifacts.model_version,
                 "model_type": "xgboost_regressor",
-                "trained_on_start": artifacts.trained_on_start,
-                "trained_on_end": artifacts.trained_on_end,
+                "trained_on_start": pd.Timestamp(artifacts.trained_on_start).date(),
+                "trained_on_end": pd.Timestamp(artifacts.trained_on_end).date(),
                 "feature_list": json.dumps(FEATURE_COLUMNS),
                 "notes": (
                     "First-pass delta_run_exp model without catcher fixed effects, "

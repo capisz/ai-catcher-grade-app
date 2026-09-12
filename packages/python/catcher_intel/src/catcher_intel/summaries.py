@@ -292,7 +292,9 @@ def build_season_summary(
     season_summary["dropped_sparse_context_pct"] = 1.0 - (
         season_summary["pitches"] / season_summary["eligible_pitches"].replace(0, np.nan)
     )
-    season_summary["dropped_sparse_context_pct"] = season_summary["dropped_sparse_context_pct"].fillna(0.0)
+    season_summary["dropped_sparse_context_pct"] = (
+        season_summary["dropped_sparse_context_pct"].fillna(0.0).clip(lower=0.0, upper=1.0)
+    )
 
     for label, mask_column, prefix in [
         ("hitter_friendly", "hitter_friendly_flag", "hitter_friendly"),
