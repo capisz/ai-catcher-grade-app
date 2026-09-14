@@ -24,6 +24,7 @@ from datetime import date as date_cls
 from typing import Any, Optional
 
 from fastapi import APIRouter, HTTPException, Query
+from catcher_intel.catcher_locations import catcher_locations
 from catcher_intel.live_context import game_context, mlb_date
 from concurrent.futures import ThreadPoolExecutor
 
@@ -201,6 +202,7 @@ def live_game_pitches(game_pk: int, limit: int = Query(default=200, le=1000)) ->
         "detailed_state": status.get("detailedState"),
         "pitch_count": len(pitches),
         "context": game_context(payload),
+        "catcher_locations": catcher_locations(payload),
         "pitches": list(reversed(pitches))[:limit],
     }
 

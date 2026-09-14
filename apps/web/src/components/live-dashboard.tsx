@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { AiAnalystCard } from "@/components/ai-analyst-card";
 import { GameSelect } from "@/components/ui/game-select";
+import { CatcherHeatmaps } from "@/components/catcher-heatmaps";
+import type { CatcherLocations } from "@/lib/catcher-locations";
 import { LiveZoneGrid } from "@/components/live-zone-grid";
 import { LiveGameScoreboard } from "@/components/live-game-scoreboard";
 import { PlayerHeadshot } from "@/components/player-headshot";
@@ -76,6 +78,7 @@ type LivePitch = {
 };
 
 type PitchFeed = {
+  catcher_locations?: { catchers: CatcherLocations[]; unattributed_pitches: number };
   game_pk: number;
   context: LiveGameContext;
   pitch_count: number;
@@ -327,6 +330,8 @@ export function LiveDashboard() {
       {reportError && activeReport ? <p role="status" className="warning-panel rounded-xl p-4 text-sm">Zone report could not refresh. Showing the last successful zone data.</p> : null}
       {feedError ? <p role="status" className="warning-panel rounded-xl p-4 text-sm">{feedError} {activeFeed ? "Showing the last successful update." : "Retrying automatically."}</p> : null}
       {activeFeed?.context ? <LiveGameScoreboard context={activeFeed.context} /> : selectedGamePk != null ? <div className="surface-panel rounded-xl p-5 text-sm text-muted">Loading scoreboard and game situation...</div> : null}
+
+      {activeFeed?.catcher_locations ? <CatcherHeatmaps key={selectedGamePk} data={activeFeed.catcher_locations} side={selectedSide} team={sideTeam ?? "Team"} /> : null}
 
       {sideReport && selectedGamePk != null ? (
         <AiAnalystCard
