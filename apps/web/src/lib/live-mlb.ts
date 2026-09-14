@@ -1,3 +1,4 @@
+import { buildCatcherLocations } from "./catcher-locations";
 import { NextRequest, NextResponse } from "next/server";
 import { buildGameContext, mlbDate } from "./live-game-context";
 
@@ -183,6 +184,7 @@ export async function liveGamePitches(gamePk: string, limit: number) {
     detailed_state: status.detailedState ?? null,
     pitch_count: pitches.length,
     context: buildGameContext(payload),
+    catcher_locations: buildCatcherLocations(payload),
     pitches: pitches.reverse().slice(0, limit),
   };
 }

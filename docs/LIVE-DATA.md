@@ -40,3 +40,11 @@ pnpm --filter web exec node scripts/test-live-context.mjs
 The latter checks Eastern-date behavior and Python/frontend projection parity
 for final, missing-data, and changed-baserunner cases. The fixture is a reduced
 public MLB game feed for game 824631, retrieved during local validation.
+
+### Catcher location heatmaps
+
+Live now includes paired right-/left-handed batter heatmaps for each catcher in the selected game. The pitch response carries `catcher_locations` in both the FastAPI and direct MLB paths, calculated from the full feed independently of the pitch-stream limit. Starting catchers require a unique `gamesStarted` player whose first recorded fielding position is C; chronological substitution events update the catcher by roster team, including switches from another position. Uncertain attribution is excluded and counted.
+
+Locations use MLB `pX` and `pZ`, normalized vertically using each pitch's recorded strike-zone top/bottom. Batting side comes from the plate appearance, including switch hitters' actual side. Missing coordinates, zone bounds, or R/L side are excluded and coverage is displayed. The swinging-strike filter uses call codes S/W (including blocked swinging strikes, excluding foul tips). Gaussian smoothing uses a fixed bandwidth, with a shared count-density color scale for both panels. These are single-game concentration charts, not season hot zones or catcher effectiveness grades. The existing team-grade grid remains separately labeled.
+
+Validation: `node apps/web/scripts/test-catcher-locations.mjs` covers catcher replacements, position switches, half-inning/team attribution, missing locations, swinging-strike codes, and Python/TypeScript parity.

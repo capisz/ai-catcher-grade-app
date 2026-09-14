@@ -9,7 +9,7 @@ const require = createRequire(import.meta.url);
 const web = fileURLToPath(new URL('../', import.meta.url));
 const directory = fs.mkdtempSync(path.join(web, '.live-check-'));
 try {
-  for (const name of ['live-game-context', 'live-mlb']) {
+  for (const name of ['live-game-context', 'catcher-locations', 'live-mlb']) {
     const source = fs.readFileSync(path.join(web, 'src/lib', name + '.ts'), 'utf8');
     fs.writeFileSync(path.join(directory, name + '.js'), ts.transpileModule(source, {
       compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
